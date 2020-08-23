@@ -1,6 +1,5 @@
 package life;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
@@ -36,6 +35,7 @@ public class Main {
         boolean[][] current = generateRandomMatrix(size);
         boolean[][] next = current.clone();
 
+        print(current, -1);
         for (int generation = 0; generation < generations; generation++) {
             current = Arrays.stream(next).map(boolean[]::clone).toArray(boolean[][]::new); // copy
             for (int x = 0; x < current.length; x++) {
@@ -88,7 +88,7 @@ public class Main {
             //e.printStackTrace();
         }
 
-        System.out.println("Generation #" + (generation + 1));
+        System.out.println("Generation #" + (generation + 2));
         System.out.println("Alive #" + getAlive(array));
         for (int y = array.length - 1; y >= 0; y--) {
             for (boolean[] booleans : array) {
