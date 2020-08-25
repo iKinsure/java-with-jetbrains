@@ -1,24 +1,20 @@
-package life;
+package life.controller;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.Scanner;
+import life.model.Universe;
+import life.view.Console;
 
-public class Main {
+public class App {
 
-    private static final Scanner SCAN = new Scanner(System.in);
+    private final int generations;
+    private final Universe universe;
 
-    public static void main(String[] args) {
-
-        int size = SCAN.nextInt();
-        //long seed = SCAN.nextLong();
-        //int generations = SCAN.nextInt();
-        int generations = 100;
-
-        Universe universe = new Universe();
-        universe.setCurrent(UniverseManager.generateRandomMatrix(size));
+    public App(int size, int generations) {
+        this.generations = generations;
+        this.universe = new Universe(size);
         universe.shallowCopyCurrentToNext();
+    }
 
+    public void simulateWorld() {
         for (int generation = 0; generation < generations; generation++) {
             universe.deepCopyNextToCurrent();
             for (int x = 0; x < universe.getSize(); x++) {
@@ -35,7 +31,7 @@ public class Main {
                     }
                 }
             }
-            UniverseManager.print(universe, generation);
+            Console.print(universe, generation);
         }
     }
 }

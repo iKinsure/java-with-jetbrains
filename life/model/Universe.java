@@ -1,11 +1,31 @@
-package life;
+package life.model;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class Universe {
 
     private boolean[][] current;
     private boolean[][] next;
+
+    public Universe(int size, long seed) {
+        this.current = set(new Random(seed), size);
+    }
+
+    public Universe(int size) {
+        this.current = set(new Random(), size);
+    }
+
+    private boolean[][] set(Random random, int size) {
+        boolean[][] matrix = new boolean[size][size];
+        for (int y = matrix.length - 1; y >= 0; y--) {
+            for (int x = 0; x < matrix.length; x++) {
+                matrix[x][y] = random.nextBoolean();
+            }
+        }
+        return matrix;
+    }
+
 
     /** deep copy next to current */
     public void deepCopyNextToCurrent() {

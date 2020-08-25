@@ -1,4 +1,4 @@
-package life;
+package life.model;
 
 /**
  * To move to dir use + dx, + dy
