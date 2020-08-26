@@ -14,7 +14,8 @@ public class Console {
         boolean[][] array = universe.getCurrent();
         for (int y = array.length - 1; y >= 0; y--) {
             for (boolean[] booleans : array) {
-                System.out.print(booleans[y] ? "O" : " ");
+                System.out.print(booleans[y] ? "O" : "-");
+                System.out.print(" ");
             }
             System.out.println();
         }
