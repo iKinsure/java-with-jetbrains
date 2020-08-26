@@ -10,40 +10,51 @@ public class GameOfLife extends JFrame {
 
     private JLabel aliveLabel;
     private JLabel generationLabel;
+    private Universe universe;
+    private GraphPane graphPane;
 
     public GameOfLife() {
-        this.setSize(420, 475);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setName("Game of Life");
-        this.setLocationByPlatform(true);
-        this.setResizable(false);
-
-        var pane = new Draw();
-        this.add(pane);
-        init(pane);
-
-
-        this.setVisible(true);
+        setFrame();
+        setLabelPane();
+        setContentPane();
+        setVisible(true);
     }
 
-    public void init(JPanel pane) {
-        pane.setLayout(null);
+    private void setFrame() {
+        setSize(500, 500);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setName("Game of Life");
+        setTitle("Game of Life");
+        setLocationByPlatform(true);
+        setResizable(false);
+        setLayout(new BorderLayout());
+    }
+
+    private void setContentPane() {
+        graphPane = new GraphPane();
+        add(graphPane, BorderLayout.CENTER);
+    }
+
+    private void setLabelPane() {
+        var pane = new JPanel();
+        pane.setLayout(new GridLayout(2,1));
+
         generationLabel = new JLabel();
         generationLabel.setName("GenerationLabel");
-        generationLabel.setText("Generation #");
-        generationLabel.setBounds(10, 5, 80, 25);
+        generationLabel.setText("Generation #0");
+        generationLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 0));
         pane.add(generationLabel);
+
         aliveLabel = new JLabel();
         aliveLabel.setName("AliveLabel");
-        aliveLabel.setText("Alive: ");
-        aliveLabel.setBounds(120, 5, 80, 25);
+        aliveLabel.setText("Alive: 0");
+        aliveLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
         pane.add(aliveLabel);
+
+        add(pane, BorderLayout.NORTH);
     }
 
-    public static class Draw extends JPanel {
-
-        private static Universe universe;
-
+    public class GraphPane extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -51,7 +62,7 @@ public class GameOfLife extends JFrame {
             boolean[][] array = universe.getCurrent();
             for (int y = array.length - 1; y >= 0; y--) {
                 for (int x = 0; x < array.length; x++) {
-                    var square = new Rectangle2D.Double(x * 20, y * 20 + 30, 20, 20);
+                    var square = new Rectangle2D.Double(x * 20, y * 20, 20, 20);
                     graph.setColor(Color.BLACK);
                     if (array[x][y]) {
                         graph.fill(square);
@@ -60,10 +71,10 @@ public class GameOfLife extends JFrame {
                 }
             }
         }
+    }
 
-        public static void setUniverse(Universe u) {
-            universe = u;
-        }
+    public void setUniverse(Universe universe) {
+        this.universe = universe;
     }
 
     public JLabel getAliveLabel() {
@@ -72,5 +83,9 @@ public class GameOfLife extends JFrame {
 
     public JLabel getGenerationLabel() {
         return generationLabel;
+    }
+
+    public GraphPane getGraphPane() {
+        return graphPane;
     }
 }
