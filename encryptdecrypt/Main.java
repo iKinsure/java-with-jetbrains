@@ -1,20 +1,32 @@
 package encryptdecrypt;
 
+import java.util.Scanner;
+
 public class Main {
 
-    public static final String TEXT = "we found a treasure!";
-    public static final char MIN_CHAR = 'a'; // 97
-    public static final char MAX_CHAR = 'z'; // 122
+    public static final int MIN_CHAR = 'a'; // 97
+    public static final int MAX_CHAR = 'z'; // 122
+    public static final Scanner SCAN = new Scanner(System.in);
 
     public static void main(String[] args) {
-
-        for (int i = 0; i < TEXT.length(); i++) {
-            char sign = TEXT.charAt(i);
-            System.out.print(isCharInRange(sign) ? (char) (MAX_CHAR + MIN_CHAR - sign) : sign);
+        final int range = MAX_CHAR - MIN_CHAR + 1;
+        String text = SCAN.nextLine();
+        int key = SCAN.nextInt() % range;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (isCharInRange(c)) {
+                c += key;
+                c -= isCharInRange(c) ? 0 : range;
+            }
+            System.out.print(c);
         }
     }
 
-    private static boolean isCharInRange(char sign) {
-        return (sign >= MIN_CHAR && sign <= MAX_CHAR);
+    private static boolean isCharInRange(char c) {
+        return (c >= MIN_CHAR && c <= MAX_CHAR);
+    }
+
+    private static char codeCharCorrespondingPosition(char c) {
+        return isCharInRange(c) ? (char) (MAX_CHAR + MIN_CHAR - c) : c;
     }
 }
