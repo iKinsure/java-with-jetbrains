@@ -1,29 +1,36 @@
 package life.view;
 
+import life.controller.App;
 import life.model.Universe;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class GameOfLife extends JFrame {
 
     private JLabel aliveLabel;
     private JLabel generationLabel;
-    private Universe universe;
-    private GraphPane graphPane;
+    private JSlider slider;
+    private SimulationPane simulationPane;
+
     private boolean isPausePressed;
+    private boolean isResetPressed;
 
     private static final int WIDTH = 815;
     private static final int HEIGHT = 650;
-    private static final int PIXEL_SIZE = 5;
+
 
     public GameOfLife() {
         setFrame();
         setLabelPane();
-        setContentPane();
+        setSimulationPane();
         setVisible(true);
     }
 
@@ -37,74 +44,64 @@ public class GameOfLife extends JFrame {
         setLayout(null);
     }
 
-    private void setContentPane() {
-        graphPane = new GraphPane();
-        graphPane.setLayout(null);
-        graphPane.setBounds(195, 5, WIDTH - 195, HEIGHT);
-        add(graphPane);
+    private void setSimulationPane() {
+        simulationPane = new SimulationPane();
+        simulationPane.setLayout(null);
+        simulationPane.setBounds(195, 5, WIDTH - 195, HEIGHT);
+        add(simulationPane);
     }
 
     private void setLabelPane() {
+        // set pane
         var pane = new JPanel();
         pane.setLayout(null);
         pane.setBounds(0, 0, 195, HEIGHT);
 
-
+        // toggle button
         JToggleButton pauseButton = new JToggleButton();
         pauseButton.setName("PlayToggleButton");
-        pauseButton.setBounds(5,5, 90, 50);
         pauseButton.setText("PAUSE");
+        pauseButton.setBounds(5,5, 90, 50);
         pauseButton.addActionListener(e -> {
             isPausePressed = !isPausePressed;
             pauseButton.setText(isPausePressed ? "RESUME" : "PAUSE");
         });
         pane.add(pauseButton);
 
+        // reset button
         JButton resetButton = new JButton();
         resetButton.setName("ResetButton");
-        resetButton.setBounds(100,5, 90, 50);
         resetButton.setText("RESET");
+        resetButton.setBounds(100,5, 90, 50);
+        resetButton.addActionListener(e -> {
+            isResetPressed = true;
+        });
         pane.add(resetButton);
 
+        // generation label
         generationLabel = new JLabel();
         generationLabel.setName("GenerationLabel");
         generationLabel.setText("Generation #0");
         generationLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        generationLabel.setBounds(5, 60, 250, 25);
-        pane.add(generationLabel, BorderLayout.CENTER);
+        generationLabel.setBounds(5, 60, 195, 25);
+        pane.add(generationLabel);
 
+        // alive label
         aliveLabel = new JLabel();
         aliveLabel.setName("AliveLabel");
         aliveLabel.setText("Alive: 0");
         aliveLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        aliveLabel.setBounds(5, 90, 250, 25);
-        pane.add(aliveLabel,  BorderLayout.CENTER);
+        aliveLabel.setBounds(5, 90, 195, 25);
+        pane.add(aliveLabel);
 
-        add(pane, BorderLayout.WEST);
-    }
+        // slider
+        slider = new JSlider(50, 5000);
+        slider.setValue(1000);
+        slider.setToolTipText("Speed mode");
+        slider.setBounds(5, 120, 190, 25);
+        pane.add(slider);
 
-    public class GraphPane extends JPanel {
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D graph = (Graphics2D) g;
-            boolean[][] array = universe.getCurrent();
-            int size = PIXEL_SIZE * (array.length - 1);
-            for (int y = 0; y < array.length; y++) {
-                for (int x = 0; x < array.length; x++) {
-                    var square = new Rectangle2D.Double(x * PIXEL_SIZE, size - y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
-                    graph.setColor(Color.BLACK);
-                    if (array[x][y]) {
-                        graph.fill(square);
-                    }
-                    graph.draw(square);
-                }
-            }
-        }
-    }
-
-    public void setUniverse(Universe universe) {
-        this.universe = universe;
+        add(pane);
     }
 
     public JLabel getAliveLabel() {
@@ -115,7 +112,27 @@ public class GameOfLife extends JFrame {
         return generationLabel;
     }
 
-    public GraphPane getGraphPane() {
-        return graphPane;
+    public SimulationPane getSimulationPane() {
+        return simulationPane;
+    }
+
+    public JSlider getSlider() {
+        return slider;
+    }
+
+    public boolean isPausePressed() {
+        return isPausePressed;
+    }
+
+    public void setPausePressed(boolean pausePressed) {
+        isPausePressed = pausePressed;
+    }
+
+    public boolean isResetPressed() {
+        return isResetPressed;
+    }
+
+    public void setResetPressed(boolean resetPressed) {
+        isResetPressed = resetPressed;
     }
 }
