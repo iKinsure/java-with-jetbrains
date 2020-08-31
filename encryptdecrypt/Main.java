@@ -7,40 +7,34 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    enum Mode {
-        ENC(false), DEC(true);
-        boolean isReading;
-        Mode(boolean isReading) {
-            this.isReading = isReading;
-        }
-    }
-
     public static void main(String[] args) throws Exception {
 
         // init
-        Mode mode = Mode.ENC;
+        String mode = "enc";
         int key = 0;
         String data = "";
-        String input = null;
-        String output = null;
+        String in = null;
+        String out = null;
 
         // read input
         try {
             for (int i = 0; i < args.length; i++) {
-                if ("-mode".equals(args[i])) {
-                    mode = Mode.valueOf(args[i + 1].toUpperCase());
-                }
-                else if ("-key".equals(args[i])) {
-                    key = Integer.parseInt(args[i + 1]);
-                }
-                else if ("-data".equals(args[i])) {
-                    data = args[i + 1];
-                }
-                else if ("-in".equals(args[i])) {
-                    input = args[i + 1];
-                }
-                else if ("-out".equals(args[i])) {
-                    output = args[i + 1];
+                switch (args[i]) {
+                    case "-mode":
+                        mode = args[i + 1];
+                        break;
+                    case "-key":
+                        key = Integer.parseInt(args[i + 1]);
+                        break;
+                    case "-data":
+                        data = args[i + 1];
+                        break;
+                    case "-in":
+                        in = args[i + 1];
+                        break;
+                    case "-out":
+                        out = args[i + 1];
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -49,19 +43,22 @@ public class Main {
         }
 
         // logic
-        if (input != null && "".equals(data)) {
+        if ("dec".equals(mode)) {
+            key = -key;
+        }
+        if (in != null && "".equals(data)) {
             try {
-                data = readFile(input);
+                data = readFile(in);
             } catch (IOException e) {
                 System.out.println("Error occurred: failed to read file");
                 return;
             }
         }
-        if (output == null) {
-            System.out.println(crypt(data, key, mode.isReading));
+        if (out == null) {
+            System.out.println(crypt(data, key));
         } else {
             try {
-                saveToFile(crypt(data, key, mode.isReading), output);
+                saveToFile(crypt(data, key), out);
             } catch (IOException e) {
                 System.out.println("Error occurred: failed to save");
                 return;
@@ -69,12 +66,9 @@ public class Main {
         }
     }
 
-    private static String crypt(String text, int key, boolean isReading) {
-        StringBuilder builder = new StringBuilder(text);
-        for (int i = 0; i < builder.length(); i++) {
-            builder.setCharAt(i, (char) (builder.charAt(i) + (isReading ? - key : key)));
-        }
-        return builder.toString();
+    private static String crypt(String text, int key) {
+        return text.chars().map(c -> c + key).collect(StringBuilder::new,
+                StringBuilder::appendCodePoint, StringBuilder::append).toString();
     }
 
     private static String readFile(String fileName) throws IOException {
