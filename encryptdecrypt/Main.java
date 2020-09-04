@@ -7,24 +7,51 @@ import java.nio.file.Paths;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    static int key = 0;
+    static String mode = "enc";
+    static String data = "";
+    static String in = null;
+    static String out = null;
+    static String alg = "shift";
 
-        // init
-        String mode = "enc";
-        int key = 0;
-        String data = "";
-        String in = null;
-        String out = null;
+    public static void main(String[] args) {
+        getInput(args);
+        EncodeStrategy encoder = new EncodeStrategy();
+        encoder.setMethod(new ShiftEncode());
+        if ("unicode".equals(alg)) {
+            encoder.setMethod(new UnicodeEncode());
+        }
+        if ("dec".equals(mode)) {
+            key = -key;
+        }
+        if (in != null && "".equals(data)) {
+            try {
+                data = readFromFile(in);
+            } catch (IOException e) {
+                System.out.println("Error occurred: failed to read file");
+                return;
+            }
+        }
+        if (out == null) {
+            System.out.println(encoder.encode(data, key));
+        } else {
+            try {
+                saveToFile(encoder.encode(data, key), out);
+            } catch (IOException e) {
+                System.out.println("Error occurred: failed to save");
+            }
+        }
+    }
 
-        // read input
+    private static void getInput(String[] args) {
         try {
             for (int i = 0; i < args.length; i++) {
                 switch (args[i]) {
-                    case "-mode":
-                        mode = args[i + 1];
-                        break;
                     case "-key":
                         key = Integer.parseInt(args[i + 1]);
+                        break;
+                    case "-mode":
+                        mode = args[i + 1];
                         break;
                     case "-data":
                         data = args[i + 1];
@@ -35,46 +62,22 @@ public class Main {
                     case "-out":
                         out = args[i + 1];
                         break;
+                    case "-alg":
+                        alg = args[i + 1];
+                        break;
                 }
             }
         } catch (Exception e) {
             System.out.println("Error occurred: input invalid");
-            return;
-        }
-
-        // logic
-        if ("dec".equals(mode)) {
-            key = -key;
-        }
-        if (in != null && "".equals(data)) {
-            try {
-                data = readFile(in);
-            } catch (IOException e) {
-                System.out.println("Error occurred: failed to read file");
-                return;
-            }
-        }
-        if (out == null) {
-            System.out.println(crypt(data, key));
-        } else {
-            try {
-                saveToFile(crypt(data, key), out);
-            } catch (IOException e) {
-                System.out.println("Error occurred: failed to save");
-                return;
-            }
         }
     }
 
-    private static String crypt(String text, int key) {
-        return text.chars().map(c -> c + key).collect(StringBuilder::new,
-                StringBuilder::appendCodePoint, StringBuilder::append).toString();
-    }
-
-    private static String readFile(String fileName) throws IOException {
+    /** -in *file.txt* */
+    private static String readFromFile(String fileName) throws IOException {
         return new String(Files.readAllBytes(Paths.get(fileName)));
     }
 
+    /** -out *file.txt* */
     private static void saveToFile(String text, String fileName) throws IOException {
         try (FileWriter writer = new FileWriter(fileName)) {
             writer.write(text);
