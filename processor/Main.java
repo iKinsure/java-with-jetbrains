@@ -9,9 +9,8 @@ public class Main {
     public static void main(String[] args) {
         int[][] m1 = new int[SCANNER.nextInt()][SCANNER.nextInt()];
         readMatrix(m1);
-        int[][] m2 = new int[SCANNER.nextInt()][SCANNER.nextInt()];
-        readMatrix(m2);
-        printMatrix(addition(m1, m2));
+        int multiplier = SCANNER.nextInt();
+        printMatrix(multiplication(m1, multiplier));
     }
 
     private static int[][] addition(int[][] m1, int [][] m2) {
@@ -25,6 +24,16 @@ public class Main {
             return result;
         }
         return null;
+    }
+
+    private static int[][] multiplication(int[][] matrix, int multiplier) {
+        int[][] result = new int[matrix.length][matrix[0].length];
+        for (int m = 0; m < matrix.length; m++) {
+            for (int n = 0; n < matrix[m].length; n++) {
+                result[m][n] = matrix[m][n] * multiplier;
+            }
+        }
+        return result;
     }
 
     private static void readMatrix(int[][] matrix) {
