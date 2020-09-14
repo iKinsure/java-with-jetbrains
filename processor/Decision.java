@@ -4,6 +4,7 @@ public enum Decision {
     ADD(1, "Add matrices"),
     SCALAR_MULTIPLY(2, "Multiply matrix by a constant"),
     MULTIPLY(3, "Multiply matrices"),
+    TRANSPOSE(4, "Transpose matrix"),
     EXIT(0, "Exit");
 
     private final int id;

@@ -21,7 +21,7 @@ public class Main {
                     print(MatrixManager.add(m1, m2));
                     break;
                 case SCALAR_MULTIPLY:
-                    System.out.println("Enter first matrix: ");
+                    System.out.println("Enter matrix: ");
                     m1 = create();
                     System.out.println("Enter multiplier ");
                     print(MatrixManager.scalarMultiply(m1, SCAN.nextInt()));
@@ -33,6 +33,29 @@ public class Main {
                     m2 = create();
                     print(MatrixManager.multiply(m1, m2));
                     break;
+                case TRANSPOSE:
+                    System.out.println("\n1. Main diagonal\n" +
+                            "2. Side diagonal\n" +
+                            "3. Vertical line\n" +
+                            "4. Horizontal line");
+                    System.out.print("Your choice: ");
+                    int dec = SCAN.nextInt();
+                    System.out.println("Enter matrix: ");
+                    m1 = create();
+                    switch (dec) {
+                        case 1:
+                            print(MatrixManager.transposeOverMainDiagonal(m1));
+                            break;
+                        case 2:
+                            print(MatrixManager.transposeOverSideDiagonal(m1));
+                            break;
+                        case 3:
+                            print(MatrixManager.transposeByVerticalLine(m1));
+                            break;
+                        case 4:
+                            print(MatrixManager.transposeByHorizontalLine(m1));
+                            break;
+                    }
             }
             System.out.println();
         }
