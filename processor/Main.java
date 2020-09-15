@@ -56,6 +56,12 @@ public class Main {
                             print(MatrixManager.transposeByHorizontalLine(m1));
                             break;
                     }
+                    break;
+                case DETERMINANT:
+                    System.out.println("Enter matrix: ");
+                    m1 = create();
+                    System.out.println("The result is: \n" + MatrixManager.determinant(m1));
+                    break;
             }
             System.out.println();
         }

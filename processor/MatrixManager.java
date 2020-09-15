@@ -45,4 +45,30 @@ public class MatrixManager {
         return new Matrix(m.getRows(), m.getColumns(),
                 (r, c) -> m.get(m.getRows() - r - 1, c));
     }
+
+    public static Matrix removeRow(Matrix m, int index) {
+        return new Matrix(m.getRows() - 1, m.getColumns(),
+                (r, c) -> m.get(r >= index ? r + 1 : r, c));
+    }
+
+    public static Matrix removeColumn(Matrix m, int index) {
+        return new Matrix(m.getRows(), m.getColumns() - 1,
+                (r, c) -> m.get(r, c >= index ? c + 1 : c));
+    }
+
+    public static double determinant(Matrix m) {
+        return m.getRows() == m.getColumns() ? determinantRecursion(m) : 0.0;
+    }
+
+    private static double determinantRecursion(Matrix m) {
+        if (m.getRows() == 1) {
+            return m.get(0, 0);
+        }
+        double sum = 0.0;
+        for (int i = 0; i < m.getRows(); i++) {
+            double minor = determinantRecursion(removeColumn(removeRow(m, 0), i));
+            sum += Math.pow(-1, i) * m.get(0, i) * minor;
+        }
+        return sum;
+    }
 }
