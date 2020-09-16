@@ -6,6 +6,7 @@ public enum Decision {
     MULTIPLY(3, "Multiply matrices"),
     TRANSPOSE(4, "Transpose matrix"),
     DETERMINANT(5, "Calculate a determinant"),
+    INVERSE(6, "Inverse matrix"),
     EXIT(0, "Exit");
 
     private final int id;
@@ -30,3 +31,4 @@ public enum Decision {
         return id + ". " + description;
     }
 }
+
