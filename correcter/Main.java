@@ -1,15 +1,32 @@
 package correcter;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        String origText = new Scanner(System.in).nextLine();
-        String encodeText = encode(origText);
-        String errorText = addError(encodeText);
-        String finalText = removeError(errorText);
-        System.out.printf("%s\n%s\n%s\n%s\n", origText, encodeText, errorText,finalText);
+    public static void main(String[] args) throws IOException {
+        byte[] data = readFromFile("send.txt");
+        generateError(data);
+        saveToFile("received.txt", data);
+    }
+
+    private static void generateError(byte[] data) {
+        Random random = new Random();
+        for (int i = 0; i < data.length; i++) {
+            data[i] ^= 1 << random.nextInt(Byte.SIZE);
+        }
+    }
+
+    private static byte[] readFromFile(String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(fileName));
+    }
+
+    private static void saveToFile(String fileName, byte[] data) throws IOException {
+        FileOutputStream output = new FileOutputStream(new File("received.txt"));
+        output.write(data);
+        output.close();
     }
 
     private static String removeError(String text) {
