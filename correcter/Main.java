@@ -38,21 +38,21 @@ public class Main {
         String data = getBinFromByte(readFromFile(SEND_FILE));
         String encoded = encode(data);
         String encodedAdded = add(encoded);
-        saveToFileAsByte(ENCODE_FILE, getByteFromBinString(encodedAdded));
+        saveToFileAsByte(ENCODE_FILE, getByteFromBin(encodedAdded));
         System.out.println(SEND_FILE + ":");
-        System.out.println("text view: " + getTextStringFromBinString(data));
-        System.out.println("hex view: " + getBinWithSpacesFromBin(data));
+        System.out.println("text view: " + getTextFromBin(data));
+        System.out.println("hex view: " + getHexFromBin(data));
         System.out.println("bin view: " + getBinWithSpacesFromBin(data) + "\n");
         System.out.println(ENCODE_FILE + ":");
         System.out.println("expand: " + getParityFromBinWithSpaces(getBinWithSpacesFromBin(encodedAdded)));
         System.out.println("parity: " + getBinWithSpacesFromBin(encodedAdded));
-        System.out.println("hex view: " + getBinWithSpacesFromBin(encodedAdded));
+        System.out.println("hex view: " + getHexFromBin(encodedAdded));
     }
 
     private static void sendInstruction() throws IOException {
         String data = getBinFromByte(readFromFile(ENCODE_FILE));
         String error = send(data);
-        saveToFileAsByte(RECEIVE_FILE, getByteFromBinString(error));
+        saveToFileAsByte(RECEIVE_FILE, getByteFromBin(error));
         System.out.println(ENCODE_FILE + ":");
         System.out.println("hex view: " + getHexFromBin(data));
         System.out.println("bin view: " + getBinWithSpacesFromBin(data) + "\n");
@@ -65,16 +65,15 @@ public class Main {
         String data = getBinFromByte(readFromFile(RECEIVE_FILE));
         String decoded = decode(data);
         String decodedRemove = remove(decoded);
-        saveToFileAsByte(DECODE_FILE, getByteFromBinString(decodedRemove));
+        saveToFileAsByte(DECODE_FILE, getByteFromBin(decodedRemove));
         System.out.println(RECEIVE_FILE + ":");
         System.out.println("hex view: " + getHexFromBin(data));
         System.out.println("bin view: " + getBinWithSpacesFromBin(data) + "\n");
         System.out.println(DECODE_FILE + ":");
         System.out.println("correct: " + getBinWithSpacesFromBin(encode(decoded)));
         System.out.println("decode: " + getBinWithSpacesFromBin(decoded));
-        System.out.println("remove: " + getBinWithSpacesFromBin(decodedRemove));
         System.out.println("hex view: " + getHexFromBin(decodedRemove));
-        System.out.println("text view: " + getTextStringFromBinString(decodedRemove));
+        System.out.println("text view: " + getTextFromBin(decodedRemove));
     }
 
     /** ===================================================================== */
@@ -114,7 +113,9 @@ public class Main {
     private static String getParityFromBinWithSpaces(String data) {
         StringBuilder result = new StringBuilder(data);
         for (int i = 0; i < data.length(); i += (Byte.SIZE + 1)) {
-            result.setCharAt(i + 6, '.');
+            result.setCharAt(i, '.');
+            result.setCharAt(i + 1, '.');
+            result.setCharAt(i + 3, '.');
             result.setCharAt(i + 7, '.');
         }
         return result.toString();
@@ -130,7 +131,7 @@ public class Main {
         return result.toString();
     }
 
-    private static String getTextStringFromBinString(String data) {
+    private static String getTextFromBin(String data) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < data.length(); i += Byte.SIZE) {
             result.append((char) Integer.parseInt(data.substring(i, Byte.SIZE + i), 2));
@@ -138,7 +139,7 @@ public class Main {
         return result.toString();
     }
 
-    private static byte[] getByteFromBinString(String data) {
+    private static byte[] getByteFromBin(String data) {
         String[] bytes = data.split("(?<=\\G.{8})");
         byte[] result = new byte[bytes.length];
         for (int i = 0; i < bytes.length; i++) {
@@ -149,63 +150,43 @@ public class Main {
 
     /** ===================================================================== */
 
-    private static String decode(String data) {
+    private static String encode(String data) {
         StringBuilder result = new StringBuilder();
-        int errorPos = 0;
-        boolean error = false;
-        for (int i = 1; i < data.length(); i += 2) {
-            if ((i + 1) % 8 == 0) {
-                if (error) {
-                    byte a = Byte.parseByte(String.valueOf(data.charAt(i - 6)));
-                    byte b = Byte.parseByte(String.valueOf(data.charAt(i - 4)));
-                    byte c = Byte.parseByte(String.valueOf(data.charAt(i - 2)));
-                    byte d = Byte.parseByte(String.valueOf(data.charAt(i)));
-                    switch (errorPos % 3) {
-                        case 0:
-                            result.setCharAt(errorPos, (((b ^ c ^ d) == 1) ? '1' : '0'));
-                            break;
-                        case 1:
-                            result.setCharAt(errorPos, (((a ^ c ^ d) == 1) ? '1' : '0'));
-                            break;
-                        case 2:
-                            result.setCharAt(errorPos, (((a ^ b ^ d) == 1)  ? '1' : '0'));
-                            break;
-                    }
-                    error = false;
-                }
-            } else {
-                result.append(data.charAt(i));
-                if (data.charAt(i) != data.charAt(i - 1)) {
-                    errorPos = result.length() - 1;
-                    error = true;
-                }
-            }
+        for (int i = 3; i < data.length(); i += 4) {
+            int s1 = Character.getNumericValue(data.charAt(i - 3));
+            int s2 = Character.getNumericValue(data.charAt(i - 2));
+            int s3 = Character.getNumericValue(data.charAt(i - 1));
+            int s4 = Character.getNumericValue(data.charAt(i));
+            int p1 = (s1 + s2 + s4) % 2;
+            int p2 = (s1 + s3 + s4) % 2;
+            int p3 = (s2 + s3 + s4) % 2;
+            result.append(p1).append(p2).append(s1).append(p3).
+                    append(s2).append(s3).append(s4).append("0");
         }
         return result.toString();
     }
 
-    private static String encode(String data) {
+    private static String decode(String data) {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < data.length(); i++) {
-            result.append(data.charAt(i)).append(data.charAt(i));
-            if (i % 3 == 2) {
-                byte a = Byte.parseByte(String.valueOf(data.charAt(i - 2)));
-                byte b = Byte.parseByte(String.valueOf(data.charAt(i - 1)));
-                byte c = Byte.parseByte(String.valueOf(data.charAt(i)));
-                result.append(a ^ b ^ c).append(a ^ b ^ c);
+        for (int i = Byte.SIZE - 1; i < data.length(); i += Byte.SIZE) {
+            int errorPos = 0;
+            int[] h = new int[8];
+            for (int j = 0; j < 8; j++) {
+                h[j] = Character.getNumericValue(data.charAt(j + i - 7));
             }
-        }
-        if (data.length() % 3 == 2) {
-            byte a = Byte.parseByte(String.valueOf(data.charAt(data.length() - 2)));
-            byte b = Byte.parseByte(String.valueOf(data.charAt(data.length() - 1)));
-            byte c = 0;
-            result.append("00");
-            result.append(a ^ b).append(a ^ b);
-        }
-        if (data.length() % 3 == 1) {
-            byte a = Byte.parseByte(String.valueOf(data.charAt(data.length() - 1)));
-            result.append("0000");
-            result.append(a).append(a);
+            if (h[0] != (h[2] + h[4] + h[6]) % 2) {
+                errorPos += 1;
+            }
+            if (h[1] != (h[2] + h[5] + h[6]) % 2) {
+                errorPos += 2;
+            }
+            if (h[3] != (h[4] + h[5] + h[6]) % 2) {
+                errorPos += 4;
+            }
+            if (errorPos != 0) {
+                h[errorPos - 1] = h[errorPos - 1] == 1 ? 0 : 1;
+            }
+            result.append(h[2]).append(h[4]).append(h[5]).append(h[6]);
         }
         return result.toString();
     }
