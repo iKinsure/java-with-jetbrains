@@ -1,7 +1,6 @@
 package correcter;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Random;
@@ -38,15 +37,16 @@ public class Main {
     private static void encodeInstruction() throws IOException {
         String data = getBinFromByte(readFromFile(SEND_FILE));
         String encoded = encode(data);
-        saveToFileAsByte(ENCODE_FILE, getByteFromBinString(encoded));
+        String encodedAdded = add(encoded);
+        saveToFileAsByte(ENCODE_FILE, getByteFromBinString(encodedAdded));
         System.out.println(SEND_FILE + ":");
         System.out.println("text view: " + getTextStringFromBinString(data));
         System.out.println("hex view: " + getBinWithSpacesFromBin(data));
         System.out.println("bin view: " + getBinWithSpacesFromBin(data) + "\n");
         System.out.println(ENCODE_FILE + ":");
-        System.out.println("expand: " + getParityString(getBinWithSpacesFromBin(encoded)));
-        System.out.println("parity: " + getBinWithSpacesFromBin(encoded));
-        System.out.println("hex view: " + getBinWithSpacesFromBin(encoded));
+        System.out.println("expand: " + getParityFromBinWithSpaces(getBinWithSpacesFromBin(encodedAdded)));
+        System.out.println("parity: " + getBinWithSpacesFromBin(encodedAdded));
+        System.out.println("hex view: " + getBinWithSpacesFromBin(encodedAdded));
     }
 
     private static void sendInstruction() throws IOException {
@@ -111,7 +111,7 @@ public class Main {
         return result.toString();
     }
 
-    private static String getParityString(String data) {
+    private static String getParityFromBinWithSpaces(String data) {
         StringBuilder result = new StringBuilder(data);
         for (int i = 0; i < data.length(); i += (Byte.SIZE + 1)) {
             result.setCharAt(i + 6, '.');
@@ -200,17 +200,12 @@ public class Main {
             byte b = Byte.parseByte(String.valueOf(data.charAt(data.length() - 1)));
             byte c = 0;
             result.append("00");
-            result.append(a ^ b ^ c).append(a ^ b ^ c);
+            result.append(a ^ b).append(a ^ b);
         }
         if (data.length() % 3 == 1) {
             byte a = Byte.parseByte(String.valueOf(data.charAt(data.length() - 1)));
-            byte b = 0;
-            byte c = 0;
             result.append("0000");
-            result.append(a ^ b ^ c).append(a ^ b ^ c);
-        }
-        while (result.length() % Byte.SIZE != 0) {
-            result.append("0");
+            result.append(a).append(a);
         }
         return result.toString();
     }
@@ -229,6 +224,14 @@ public class Main {
         StringBuilder result = new StringBuilder(data);
         while (result.length() % Byte.SIZE  != 0) {
             result.deleteCharAt(result.length() - 1);
+        }
+        return result.toString();
+    }
+
+    private static String add(String data) {
+        StringBuilder result = new StringBuilder(data);
+        while (result.length() % Byte.SIZE != 0) {
+            result.append("0");
         }
         return result.toString();
     }
