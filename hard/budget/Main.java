@@ -49,6 +49,7 @@ public class Main {
     }
 
     private static void purchase() {
+        Purchase.Categories category = type();
         System.out.println("Enter purchase name: ");
         SCANNER.nextLine();
         String name = SCANNER.nextLine();
@@ -56,8 +57,10 @@ public class Main {
         double price = SCANNER.nextDouble();
         sum += price;
         balance -= balance == 0.0 ? 0.0 : price;
-        list.add(new Purchase(name, price));
         System.out.println("Purchase was added!");
+        if (category != null) {
+            list.add(new Purchase(name, price, category));
+        }
     }
 
     private static void list() {
@@ -69,6 +72,26 @@ public class Main {
             }
             System.out.println("Total sum: $" + sum);
         }
+    }
+
+    private static Purchase.Categories type() {
+        System.out.println("Choose the type of purchase\n" +
+                "1) Food\n" +
+                "2) Clothes\n" +
+                "3) Entertainment\n" +
+                "4) Other\n" +
+                "5) Back");
+        switch (SCANNER.nextInt()) {
+            case 1:
+                return Purchase.Categories.FOOD;
+            case 2:
+                return Purchase.Categories.CLOTHES;
+            case 3:
+                return Purchase.Categories.ENTERTAINMENT;
+            case 4:
+                return Purchase.Categories.OTHER;
+        }
+        return null;
     }
 
     private static void balance() {
