@@ -6,7 +6,8 @@ public class Purchase {
         FOOD("Food"),
         CLOTHES("Clothes"),
         ENTERTAINMENT("Entertainment"),
-        OTHER("Other");
+        OTHER("Other"),
+        ALL("All");
         public final String description;
         Categories(String description) {
             this.description = description;
@@ -21,6 +22,10 @@ public class Purchase {
         this.name = name;
         this.price = price;
         this.category = category;
+    }
+
+    public Categories getCategory() {
+        return category;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package hard.budget;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Scanner;
 
 public class Main {
@@ -50,6 +52,9 @@ public class Main {
 
     private static void purchase() {
         Purchase.Categories category = type();
+        if (category == null) {
+            return;
+        }
         System.out.println("Enter purchase name: ");
         SCANNER.nextLine();
         String name = SCANNER.nextLine();
@@ -58,20 +63,39 @@ public class Main {
         sum += price;
         balance -= balance == 0.0 ? 0.0 : price;
         System.out.println("Purchase was added!");
-        if (category != null) {
-            list.add(new Purchase(name, price, category));
-        }
+        list.add(new Purchase(name, price, category));
     }
 
     private static void list() {
         if (list.isEmpty()) {
-            System.out.println("Purchase list is empty");
-        } else {
+            System.out.println("Purchase list is empty!");
+            return;
+        }
+        Purchase.Categories category = typeWithAll();
+        if (category == null) {
+            return;
+        }
+        System.out.println(category.description + ":");
+        if (category == Purchase.Categories.ALL) {
             for (Purchase p : list) {
                 System.out.println(p);
             }
-            System.out.println("Total sum: $" + sum);
         }
+        else {
+            int counter = 0;
+            for (Purchase p : list) {
+                if (p.getCategory() == category) {
+                    System.out.println(p);
+                    counter++;
+                }
+            }
+            if (counter == 0) {
+                System.out.println("Purchase list is empty!");
+            }
+        }
+        System.out.println("Total sum: $" + sum);
+        System.out.println();
+        list();
     }
 
     private static Purchase.Categories type() {
@@ -90,6 +114,29 @@ public class Main {
                 return Purchase.Categories.ENTERTAINMENT;
             case 4:
                 return Purchase.Categories.OTHER;
+        }
+        return null;
+    }
+
+    private static Purchase.Categories typeWithAll() {
+        System.out.println("Choose the type of purchase\n" +
+                "1) Food\n" +
+                "2) Clothes\n" +
+                "3) Entertainment\n" +
+                "4) Other\n" +
+                "5) All\n" +
+                "6) Back");
+        switch (SCANNER.nextInt()) {
+            case 1:
+                return Purchase.Categories.FOOD;
+            case 2:
+                return Purchase.Categories.CLOTHES;
+            case 3:
+                return Purchase.Categories.ENTERTAINMENT;
+            case 4:
+                return Purchase.Categories.OTHER;
+            case 5:
+                return Purchase.Categories.ALL;
         }
         return null;
     }
