@@ -1,18 +1,17 @@
 package hard.budget;
 
-import java.util.ArrayDeque;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Scanner;
 
 public class Main {
 
+    public static double balance = 0.0;
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static double balance = 0.0;
-    private static double sum = 0.0;
     private static ArrayList<Purchase> list = new ArrayList<>();
+    private static final String FILENAME = "purchases.txt";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         int decision = 1;
         while (decision != 0) {
             switch (getDecision()) {
@@ -28,6 +27,12 @@ public class Main {
                 case 4:
                     balance();
                     break;
+                case 5:
+                    save();
+                    break;
+                case 6:
+                    load();
+                    break;
                 default:
                     decision = 0;
                     System.out.println("Bye!");
@@ -36,12 +41,42 @@ public class Main {
         }
     }
 
+    private static void save() throws IOException {
+        try (FileWriter writer = new FileWriter(FILENAME)) {
+            writer.write(String.valueOf(balance));
+            writer.write("\n");
+            for (Purchase p : list) {
+                writer.write(p.getCategory().name());
+                writer.write('#');
+                writer.write(p.getName());
+                writer.write('#');
+                writer.write(String.valueOf(p.getPrice()));
+                writer.write("\n");
+            }
+        }
+        System.out.println("Purchases were saved!");
+    }
+
+    private static void load() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILENAME))) {
+            list.clear();
+            balance = Double.parseDouble(reader.readLine());
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                String[] lines = line.split("#");
+                list.add(new Purchase(lines[1], Double.parseDouble(lines[2]), Purchase.Categories.valueOf(lines[0])));
+            }
+        }
+        System.out.println("Purchases were loaded!");
+    }
+
     private static int getDecision() {
         System.out.println("Choose your action:\n" +
                 "1) Add income\n" +
                 "2) Add purchase\n" +
                 "3) Show list of purchases\n" +
                 "4) Balance\n" +
+                "5) Save\n" +
+                "6) Load\n" +
                 "0) Exit");
         int decision = SCANNER.nextInt();
         System.out.println();
@@ -92,9 +127,8 @@ public class Main {
         String name = SCANNER.nextLine();
         System.out.println("Enter its price: ");
         double price = SCANNER.nextDouble();
-        sum += price;
-        balance -= balance == 0.0 ? 0.0 : price;
         System.out.println("Purchase was added!");
+        balance -= balance == 0.0 ? 0.0 : price;
         list.add(new Purchase(name, price, category));
         System.out.println();
         purchase();
@@ -111,9 +145,11 @@ public class Main {
         }
         System.out.println();
         System.out.println(category.description + ":");
+        double sum = 0.0;
         if (category == Purchase.Categories.ALL) {
             for (Purchase p : list) {
                 System.out.println(p);
+                sum += p.getPrice();
             }
             System.out.println("Total sum: $" + sum);
         }
