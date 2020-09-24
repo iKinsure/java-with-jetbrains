@@ -15,15 +15,7 @@ public class Main {
     public static void main(String[] args) {
         int decision = 1;
         while (decision != 0) {
-            System.out.println("Choose your action:\n" +
-                    "1) Add income\n" +
-                    "2) Add purchase\n" +
-                    "3) Show list of purchases\n" +
-                    "4) Balance\n" +
-                    "0) Exit");
-            decision = SCANNER.nextInt();
-            System.out.println();
-            switch (decision) {
+            switch (getDecision()) {
                 case 1:
                     income();
                     break;
@@ -44,17 +36,57 @@ public class Main {
         }
     }
 
+    private static int getDecision() {
+        System.out.println("Choose your action:\n" +
+                "1) Add income\n" +
+                "2) Add purchase\n" +
+                "3) Show list of purchases\n" +
+                "4) Balance\n" +
+                "0) Exit");
+        int decision = SCANNER.nextInt();
+        System.out.println();
+        return decision;
+    }
+
     private static void income() {
         System.out.println("Enter income: ");
         balance += SCANNER.nextDouble();
         System.out.println("Income was added!");
     }
 
+    private static void balance() {
+        System.out.println("Balance: $" + balance);
+    }
+
     private static void purchase() {
-        Purchase.Categories category = type();
-        if (category == null) {
-            return;
+        Purchase.Categories category = null;
+        System.out.println("Choose the type of purchase\n" +
+                "1) Food\n" +
+                "2) Clothes\n" +
+                "3) Entertainment\n" +
+                "4) Other\n" +
+                "5) Back");
+        switch (SCANNER.nextInt()) {
+            case 1:
+                category = Purchase.Categories.FOOD;
+                break;
+            case 2:
+                category = Purchase.Categories.CLOTHES;
+                break;
+            case 3:
+                category = Purchase.Categories.ENTERTAINMENT;
+                break;
+            case 4:
+                category = Purchase.Categories.OTHER;
+                break;
+            case 5:
+                return;
         }
+        addPurchase(category);
+    }
+
+    private static void addPurchase(Purchase.Categories category) {
+        System.out.println();
         System.out.println("Enter purchase name: ");
         SCANNER.nextLine();
         String name = SCANNER.nextLine();
@@ -64,6 +96,8 @@ public class Main {
         balance -= balance == 0.0 ? 0.0 : price;
         System.out.println("Purchase was added!");
         list.add(new Purchase(name, price, category));
+        System.out.println();
+        purchase();
     }
 
     private static void list() {
@@ -75,48 +109,35 @@ public class Main {
         if (category == null) {
             return;
         }
+        System.out.println();
         System.out.println(category.description + ":");
         if (category == Purchase.Categories.ALL) {
             for (Purchase p : list) {
                 System.out.println(p);
             }
+            System.out.println("Total sum: $" + sum);
         }
         else {
             int counter = 0;
+            double cash = 0.0;
             for (Purchase p : list) {
                 if (p.getCategory() == category) {
                     System.out.println(p);
+                    cash += p.getPrice();
                     counter++;
                 }
             }
             if (counter == 0) {
                 System.out.println("Purchase list is empty!");
+            } else {
+                System.out.println("Total sum: $" + cash);
             }
         }
-        System.out.println("Total sum: $" + sum);
         System.out.println();
         list();
     }
 
-    private static Purchase.Categories type() {
-        System.out.println("Choose the type of purchase\n" +
-                "1) Food\n" +
-                "2) Clothes\n" +
-                "3) Entertainment\n" +
-                "4) Other\n" +
-                "5) Back");
-        switch (SCANNER.nextInt()) {
-            case 1:
-                return Purchase.Categories.FOOD;
-            case 2:
-                return Purchase.Categories.CLOTHES;
-            case 3:
-                return Purchase.Categories.ENTERTAINMENT;
-            case 4:
-                return Purchase.Categories.OTHER;
-        }
-        return null;
-    }
+
 
     private static Purchase.Categories typeWithAll() {
         System.out.println("Choose the type of purchase\n" +
@@ -139,9 +160,5 @@ public class Main {
                 return Purchase.Categories.ALL;
         }
         return null;
-    }
-
-    private static void balance() {
-        System.out.println("Balance: $" + balance);
     }
 }
