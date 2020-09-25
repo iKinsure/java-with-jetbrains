@@ -10,9 +10,9 @@ public class Main {
 
     public static double balance = 0.0;
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static ArrayList<Purchase> list = new ArrayList<>();
     private static final String FILENAME = "purchases.txt";
     public static DecimalFormat format = new DecimalFormat("#0.00");
+    private static final PurchaseManager manager = new PurchaseManager();
 
     public static void main(String[] args) throws IOException {
         int decision = 1;
@@ -41,42 +41,36 @@ public class Main {
                     break;
                 default:
                     decision = 0;
-                    System.out.println("Bye!");
+                    System.out.println("\nBye!");
             }
             System.out.println();
         }
     }
 
     private static void analyze() {
-        System.out.println("How do you want to sort?\n" +
+        System.out.println("\nHow do you want to sort?\n" +
                 "1) Sort all purchases\n" +
                 "2) Sort by type\n" +
                 "3) Sort certain type\n" +
                 "4) Back");
-        int dec = SCANNER.nextInt();
+        int input = SCANNER.nextInt();
         System.out.println();
-        switch (dec) {
+        switch (input) {
             case 1:
-                if (list.isEmpty()) {
+                if (manager.isEmpty()) {
                     System.out.println("Purchase list is empty!");
                 } else {
                     System.out.println("All:");
-                    double totalSum = 0.0;
-                    ArrayList<Purchase> purchases = new ArrayList<>(list);
-                    Collections.sort(purchases);
-                    for (Purchase p : purchases) {
-                        System.out.println(p.getName() + " $" + format.format(p.getPrice()));
-                        totalSum += p.getPrice();
-                    }
-                    System.out.println("Total: $" + format.format(totalSum));
+                    System.out.println(manager.getSortedList(null));
+                    System.out.println("Total: $" + format.format(manager.getCurrentSum()));
                 }
                 break;
             case 2:
                 System.out.println("Types:");
                 double totalSum = 0.0;
-                ArrayList<Purchase> purchases = new ArrayList<>(list);
+                ArrayList<Purchase> purchases = new ArrayList<>(manager.getPurchases());
                 Collections.sort(purchases);
-                for (Purchase.Categories category : Purchase.Categories.values()) {
+                for (Categories category : Categories.values()) {
                     double sum = 0.0;
                     for (Purchase p : purchases) {
                         if (category == p.getCategory()) {
@@ -89,47 +83,20 @@ public class Main {
                 System.out.println("Total sum: $" + format.format(totalSum));
                 break;
             case 3:
-                System.out.println("Choose the type of purchase\n" +
-                        "1) Food\n" +
-                        "2) Clothes\n" +
-                        "3) Entertainment\n" +
-                        "4) Other");
-                Purchase.Categories category = null;
-                switch (SCANNER.nextInt()) {
-                    case 1:
-                        category = Purchase.Categories.FOOD;
-                        break;
-                    case 2:
-                        category = Purchase.Categories.CLOTHES;
-                        break;
-                    case 3:
-                        category = Purchase.Categories.ENTERTAINMENT;
-                        break;
-                    case 4:
-                        category = Purchase.Categories.OTHER;
-                        break;
-                }
-                System.out.println();
-                if (list.isEmpty()) {
-                    System.out.println("Purchase list is empty!");
+                System.out.print("Choose the type of purchase\n" +
+                        Categories.showAll());
+                Categories category = Categories.findById(SCANNER.nextInt());
+                if (manager.isEmpty() || category == null) {
+                    System.out.println("\nPurchase list is empty!");
                 } else {
-                    System.out.println(category.description + ":");
-                    double total = 0.0;
-                    ArrayList<Purchase> purch = new ArrayList<>(list);
-                    Collections.sort(purch);
-                    for (Purchase p : purch) {
-                        if (p.getCategory() == category) {
-                            System.out.println(p.getName() + " $" + format.format(p.getPrice()));
-                            total += p.getPrice();
-                        }
-                    }
-                    System.out.println("Total sum: $" + format.format(total));
+                    System.out.println("\n" + category.description + ":");
+                    System.out.print(manager.getSortedList(category));
+                    System.out.println("Total sum: $" + format.format(manager.getCurrentSum()));
                 }
                 break;
             case 4:
                 return;
         }
-        System.out.println();
         analyze();
     }
 
@@ -137,7 +104,7 @@ public class Main {
         try (FileWriter writer = new FileWriter(FILENAME)) {
             writer.write(String.valueOf(balance));
             writer.write("\n");
-            for (Purchase p : list) {
+            for (Purchase p : manager.getPurchases()) {
                 writer.write(p.getCategory().name());
                 writer.write('#');
                 writer.write(p.getName());
@@ -146,19 +113,19 @@ public class Main {
                 writer.write("\n");
             }
         }
-        System.out.println("Purchases were saved!");
+        System.out.println("\nPurchases were saved!");
     }
 
     private static void load() throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(FILENAME))) {
-            list.clear();
+            manager.clear();
             balance = Double.parseDouble(reader.readLine());
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 String[] lines = line.split("#");
-                list.add(new Purchase(lines[1], Double.parseDouble(lines[2]), Purchase.Categories.valueOf(lines[0])));
+                manager.add(new Purchase(lines[1], Double.parseDouble(lines[2]), Categories.valueOf(lines[0])));
             }
         }
-        System.out.println("Purchases were loaded!");
+        System.out.println("\nPurchases were loaded!");
     }
 
     private static int getDecision() {
@@ -171,125 +138,60 @@ public class Main {
                 "6) Load\n" +
                 "7) Analyze (Sort)\n" +
                 "0) Exit");
-        int decision = SCANNER.nextInt();
-        System.out.println();
-        return decision;
+        return SCANNER.nextInt();
     }
 
     private static void income() {
-        System.out.println("Enter income: ");
+        System.out.println("\nEnter income: ");
         balance += SCANNER.nextDouble();
         System.out.println("Income was added!");
     }
 
     private static void balance() {
-        System.out.println("Balance: $" + balance);
+        System.out.println("\nBalance: $" + format.format(balance));
     }
 
     private static void purchase() {
-        Purchase.Categories category = null;
-        System.out.println("Choose the type of purchase\n" +
-                "1) Food\n" +
-                "2) Clothes\n" +
-                "3) Entertainment\n" +
-                "4) Other\n" +
+        System.out.println("\nChoose the type of purchase\n" +
+                Categories.showAll() +
                 "5) Back");
-        switch (SCANNER.nextInt()) {
-            case 1:
-                category = Purchase.Categories.FOOD;
-                break;
-            case 2:
-                category = Purchase.Categories.CLOTHES;
-                break;
-            case 3:
-                category = Purchase.Categories.ENTERTAINMENT;
-                break;
-            case 4:
-                category = Purchase.Categories.OTHER;
-                break;
-            case 5:
-                return;
+        int input = SCANNER.nextInt();
+        if (input == 5) {
+            return;
         }
+        Categories category = Categories.findById(input);
         addPurchase(category);
     }
 
-    private static void addPurchase(Purchase.Categories category) {
-        System.out.println();
-        System.out.println("Enter purchase name: ");
+    private static void addPurchase(Categories category) {
+        System.out.println("\nEnter purchase name: ");
         SCANNER.nextLine();
         String name = SCANNER.nextLine();
         System.out.println("Enter its price: ");
         double price = SCANNER.nextDouble();
         System.out.println("Purchase was added!");
         balance -= balance == 0.0 ? 0.0 : price;
-        list.add(new Purchase(name, price, category));
-        System.out.println();
+        manager.add(new Purchase(name, price, category));
         purchase();
     }
 
     private static void list() {
-        if (list.isEmpty()) {
-            System.out.println("Purchase list is empty!");
+        if (manager.isEmpty()) {
+            System.out.println("\nPurchase list is empty!");
             return;
         }
-        System.out.println("Choose the type of purchase\n" +
-                "1) Food\n" +
-                "2) Clothes\n" +
-                "3) Entertainment\n" +
-                "4) Other\n" +
+        System.out.println("\nChoose the type of purchase\n" +
+                Categories.showAll() +
                 "5) All\n" +
                 "6) Back");
-        Purchase.Categories category = null;
-        switch (SCANNER.nextInt()) {
-            case 1:
-                category = Purchase.Categories.FOOD;
-                break;
-            case 2:
-                category = Purchase.Categories.CLOTHES;
-                break;
-            case 3:
-                category = Purchase.Categories.ENTERTAINMENT;
-                break;
-            case 4:
-                category=  Purchase.Categories.OTHER;
-                break;
-            case 5:
-                category = null;
-                break;
-            case 6:
-                return;
+        int input = SCANNER.nextInt();
+        if (input == 6) {
+            return;
         }
-        System.out.println();
-        if (category == null) {
-            System.out.println("All:");
-        } else {
-            System.out.println(category.description + ":");
-        }
-        double sum = 0.0;
-        if (category == null) {
-            for (Purchase p : list) {
-                System.out.println(p);
-                sum += p.getPrice();
-            }
-            System.out.println("Total sum: $" + format.format(sum));
-        }
-        else {
-            int counter = 0;
-            double cash = 0.0;
-            for (Purchase p : list) {
-                if (p.getCategory() == category) {
-                    System.out.println(p);
-                    cash += p.getPrice();
-                    counter++;
-                }
-            }
-            if (counter == 0) {
-                System.out.println("Purchase list is empty!");
-            } else {
-                System.out.println("Total sum: $" + format.format(cash));
-            }
-        }
-        System.out.println();
+        Categories category = Categories.findById(input);
+        System.out.println(category == null ? "\nAll:" : "\n" + category.description + ":");
+        System.out.print(manager.getList(category));
+        System.out.println("Total sum: $" + format.format(manager.getCurrentSum()));
         list();
     }
 }

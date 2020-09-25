@@ -1,27 +1,8 @@
 package hard.budget;
 
+import java.text.DecimalFormat;
+
 public class Purchase implements Comparable<Purchase> {
-
-    @Override
-    public int compareTo(Purchase o) {
-        if (this.getPrice() < o.getPrice()) {
-            return 1;
-        } else if (this.getPrice() == o.getPrice()) {
-            return 0;
-        }
-        return -1;
-    }
-
-    public enum Categories {
-        FOOD("Food"),
-        ENTERTAINMENT("Entertainment"),
-        CLOTHES("Clothes"),
-        OTHER("Other");
-        public final String description;
-        Categories(String description) {
-            this.description = description;
-        }
-    }
 
     private final String name;
     private final double price;
@@ -32,6 +13,8 @@ public class Purchase implements Comparable<Purchase> {
         this.price = price;
         this.category = category;
     }
+
+    // Getters methods
 
     public Categories getCategory() {
         return category;
@@ -45,10 +28,20 @@ public class Purchase implements Comparable<Purchase> {
         return name;
     }
 
+    // Override methods
+
     @Override
-    public String toString() {
-        return name + " $" + Main.format.format(price);
+    public int compareTo(Purchase o) {
+        if (this.price < o.getPrice()) {
+            return 1;
+        } else if (this.price == o.getPrice()) {
+            return 0;
+        }
+        return -1;
     }
 
-
+    @Override
+    public String toString() {
+        return name + " $" + new DecimalFormat("#0.00").format(price);
+    }
 }
