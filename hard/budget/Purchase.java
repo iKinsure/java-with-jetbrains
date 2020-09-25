@@ -1,13 +1,22 @@
 package hard.budget;
 
-public class Purchase {
+public class Purchase implements Comparable<Purchase> {
+
+    @Override
+    public int compareTo(Purchase o) {
+        if (this.getPrice() < o.getPrice()) {
+            return 1;
+        } else if (this.getPrice() == o.getPrice()) {
+            return 0;
+        }
+        return -1;
+    }
 
     public enum Categories {
         FOOD("Food"),
-        CLOTHES("Clothes"),
         ENTERTAINMENT("Entertainment"),
-        OTHER("Other"),
-        ALL("All");
+        CLOTHES("Clothes"),
+        OTHER("Other");
         public final String description;
         Categories(String description) {
             this.description = description;
@@ -38,6 +47,8 @@ public class Purchase {
 
     @Override
     public String toString() {
-        return name + " $" + price;
+        return name + " $" + Main.format.format(price);
     }
+
+
 }

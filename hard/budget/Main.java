@@ -1,7 +1,9 @@
 package hard.budget;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Main {
@@ -10,6 +12,7 @@ public class Main {
     private static final Scanner SCANNER = new Scanner(System.in);
     private static ArrayList<Purchase> list = new ArrayList<>();
     private static final String FILENAME = "purchases.txt";
+    public static DecimalFormat format = new DecimalFormat("#0.00");
 
     public static void main(String[] args) throws IOException {
         int decision = 1;
@@ -33,12 +36,101 @@ public class Main {
                 case 6:
                     load();
                     break;
+                case 7:
+                    analyze();
+                    break;
                 default:
                     decision = 0;
                     System.out.println("Bye!");
             }
             System.out.println();
         }
+    }
+
+    private static void analyze() {
+        System.out.println("How do you want to sort?\n" +
+                "1) Sort all purchases\n" +
+                "2) Sort by type\n" +
+                "3) Sort certain type\n" +
+                "4) Back");
+        int dec = SCANNER.nextInt();
+        System.out.println();
+        switch (dec) {
+            case 1:
+                if (list.isEmpty()) {
+                    System.out.println("Purchase list is empty!");
+                } else {
+                    System.out.println("All:");
+                    double totalSum = 0.0;
+                    ArrayList<Purchase> purchases = new ArrayList<>(list);
+                    Collections.sort(purchases);
+                    for (Purchase p : purchases) {
+                        System.out.println(p.getName() + " $" + format.format(p.getPrice()));
+                        totalSum += p.getPrice();
+                    }
+                    System.out.println("Total: $" + format.format(totalSum));
+                }
+                break;
+            case 2:
+                System.out.println("Types:");
+                double totalSum = 0.0;
+                ArrayList<Purchase> purchases = new ArrayList<>(list);
+                Collections.sort(purchases);
+                for (Purchase.Categories category : Purchase.Categories.values()) {
+                    double sum = 0.0;
+                    for (Purchase p : purchases) {
+                        if (category == p.getCategory()) {
+                            sum += p.getPrice();
+                            totalSum += p.getPrice();
+                        }
+                    }
+                    System.out.println(category.description + " - $" + format.format(sum));
+                }
+                System.out.println("Total sum: $" + format.format(totalSum));
+                break;
+            case 3:
+                System.out.println("Choose the type of purchase\n" +
+                        "1) Food\n" +
+                        "2) Clothes\n" +
+                        "3) Entertainment\n" +
+                        "4) Other");
+                Purchase.Categories category = null;
+                switch (SCANNER.nextInt()) {
+                    case 1:
+                        category = Purchase.Categories.FOOD;
+                        break;
+                    case 2:
+                        category = Purchase.Categories.CLOTHES;
+                        break;
+                    case 3:
+                        category = Purchase.Categories.ENTERTAINMENT;
+                        break;
+                    case 4:
+                        category = Purchase.Categories.OTHER;
+                        break;
+                }
+                System.out.println();
+                if (list.isEmpty()) {
+                    System.out.println("Purchase list is empty!");
+                } else {
+                    System.out.println(category.description + ":");
+                    double total = 0.0;
+                    ArrayList<Purchase> purch = new ArrayList<>(list);
+                    Collections.sort(purch);
+                    for (Purchase p : purch) {
+                        if (p.getCategory() == category) {
+                            System.out.println(p.getName() + " $" + format.format(p.getPrice()));
+                            total += p.getPrice();
+                        }
+                    }
+                    System.out.println("Total sum: $" + format.format(total));
+                }
+                break;
+            case 4:
+                return;
+        }
+        System.out.println();
+        analyze();
     }
 
     private static void save() throws IOException {
@@ -77,6 +169,7 @@ public class Main {
                 "4) Balance\n" +
                 "5) Save\n" +
                 "6) Load\n" +
+                "7) Analyze (Sort)\n" +
                 "0) Exit");
         int decision = SCANNER.nextInt();
         System.out.println();
@@ -139,19 +232,46 @@ public class Main {
             System.out.println("Purchase list is empty!");
             return;
         }
-        Purchase.Categories category = typeWithAll();
-        if (category == null) {
-            return;
+        System.out.println("Choose the type of purchase\n" +
+                "1) Food\n" +
+                "2) Clothes\n" +
+                "3) Entertainment\n" +
+                "4) Other\n" +
+                "5) All\n" +
+                "6) Back");
+        Purchase.Categories category = null;
+        switch (SCANNER.nextInt()) {
+            case 1:
+                category = Purchase.Categories.FOOD;
+                break;
+            case 2:
+                category = Purchase.Categories.CLOTHES;
+                break;
+            case 3:
+                category = Purchase.Categories.ENTERTAINMENT;
+                break;
+            case 4:
+                category=  Purchase.Categories.OTHER;
+                break;
+            case 5:
+                category = null;
+                break;
+            case 6:
+                return;
         }
         System.out.println();
-        System.out.println(category.description + ":");
+        if (category == null) {
+            System.out.println("All:");
+        } else {
+            System.out.println(category.description + ":");
+        }
         double sum = 0.0;
-        if (category == Purchase.Categories.ALL) {
+        if (category == null) {
             for (Purchase p : list) {
                 System.out.println(p);
                 sum += p.getPrice();
             }
-            System.out.println("Total sum: $" + sum);
+            System.out.println("Total sum: $" + format.format(sum));
         }
         else {
             int counter = 0;
@@ -166,35 +286,10 @@ public class Main {
             if (counter == 0) {
                 System.out.println("Purchase list is empty!");
             } else {
-                System.out.println("Total sum: $" + cash);
+                System.out.println("Total sum: $" + format.format(cash));
             }
         }
         System.out.println();
         list();
-    }
-
-
-
-    private static Purchase.Categories typeWithAll() {
-        System.out.println("Choose the type of purchase\n" +
-                "1) Food\n" +
-                "2) Clothes\n" +
-                "3) Entertainment\n" +
-                "4) Other\n" +
-                "5) All\n" +
-                "6) Back");
-        switch (SCANNER.nextInt()) {
-            case 1:
-                return Purchase.Categories.FOOD;
-            case 2:
-                return Purchase.Categories.CLOTHES;
-            case 3:
-                return Purchase.Categories.ENTERTAINMENT;
-            case 4:
-                return Purchase.Categories.OTHER;
-            case 5:
-                return Purchase.Categories.ALL;
-        }
-        return null;
     }
 }
