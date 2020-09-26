@@ -1,18 +1,26 @@
 package hard.solver;
 
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class Main {
 
-    private static final Scanner SCANNER = new Scanner(System.in);
-
-    public static void main(String[] args) {
-        double [] h = new double[6];
-        for (int i = 0; i < h.length; i++) {
-            h[i] = SCANNER.nextDouble();
+    public static void main(String[] args) throws IOException {
+        String fileIn = null;
+        String fileOut = null;
+        for (int i = 0; i < args.length; i += 2) {
+            if ("-in".equals(args[i])) {
+                fileIn = args[i + 1];
+            }
+            if ("-out".equals(args[i])) {
+                fileOut = args[i + 1];
+            }
         }
-        double y = (h[0] * h[5] - h[2] * h[3]) / (h[0] * h[4] - h[1] * h[3]);
-        double x = (h[2] - h[1] * y) / h[0];
-        System.out.println(x + " " + y);
+        String data = FileOperator.readFromFile(fileIn);
+        System.out.println("Start solving the equation.");
+        double[] result = new GaussElimination().solve(new Matrix(Utility.toDoubleArray(data)));
+        System.out.println("The solution is: " + Arrays.toString(result));
+        FileOperator.saveToFile(fileOut, Utility.toStringResult(result));
+        System.out.println("Saved to file " + fileOut);
     }
 }
