@@ -24,7 +24,6 @@ public class Utility {
     }
 
     public static boolean equals(double a, double b) {
-        int factor = Double.compare(a, b);
-        return factor == 0;
+        return Double.compare(a, b) == 0;
     }
 }

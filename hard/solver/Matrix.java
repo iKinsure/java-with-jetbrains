@@ -4,59 +4,58 @@ public class Matrix {
 
     private final int rows;
     private final int columns;
-    private final double[][] array;
+    private final Row[] array;
 
     public Matrix(double[][] array) {
-        this.array = array;
         this.rows = array.length;
         this.columns = array[0].length;
+        this.array = new Row[rows];
+        for (int i = 0; i < array.length; i++) {
+            Row row = new Row(array[i]);
+            if (row.getColumns() != columns) {
+                throw new IllegalArgumentException();
+            }
+            this.array[i] = row;
+        }
     }
 
     //////////////////////////// Class regular methods //////////////////////////
 
-    public void interchange(int row1, int row2) {
-        if (row1 < 0 || row1 >= rows || row2 < 0 || row2 >= rows) {
+    public void interchange(int firstRowId, int secondRowId) {
+        if (firstRowId < 0 || firstRowId >= rows || secondRowId < 0 || secondRowId >= rows) {
             throw new IllegalArgumentException();
         }
-        for (int j = 0; j < columns; j++) {
-            double temporary = array[row1][j];
-            array[row1][j] = array[row2][j];
-            array[row2][j] = temporary;
-        }
+        Row temporary = array[firstRowId];
+        array[firstRowId] = array[secondRowId];
+        array[secondRowId] = temporary;
     }
 
-    public void multiply(int row, double multiplier) {
-        if (Utility.equals(multiplier, 0.0) || row < 0 || row >= rows) {
+    public void multiply(int rowId, double multiplier) {
+        if (Utility.equals(multiplier, 0.0) || rowId < 0 || rowId >= rows) {
             throw new IllegalArgumentException();
         }
-        for (int j = 0; j < columns; j++) {
-            array[row][j] *= multiplier;
-        }
+        array[rowId].multiply(multiplier);
     }
 
     public void add(int from, int to) {
         if (from < 0 || from >= rows || to < 0 || to >= rows) {
             throw new IllegalArgumentException();
         }
-        for (int j = 0; j < columns; j++) {
-            array[to][j] += array[from][j];
-        }
+        array[to].add(array[from]);
     }
 
     public void subtract(int from, int to) {
         if (from < 0 || from >= rows || to < 0 || to >= rows) {
             throw new IllegalArgumentException();
         }
-        for (int j = 0; j < columns; j++) {
-            array[to][j] -= array[from][j];
-        }
+        array[to].subtract(array[from]);
     }
 
     public boolean isColumnBelowNull(int row, int column) {
         checkArguments(row, column);
         boolean isNull = true;
         for (int i = row; i < rows; i++) {
-            if (!Utility.equals(array[i][column], 0.0)) {
+            if (!Utility.equals(array[i].getElement(column), 0.0)) {
                 isNull = false;
                 break;
             }
@@ -74,18 +73,18 @@ public class Matrix {
         return columns;
     }
 
-    public double[][] getArray() {
+    public Row[] getArray() {
         return array;
     }
 
     public double getElement(int row, int column) {
         checkArguments(row, column);
-        return array[row][column];
+        return array[row].getElement(column);
     }
 
     public void setElement(int row, int column, double value) {
         checkArguments(row, column);
-        array[row][column] = value;
+        array[row].setElement(column, value);
     }
 
     private void checkArguments(int row, int column) {
@@ -99,11 +98,8 @@ public class Matrix {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                result.append(array[i][j]).append(" ");
-            }
-            result.append("\n");
+        for (Row row : array) {
+            result.append(row).append("\n");
         }
         return result.toString();
     }
