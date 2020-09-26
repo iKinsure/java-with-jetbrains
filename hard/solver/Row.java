@@ -1,5 +1,7 @@
 package hard.solver;
 
+import java.util.function.IntConsumer;
+
 public class Row {
 
     private final int columns;
@@ -13,35 +15,20 @@ public class Row {
     //////////////////////////// Class regular methods //////////////////////////
 
     public void multiply(double multiplier) {
-        if (Utility.equals(multiplier, 0.0)) {
-            throw new IllegalArgumentException();
-        }
-        for (int j = 0; j < columns; j++) {
-            array[j] *= multiplier;
-        }
+        iterate(j -> array[j] *= multiplier);
     }
 
     public void add(Row row) {
-        if (this.columns != row.getColumns()) {
-            throw new IllegalArgumentException();
-        }
-        for (int j = 0; j < columns; j++) {
-            array[j] += row.getElement(j);
-        }
+        iterate(j -> array[j] += row.getElement(j));
     }
 
     public void subtract(Row row) {
-        if (this.columns != row.getColumns()) {
-            throw new IllegalArgumentException();
-        }
-        for (int j = 0; j < columns; j++) {
-            array[j] -= row.getElement(j);
-        }
+        iterate(j -> array[j] -= row.getElement(j));
     }
 
-    private void checkArguments(int column) {
-        if (column < 0 || column >= columns) {
-            throw new IllegalArgumentException();
+    private void iterate(IntConsumer consumer) {
+        for (int j = 0; j < columns; j++) {
+            consumer.accept(j);
         }
     }
 
@@ -56,12 +43,10 @@ public class Row {
     }
 
     public double getElement(int column) {
-        checkArguments(column);
         return array[column];
     }
 
     public void setElement(int column, double value) {
-        checkArguments(column);
         array[column] = value;
     }
 
@@ -70,9 +55,7 @@ public class Row {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        for (int j = 0; j < columns; j++) {
-            result.append(array[j]).append(" ");
-        }
+        iterate(j -> result.append(array[j]).append(" "));
         return result.toString();
     }
 }
