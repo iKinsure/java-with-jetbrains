@@ -1,59 +1,42 @@
 package hard.solver;
 
-import java.util.function.IntConsumer;
+/**
+ * Class represents row vector
+ */
 
-public class Row {
+public class Row extends Vector implements Comparable<Row> {
 
-    private final double[] elements;
+    private final int priority;
 
     public Row(double[] elements) {
-        this.elements = elements;
+        super(elements);
+        this.priority = calculatePriority();
     }
 
-    //////////////////////////// Class regular methods //////////////////////////
-
-    public void multiply(double multiplier) {
-        iterate(j -> elements[j] *= multiplier);
-    }
-
-    public void add(Row row) {
-        iterate(j -> elements[j] += row.getElement(j));
-    }
-
-    public void subtract(Row row) {
-        iterate(j -> elements[j] -= row.getElement(j));
-    }
-
-    public void iterate(IntConsumer consumer) {
-        for (int j = 0; j < elements.length; j++) {
-            consumer.accept(j);
+    private int calculatePriority() {
+        int nullCounter = 0;
+        while (nullCounter < getSize() &&  Utility.equals(getElement(nullCounter), 0.0)) {
+            nullCounter++;
         }
+        return nullCounter;
     }
 
-    //////////////////////////// Getters and setters ////////////////////////////
-
-    public int getSize() {
-        return elements.length;
+    /**
+     * priority is based on number of zeros at beginning
+     * @return priority
+     */
+    public int getPriority() {
+        return priority;
     }
-
-    public double[] getElements() {
-        return elements;
-    }
-
-    public double getElement(int index) {
-        return elements[index];
-    }
-
-    public void setElement(int index, double value) {
-        elements[index] = value;
-    }
-
-    //////////////////////////// Override methods ///////////////////////////////
 
     @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        iterate(j -> result.append(elements[j]).append(" "));
-        return result.toString();
+    public int compareTo(Row o) {
+        if (this.priority > o.getPriority()) {
+            return 1;
+        }
+        else if (this.priority == o.getPriority()) {
+            return 0;
+        }
+        return -1;
     }
 }

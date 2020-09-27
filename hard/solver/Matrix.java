@@ -1,12 +1,12 @@
 package hard.solver;
 
-import java.util.function.IntConsumer;
+import java.util.Arrays;
 
 public class Matrix {
 
-    private final int rowSize;
-    private final int colSize;
-    private final Row[] rows;
+    private int rowSize;
+    private int colSize;
+    private Row[] rows;
 
     public Matrix(double[][] array) {
         this.rowSize = array.length;
@@ -23,12 +23,18 @@ public class Matrix {
 
     //////////////////////////// Class regular methods //////////////////////////
 
+    /**
+     * swaps the rows
+     */
     public void interchange(int firstRowIndex, int secondRowIndex) {
         Row temporary = rows[firstRowIndex];
         rows[firstRowIndex] = rows[secondRowIndex];
         rows[secondRowIndex] = temporary;
     }
 
+    /**
+     * multiply the row by scalar
+     */
     public void multiply(int rowIndex, double multiplier) {
         rows[rowIndex].multiply(multiplier);
     }
@@ -49,6 +55,9 @@ public class Matrix {
         rows[to].subtract(from);
     }
 
+    /**
+     * checks if column below @params is filled with zeros
+     */
     public boolean isColumnBelowNull(int row, int column) {
         boolean isZero = true;
         for (int i = row + 1; i < rowSize; i++) {
@@ -60,6 +69,9 @@ public class Matrix {
         return isZero;
     }
 
+    /**
+     * checks if column up from @params is filled with zeros
+     */
     public boolean isColumnUpperNull(int row, int column) {
         boolean isZero= true;
         for (int i = 0; i <= row - 1; i++) {
@@ -79,10 +91,9 @@ public class Matrix {
         return result;
     }
 
-    public void iterate(IntConsumer consumer) {
-        for (int i = 0; i < rowSize; i++) {
-            consumer.accept(i);
-        }
+    public void deleteLastRow() {
+        rows = Arrays.copyOfRange(rows, 0, rows.length -1);
+        this.rowSize = rows.length;
     }
 
     //////////////////////////// Getters and setters ////////////////////////////
@@ -112,7 +123,9 @@ public class Matrix {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        iterate(i -> result.append(rows[i]).append("\n"));
+        for (int i = 0; i < rowSize; i++) {
+            result.append(rows[i]).append("\n");
+        }
         return result.toString();
     }
 }
