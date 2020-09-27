@@ -4,50 +4,48 @@ import java.util.function.IntConsumer;
 
 public class Row {
 
-    private final int columns;
-    private final double[] array;
+    private final double[] elements;
 
-    public Row(double[] array) {
-        this.columns = array.length;
-        this.array = array;
+    public Row(double[] elements) {
+        this.elements = elements;
     }
 
     //////////////////////////// Class regular methods //////////////////////////
 
     public void multiply(double multiplier) {
-        iterate(j -> array[j] *= multiplier);
+        iterate(j -> elements[j] *= multiplier);
     }
 
     public void add(Row row) {
-        iterate(j -> array[j] += row.getElement(j));
+        iterate(j -> elements[j] += row.getElement(j));
     }
 
     public void subtract(Row row) {
-        iterate(j -> array[j] -= row.getElement(j));
+        iterate(j -> elements[j] -= row.getElement(j));
     }
 
-    private void iterate(IntConsumer consumer) {
-        for (int j = 0; j < columns; j++) {
+    public void iterate(IntConsumer consumer) {
+        for (int j = 0; j < elements.length; j++) {
             consumer.accept(j);
         }
     }
 
     //////////////////////////// Getters and setters ////////////////////////////
 
-    public int getColumns() {
-        return columns;
+    public int getSize() {
+        return elements.length;
     }
 
-    public double[] getArray() {
-        return array;
+    public double[] getElements() {
+        return elements;
     }
 
-    public double getElement(int column) {
-        return array[column];
+    public double getElement(int index) {
+        return elements[index];
     }
 
-    public void setElement(int column, double value) {
-        array[column] = value;
+    public void setElement(int index, double value) {
+        elements[index] = value;
     }
 
     //////////////////////////// Override methods ///////////////////////////////
@@ -55,7 +53,7 @@ public class Row {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        iterate(j -> result.append(array[j]).append(" "));
+        iterate(j -> result.append(elements[j]).append(" "));
         return result.toString();
     }
 }

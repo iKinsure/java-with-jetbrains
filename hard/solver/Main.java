@@ -17,10 +17,11 @@ public class Main {
             }
         }
         String data = FileOperator.readFromFile(fileIn);
+        Matrix matrix = new Matrix(Utility.toDoubleArray(data));
         System.out.println("Start solving the equation.");
-        double[] result = new GaussElimination().solve(new Matrix(Utility.toDoubleArray(data)));
+        double[] result = new GaussElimination().solve(matrix);
         System.out.println("The solution is: " + Arrays.toString(result));
-        FileOperator.saveToFile(fileOut, Utility.toStringResult(result));
+        FileOperator.saveToFile(fileOut, Utility.toString(result));
         System.out.println("Saved to file " + fileOut);
     }
 }
