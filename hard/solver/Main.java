@@ -1,7 +1,6 @@
 package hard.solver;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Main method for stage 4
@@ -22,13 +21,13 @@ public class Main {
         String data = FileOperator.readFromFile(fileIn);
         Matrix matrix = new Matrix(Utility.toDoubleArray(data));
         System.out.println("Start solving the equation.");
-        double[] result = new GaussElimination().solve(matrix);
+        GaussElimination algorithm = new GaussElimination();
+        double[] result = algorithm.solve(matrix);
+        System.out.println(algorithm.getMessage());
         if (result != null) {
-            System.out.println("The solution is: " + Arrays.toString(result));
             FileOperator.saveToFile(fileOut, Utility.toString(result));
         } else {
-            System.out.println(GaussElimination.solution);
-            FileOperator.saveToFile(fileOut, GaussElimination.solution);
+            FileOperator.saveToFile(fileOut, algorithm.getMessage());
         }
         System.out.println("Saved to file " + fileOut);
     }

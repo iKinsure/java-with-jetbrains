@@ -1,5 +1,6 @@
 package hard.solver;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Matrix {
@@ -92,7 +93,7 @@ public class Matrix {
     }
 
     public void deleteLastRow() {
-        rows = Arrays.copyOfRange(rows, 0, rows.length -1);
+        this.rows = Arrays.copyOfRange(rows, 0, rows.length -1);
         this.rowSize = rows.length;
     }
 
