@@ -17,9 +17,10 @@ public class GaussElimination implements LinearEquationAlgorithm<Matrix> {
         this.equations = matrix.getRowSize();
 
         // clearance
-        sortZeros();
+        sortRows();
         isNoSolution();
         removeNullRows();
+
 
         if (!isSolution) { // no solutions
             this.message = "No solutions";
@@ -35,13 +36,30 @@ public class GaussElimination implements LinearEquationAlgorithm<Matrix> {
         return null;
     }
 
+    private void sortColumns() {
+        int size = Math.min(matrix.getColSize(), matrix.getRowSize());
+        for (int i = 0; i < size; i++) {
+            double el = matrix.getElement(i, i);
+            if (Utility.equals(el, 0.0)) {
+                if (matrix.isColumnBelowNull(i, i)) {
+                    for (int j = i; j < matrix.getColSize() - 1; j++) {
+                        double other = matrix.getElement(i, j);
+                        if (!Utility.equals(other, 0.0)) {
+                            matrix.swapColumn(i, j);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public String getMessage() {
         return message;
     }
 
-    private void sortZeros() {
+    private void sortRows() {
         Arrays.sort(matrix.getRows());
-
     }
 
     private void isNoSolution() {
@@ -65,8 +83,7 @@ public class GaussElimination implements LinearEquationAlgorithm<Matrix> {
 
 
     private void reducedEchelonForm() {
-        int size = Math.min(matrix.getRowSize(), matrix.getColSize());
-        for (int j = 1; j < size; j++) {
+        for (int j = 1; j < matrix.getRowSize(); j++) {
             while (!matrix.isColumnUpperNull(j, j)) {
                 for (int i = 0; i < j; i++) {
                     double factor = matrix.getElement(i, j);
@@ -81,11 +98,8 @@ public class GaussElimination implements LinearEquationAlgorithm<Matrix> {
     }
 
     private void echelonForm() {
-        int size = Math.min(matrix.getRowSize(), matrix.getColSize());
-        for (int j = 0; j < size; j++) {
-            if (!Utility.equals(matrix.getElement(j, j), 0.0)) {
-                matrix.multiply(j, 1.0 / matrix.getElement(j, j));
-            }
+        for (int j = 0; j < matrix.getRowSize(); j++) {
+            matrix.multiply(j, 1.0 / matrix.getElement(j, j));
             while (!matrix.isColumnBelowNull(j, j)) {
                 for (int i = j + 1; i < matrix.getRowSize(); i++) {
                     double factor = matrix.getElement(i, j);

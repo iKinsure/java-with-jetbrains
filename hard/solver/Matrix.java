@@ -1,6 +1,5 @@
 package hard.solver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Matrix {
@@ -95,6 +94,14 @@ public class Matrix {
     public void deleteLastRow() {
         this.rows = Arrays.copyOfRange(rows, 0, rows.length -1);
         this.rowSize = rows.length;
+    }
+
+    public void swapColumn(int firstColIndex, int secondColIndex) {
+        for (int i = 0; i < rowSize; i++) {
+            double temporary = getElement(i, firstColIndex);
+            setElement(i, firstColIndex, getElement(i, secondColIndex));
+            setElement(i,secondColIndex, temporary);
+        }
     }
 
     //////////////////////////// Getters and setters ////////////////////////////
