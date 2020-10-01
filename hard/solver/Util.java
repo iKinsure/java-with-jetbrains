@@ -1,6 +1,6 @@
 package hard.solver;
 
-public class Utility {
+public class Util {
 
     public static double[][] toDoubleArray(String input) {
         String[] data = input.split("\n");

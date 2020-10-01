@@ -1,10 +1,8 @@
 package hard.solver;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-/**
- * Main method for stage 4
- */
 public class Main {
 
     public static void main(String[] args) throws IOException {
@@ -19,16 +17,12 @@ public class Main {
             }
         }
         String data = FileOperator.readFromFile(fileIn);
-        Matrix matrix = new Matrix(Utility.toDoubleArray(data));
+        Matrix matrix = new Matrix(Util.toDoubleArray(data));
         System.out.println("Start solving the equation.");
         GaussElimination algorithm = new GaussElimination();
         double[] result = algorithm.solve(matrix);
-        System.out.println(algorithm.getMessage());
-        if (result != null) {
-            FileOperator.saveToFile(fileOut, Utility.toString(result));
-        } else {
-            FileOperator.saveToFile(fileOut, algorithm.getMessage());
-        }
+        System.out.println("The solution is: " + Arrays.toString(result));
+        FileOperator.saveToFile(fileOut, Util.toString(result));
         System.out.println("Saved to file " + fileOut);
     }
 }

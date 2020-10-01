@@ -1,139 +1,172 @@
 package hard.solver;
 
-import java.util.Arrays;
-
 public class Matrix {
 
-    private int rowSize;
-    private int colSize;
-    private Row[] rows;
+    private double[][] array;
 
     public Matrix(double[][] array) {
-        this.rowSize = array.length;
-        this.colSize = array[0].length;
-        this.rows = new Row[rowSize];
-        for (int i = 0; i < array.length; i++) {
-            Row row = new Row(array[i]);
-            if (row.getSize() != colSize) {
-                throw new IllegalArgumentException();
-            }
-            this.rows[i] = row;
+        if (isMatrix(array)) {
+            this.array = array;
+        } else {
+            throw new IllegalArgumentException("Array is not matrix!");
         }
     }
 
-    //////////////////////////// Class regular methods //////////////////////////
-
-    /**
-     * swaps the rows
-     */
-    public void interchange(int firstRowIndex, int secondRowIndex) {
-        Row temporary = rows[firstRowIndex];
-        rows[firstRowIndex] = rows[secondRowIndex];
-        rows[secondRowIndex] = temporary;
+    private boolean isMatrix(double[][] array) {
+        for (double[] a : array) {
+            if (a.length != array[0].length) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    /**
-     * multiply the row by scalar
-     */
-    public void multiply(int rowIndex, double multiplier) {
-        rows[rowIndex].multiply(multiplier);
+    public void multiplyRow(int rowIndex,double value) {
+        for (int x = 0; x < array[0].length; x++) {
+            array[rowIndex][x] *= value;
+        }
     }
 
-    public void add(int to, int from) {
-        rows[to].add(rows[from]);
+    public void swapRows(int firstRowIndex, int secondRowIndex) {
+        for (int x = 0; x < array[0].length; x++) {
+            double temporary = array[firstRowIndex][x];
+            array[firstRowIndex][x] = array[secondRowIndex][x];
+            array[secondRowIndex][x] = temporary;
+        }
     }
 
-    public void subtract(int to, int from) {
-        rows[to].subtract(rows[from]);
+    public void swapCols(int firstColIndex, int secondColIndex) {
+        for (int y = 0; y < array.length; y++) {
+            double temporary = array[y][firstColIndex];
+            array[y][firstColIndex] = array[y][secondColIndex];
+            array[y][secondColIndex] = temporary;
+        }
     }
 
-    public void add(int to, Row from) {
-        rows[to].add(from);
+    public void addRows(int toIndex, int fromIndex) {
+        for (int x = 0; x < array[0].length; x++) {
+            array[toIndex][x] += array[fromIndex][x];
+        }
     }
 
-    public void subtract(int to, Row from) {
-        rows[to].subtract(from);
+    public void subtractRows(int toIndex, int fromIndex) {
+        for (int x = 0; x < array[0].length; x++) {
+            array[toIndex][x] -= array[fromIndex][x];
+        }
     }
 
-    /**
-     * checks if column below @params is filled with zeros
-     */
-    public boolean isColumnBelowNull(int row, int column) {
-        boolean isZero = true;
-        for (int i = row + 1; i < rowSize; i++) {
-            if (!Utility.equals(rows[i].getElement(column), 0.0)) {
-                isZero = false;
+    public void subtractRows(int toIndex, double[] row) {
+        for (int x = 0; x < array[0].length; x++) {
+            array[toIndex][x] -= row[x];
+        }
+    }
+
+    public void prepare() {
+        for (int i = 0; i < Math.min(array.length, array[0].length); i++) {
+            if (Util.equals(array[i][i], 0.0)) {
+                boolean isAllZero = true;
+                for (int y = i + 1; y < array.length; y++) {
+                    if (!Util.equals(array[y][i], 0.0)) {
+                        swapRows(i, y);
+                        isAllZero = false;
+                        break;
+                    }
+                }
+                if (isAllZero) {
+                    prepareNext(i);
+                }
+            }
+        }
+    }
+
+    private void prepareNext(int i) {
+        boolean isAllZero = true;
+        for (int x = i + 1; x < array[0].length; x++) {
+            if (!Util.equals(array[i][x], 0.0)) {
+                swapCols(i, x);
+                isAllZero = false;
                 break;
             }
         }
-        return isZero;
+        if (isAllZero) {
+            prepareNextNext(i);
+        }
     }
 
-    /**
-     * checks if column up from @params is filled with zeros
-     */
-    public boolean isColumnUpperNull(int row, int column) {
-        boolean isZero= true;
-        for (int i = 0; i <= row - 1; i++) {
-            if (!Utility.equals(rows[i].getElement(column), 0.0)) {
-                isZero = false;
-                break;
+    private void prepareNextNext(int i) {
+        boolean isAllZero = true;
+        for (int y = i + 1; y < array.length; y++) {
+            for (int x = i + 1; x < array[0].length; x++) {
+                if (!Util.equals(array[y][x], 0.0)) {
+                    swapRows(i, y);
+                    swapCols(i, x);
+                    isAllZero = false;
+                    break;
+                }
+            }
+            if (isAllZero) {
+                System.out.println("Same zera");
             }
         }
-        return isZero;
     }
 
-    public double[] getColumn(int column) {
-        double[] result = new double[rowSize];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = getElement(i, column);
-        }
-        return result;
+    public void check() {
+
     }
 
-    public void deleteLastRow() {
-        this.rows = Arrays.copyOfRange(rows, 0, rows.length -1);
-        this.rowSize = rows.length;
-    }
-
-    public void swapColumn(int firstColIndex, int secondColIndex) {
-        for (int i = 0; i < rowSize; i++) {
-            double temporary = getElement(i, firstColIndex);
-            setElement(i, firstColIndex, getElement(i, secondColIndex));
-            setElement(i,secondColIndex, temporary);
+    public void echelonForm() {
+        for (int i = 0; i < Math.min(array.length, array[0].length); i++) {
+            multiplyRow(i, 1.0 / array[i][i]);
+            for (int y = i + 1; y < array.length; y++) {
+                multiplyRow(y, 1.0 / array[y][i]);
+                subtractRows(y, i);
+            }
         }
     }
 
-    //////////////////////////// Getters and setters ////////////////////////////
-
-    public int getRowSize() {
-        return rowSize;
+    public void reducedRowEchelonForm() {
+        for (int i = 1; i < Math.min(array.length, array[0].length); i++) {
+            for (int y = i - 1; y >= 0; y--) {
+                multiplyRow(i, array[y][i]);
+                subtractRows(y, i);
+                multiplyRow(i, 1.0 / array[i][i]);
+            }
+        }
     }
 
-    public int getColSize() {
-        return colSize;
+    public double[] getNewColMultiplied(int colIndex, double value) {
+        double[] res = new double[array.length];
+        for (int y = 0; y < array.length; y++) {
+            res[y] = array[y][colIndex] * value;
+        }
+        return res;
     }
 
-    public Row[] getRows() {
-        return rows;
+    public double[] getNewRowMultiplied(int rowIndex, double value) {
+        double[] res = new double[array[0].length];
+        for (int x = 0; x < array[0].length; x++) {
+            res[x] = array[rowIndex][x] * value;
+        }
+        return res;
     }
 
-    public double getElement(int rowIndex, int columnIndex) {
-        return rows[rowIndex].getElement(columnIndex);
+    public int getRowsCounter() {
+        return array.length;
     }
 
-    public void setElement(int rowIndex, int columnIndex, double value) {
-        rows[rowIndex].setElement(columnIndex, value);
+    public int getColsCounter() {
+        return array[0].length;
     }
-
-    //////////////////////////// Override methods ///////////////////////////////
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < rowSize; i++) {
-            result.append(rows[i]).append("\n");
+        StringBuilder res = new StringBuilder();
+        for (double[] a : array) {
+            for (int x = 0; x < array[0].length; x++) {
+                res.append(a[x]).append(' ');
+            }
+            res.append('\n');
         }
-        return result.toString();
+        return res.toString();
     }
 }
