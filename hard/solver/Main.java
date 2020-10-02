@@ -16,10 +16,10 @@ public class Main {
             }
         }
         String data = FileOperator.readFromFile(fileIn);
-        Matrix matrix = new Matrix(Util.toDoubleArray(data));
+        Matrix matrix = new Matrix(Util.toComplexArray(data));
         System.out.println("Start solving the equation.");
         GaussElimination algorithm = new GaussElimination();
-        double[] result = algorithm.solve(matrix);
+        Complex[] result = algorithm.solve(matrix);
         System.out.println(algorithm.getMessage());
         FileOperator.saveToFile(fileOut, result == null ?
                 algorithm.getMessage() : Util.toString(result));

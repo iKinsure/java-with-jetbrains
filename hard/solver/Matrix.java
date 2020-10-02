@@ -2,9 +2,9 @@ package hard.solver;
 
 public class Matrix {
 
-    private final double[][] array;
+    private Complex[][] array;
 
-    public Matrix(double[][] array) {
+    public Matrix(Complex[][] array) {
         if (isMatrix(array)) {
             this.array = array;
         } else {
@@ -12,24 +12,42 @@ public class Matrix {
         }
     }
 
-    private boolean isMatrix(double[][] array) {
-        for (double[] a : array) {
-            if (a.length != array[0].length) {
+    private boolean isMatrix(Complex[][] array) {
+        for (Complex[] c : array) {
+            if (c.length != array[0].length) {
                 return false;
             }
         }
         return true;
     }
 
-    public void multiplyRow(int rowIndex,double value) {
+    public void multiplyRow(int rowIndex, double value) {
         for (int x = 0; x < array[0].length; x++) {
-            array[rowIndex][x] *= value;
+            array[rowIndex][x].multiply(value);
+        }
+    }
+
+    public void multiplyRow(int rowIndex, Complex value) {
+        for (int x = 0; x < array[0].length; x++) {
+            array[rowIndex][x].multiply(value);
+        }
+    }
+
+    public void divideRow(int rowIndex, double value) {
+        for (int x = 0; x < array[0].length; x++) {
+            array[rowIndex][x].divide(value);
+        }
+    }
+
+    public void divideRow(int rowIndex, Complex value) {
+        for (int x = 0; x < array[0].length; x++) {
+            array[rowIndex][x].divide(value);
         }
     }
 
     public void swapRows(int firstRowIndex, int secondRowIndex) {
         for (int x = 0; x < array[0].length; x++) {
-            double temporary = array[firstRowIndex][x];
+            Complex temporary = array[firstRowIndex][x];
             array[firstRowIndex][x] = array[secondRowIndex][x];
             array[secondRowIndex][x] = temporary;
         }
@@ -37,7 +55,7 @@ public class Matrix {
 
     public void swapCols(int firstColIndex, int secondColIndex) {
         for (int y = 0; y < array.length; y++) {
-            double temporary = array[y][firstColIndex];
+            Complex temporary = array[y][firstColIndex];
             array[y][firstColIndex] = array[y][secondColIndex];
             array[y][secondColIndex] = temporary;
         }
@@ -45,7 +63,7 @@ public class Matrix {
 
     public void subtractRows(int toIndex, int fromIndex) {
         for (int x = 0; x < array[0].length; x++) {
-            array[toIndex][x] -= array[fromIndex][x];
+            array[toIndex][x].sub(array[fromIndex][x]);
         }
     }
 
@@ -95,15 +113,15 @@ public class Matrix {
     }
 
     public boolean checkNoSolution() {
-        for (double[] a : array) {
+        for (Complex[] c : array) {
             int counter = 0;
             for (int x = 0; x < array[0].length - 1; x++) {
-                if (Util.equals(a[x], 0.0)) {
+                if (Util.equals(c[x], 0.0)) {
                     counter++;
                 }
             }
             if (counter == array[0].length - 1) {
-                if (!Util.equals(a[array[0].length - 1], 0.0)) {
+                if (!Util.equals(c[array[0].length - 1], 0.0)) {
                     return true; // no solutions
                 }
             }
@@ -113,10 +131,10 @@ public class Matrix {
 
     public int zeroRowsCounter() {
         int resultCounter = 0;
-        for (double[] a : array) {
+        for (Complex[] c : array) {
             boolean isNull = true;
             for (int x = 0; x < array[0].length; x++) {
-                if (!Util.equals(a[x], 0.0)) {
+                if (!Util.equals(c[x], 0.0)) {
                     isNull = false;
                     break;
                 }
@@ -132,10 +150,10 @@ public class Matrix {
         int size = Math.min(array.length, array[0].length - 1);
         for (int i = 0; i < size; i++) {
             if (!Util.equals(array[i][i], 0.0)) {
-                multiplyRow(i, 1.0 / array[i][i]);
+                divideRow(i, new Complex(array[i][i].getRe(), array[i][i].getIm()));
                 for (int y = i + 1; y < array.length; y++) {
                     if (!Util.equals(array[y][i], 0.0)) {
-                        multiplyRow(y, 1.0 / array[y][i]);
+                        divideRow(y, new Complex(array[y][i].getRe(), array[y][i].getIm()));
                         subtractRows(y, i);
                     }
                 }
@@ -147,19 +165,22 @@ public class Matrix {
         int size = Math.min(array.length, array[0].length - 1);
         for (int i = 1; i < size; i++) {
             for (int y = i - 1; y >= 0; y--) {
-                if (!Util.equals(array[i][i], 0.0)) {
-                    multiplyRow(i, array[y][i]);
+                if (!Util.equals(array[y][i], 0.0)) {
+                    Complex c = new Complex(array[y][i].getRe(), array[y][i].getIm());
+                    multiplyRow(i, c);
                     subtractRows(y, i);
-                    multiplyRow(i, 1.0 / array[i][i]);
+                    divideRow(i, c);
                 }
             }
         }
     }
 
-    public double[] getNewColMultiplied(int colIndex, double value) {
-        double[] res = new double[array.length];
+    public Complex[] getNewColMultiplied(int colIndex, double value) {
+        Complex[] res = new Complex[array.length];
         for (int y = 0; y < array.length; y++) {
-            res[y] = array[y][colIndex] * value;
+            Complex temporary = new Complex(array[y][colIndex].getRe(), array[y][colIndex].getIm());
+            temporary.multiply(value);
+            res[y] = temporary;
         }
         return res;
     }
@@ -175,9 +196,9 @@ public class Matrix {
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder();
-        for (double[] a : array) {
+        for (Complex[] c : array) {
             for (int x = 0; x < array[0].length; x++) {
-                res.append(a[x]).append(' ');
+                res.append(c[x]).append(' ');
             }
             res.append('\n');
         }

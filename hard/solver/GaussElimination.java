@@ -2,20 +2,20 @@ package hard.solver;
 
 import java.util.Arrays;
 
-public class GaussElimination implements LinearEquationAlgorithm<Matrix> {
+public class GaussElimination implements LinearEquationAlgorithm<Matrix, Complex> {
 
     private String message;
 
     @Override
-    public double[] solve(Matrix m) {
+    public Complex[] solve(Matrix m) {
 
         m.sort();
         m.echelonForm();
         m.reducedRowEchelonForm();
 
-        m.sort();
-        m.echelonForm();
-        m.reducedRowEchelonForm();
+//        m.sort();
+//        m.echelonForm();
+//        m.reducedRowEchelonForm();
 
         final int equations = m.getRowsCounter() - m.zeroRowsCounter();
         final int variables = m.getColsCounter() - 1;
@@ -23,7 +23,7 @@ public class GaussElimination implements LinearEquationAlgorithm<Matrix> {
         if (m.checkNoSolution()) {
             this.message = "No solutions";
         } else if (equations == variables) {
-            double[] result = Arrays.copyOf(
+            Complex[] result = Arrays.copyOf(
                     m.getNewColMultiplied(m.getColsCounter() - 1, 1.0), equations);
             this.message = "The solution is: " + Arrays.toString(result);
             return result;

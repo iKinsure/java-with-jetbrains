@@ -5,6 +5,6 @@ package hard.solver;
  * @param <T> data to extract result
  */
 @FunctionalInterface
-public interface LinearEquationAlgorithm<T> {
-    double[] solve(T t);
+public interface LinearEquationAlgorithm<T, R> {
+    R[] solve(T t);
 }
