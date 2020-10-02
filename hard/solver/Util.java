@@ -25,6 +25,7 @@ public class Util {
     }
 
     public static boolean equals(double a, double b) {
-        return Double.compare(a, b) == 0;
+        final double THRESHOLD = 0.000001;
+        return (Math.abs(a - b) < THRESHOLD);
     }
 }

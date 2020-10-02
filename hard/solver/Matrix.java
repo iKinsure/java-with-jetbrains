@@ -2,7 +2,7 @@ package hard.solver;
 
 public class Matrix {
 
-    private double[][] array;
+    private final double[][] array;
 
     public Matrix(double[][] array) {
         if (isMatrix(array)) {
@@ -43,93 +43,115 @@ public class Matrix {
         }
     }
 
-    public void addRows(int toIndex, int fromIndex) {
-        for (int x = 0; x < array[0].length; x++) {
-            array[toIndex][x] += array[fromIndex][x];
-        }
-    }
-
     public void subtractRows(int toIndex, int fromIndex) {
         for (int x = 0; x < array[0].length; x++) {
             array[toIndex][x] -= array[fromIndex][x];
         }
     }
 
-    public void subtractRows(int toIndex, double[] row) {
-        for (int x = 0; x < array[0].length; x++) {
-            array[toIndex][x] -= row[x];
-        }
-    }
-
-    public void prepare() {
-        for (int i = 0; i < Math.min(array.length, array[0].length); i++) {
+    public boolean sort() {
+        int size = Math.min(array.length, array[0].length - 1);
+        for (int i = 0; i < size; i++) {
             if (Util.equals(array[i][i], 0.0)) {
-                boolean isAllZero = true;
-                for (int y = i + 1; y < array.length; y++) {
-                    if (!Util.equals(array[y][i], 0.0)) {
-                        swapRows(i, y);
-                        isAllZero = false;
-                        break;
-                    }
-                }
-                if (isAllZero) {
-                    prepareNext(i);
+                if (!sortRows(i)) {
+                    return false;
                 }
             }
         }
+        return true; // success
     }
 
-    private void prepareNext(int i) {
-        boolean isAllZero = true;
-        for (int x = i + 1; x < array[0].length; x++) {
+    private boolean sortRows(int i) {
+        for (int y = array.length - 1; y >= i + 1; y--) {
+            if (!Util.equals(array[y][i], 0.0)) {
+                swapRows(i, y);
+                return true;
+            }
+        }
+        return sortColumns(i);
+    }
+
+    private boolean sortColumns(int i) {
+        for (int x = i + 1; x < array[0].length - 1; x++) {
             if (!Util.equals(array[i][x], 0.0)) {
                 swapCols(i, x);
-                isAllZero = false;
-                break;
+                return true;
             }
         }
-        if (isAllZero) {
-            prepareNextNext(i);
-        }
+        return sortRest(i);
     }
 
-    private void prepareNextNext(int i) {
-        boolean isAllZero = true;
+    private boolean sortRest(int i) {
         for (int y = i + 1; y < array.length; y++) {
-            for (int x = i + 1; x < array[0].length; x++) {
+            for (int x = i + 1; x < array[0].length - 1; x++) {
                 if (!Util.equals(array[y][x], 0.0)) {
                     swapRows(i, y);
                     swapCols(i, x);
-                    isAllZero = false;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkNoSolution() {
+        for (double[] a : array) {
+            int counter = 0;
+            for (int x = 0; x < array[0].length - 1; x++) {
+                if (Util.equals(a[x], 0.0)) {
+                    counter++;
+                }
+            }
+            if (counter == array[0].length - 1) {
+                if (!Util.equals(a[array[0].length - 1], 0.0)) {
+                    return true; // no solutions
+                }
+            }
+        }
+        return false;
+    }
+
+    public int zeroRowsCounter() {
+        int resultCounter = 0;
+        for (double[] a : array) {
+            boolean isNull = true;
+            for (int x = 0; x < array[0].length; x++) {
+                if (!Util.equals(a[x], 0.0)) {
+                    isNull = false;
                     break;
                 }
             }
-            if (isAllZero) {
-                System.out.println("Same zera");
+            if (isNull) {
+                resultCounter++;
             }
         }
-    }
-
-    public void check() {
-
+        return resultCounter;
     }
 
     public void echelonForm() {
-        for (int i = 0; i < Math.min(array.length, array[0].length); i++) {
-            multiplyRow(i, 1.0 / array[i][i]);
-            for (int y = i + 1; y < array.length; y++) {
-                multiplyRow(y, 1.0 / array[y][i]);
-                subtractRows(y, i);
+        int size = Math.min(array.length, array[0].length - 1);
+        for (int i = 0; i < size; i++) {
+            if (!Util.equals(array[i][i], 0.0)) {
+                multiplyRow(i, 1.0 / array[i][i]);
+                for (int y = i + 1; y < array.length; y++) {
+                    if (!Util.equals(array[y][i], 0.0)) {
+                        multiplyRow(y, 1.0 / array[y][i]);
+                        subtractRows(y, i);
+                    }
+                }
             }
         }
     }
 
     public void reducedRowEchelonForm() {
-        for (int i = 1; i < Math.min(array.length, array[0].length); i++) {
+        int size = Math.min(array.length, array[0].length - 1);
+        for (int i = 1; i < size; i++) {
             for (int y = i - 1; y >= 0; y--) {
-                multiplyRow(i, array[y][i]);
-                subtractRows(y, i);
-                multiplyRow(i, 1.0 / array[i][i]);
+                if (!Util.equals(array[i][i], 0.0)) {
+                    multiplyRow(i, array[y][i]);
+                    subtractRows(y, i);
+                    multiplyRow(i, 1.0 / array[i][i]);
+                }
             }
         }
     }
@@ -138,14 +160,6 @@ public class Matrix {
         double[] res = new double[array.length];
         for (int y = 0; y < array.length; y++) {
             res[y] = array[y][colIndex] * value;
-        }
-        return res;
-    }
-
-    public double[] getNewRowMultiplied(int rowIndex, double value) {
-        double[] res = new double[array[0].length];
-        for (int x = 0; x < array[0].length; x++) {
-            res[x] = array[rowIndex][x] * value;
         }
         return res;
     }

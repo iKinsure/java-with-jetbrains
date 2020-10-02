@@ -1,7 +1,6 @@
 package hard.solver;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class Main {
 
@@ -21,8 +20,9 @@ public class Main {
         System.out.println("Start solving the equation.");
         GaussElimination algorithm = new GaussElimination();
         double[] result = algorithm.solve(matrix);
-        System.out.println("The solution is: " + Arrays.toString(result));
-        FileOperator.saveToFile(fileOut, Util.toString(result));
+        System.out.println(algorithm.getMessage());
+        FileOperator.saveToFile(fileOut, result == null ?
+                algorithm.getMessage() : Util.toString(result));
         System.out.println("Saved to file " + fileOut);
     }
 }
