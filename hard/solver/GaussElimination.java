@@ -8,6 +8,11 @@ public class GaussElimination implements LinearEquationAlgorithm<Matrix> {
 
     @Override
     public double[] solve(Matrix m) {
+
+        m.sort();
+        m.echelonForm();
+        m.reducedRowEchelonForm();
+
         m.sort();
         m.echelonForm();
         m.reducedRowEchelonForm();
