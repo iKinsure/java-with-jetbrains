@@ -13,8 +13,8 @@ public class GameOfLife extends JFrame {
     private boolean isPausePressed;
     private boolean isResetPressed;
 
-    private static final int WIDTH = 815;
-    private static final int HEIGHT = 650;
+    private static final int WIDTH = 500; //815;
+    private static final int HEIGHT = 400; //650;
 
 
     public GameOfLife() {
@@ -63,9 +63,7 @@ public class GameOfLife extends JFrame {
         resetButton.setName("ResetButton");
         resetButton.setText("RESET");
         resetButton.setBounds(100,5, 90, 50);
-        resetButton.addActionListener(e -> {
-            isResetPressed = true;
-        });
+        resetButton.addActionListener(e -> isResetPressed = true);
         pane.add(resetButton);
 
         // generation label
