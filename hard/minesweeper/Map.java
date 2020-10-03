@@ -30,12 +30,31 @@ public class Map {
         }
     }
 
+    public int getMinesCounter(int x, int y) {
+        int counter = 0;
+        for (Dir dir : Dir.values()) {
+            final int X = dir.x + x;
+            final int Y = dir.y + y;
+            if (X >= 0 && X < array.length && Y >= 0 && Y < array.length) {
+                if (array[X][Y]) {
+                    counter++;
+                }
+            }
+        }
+        return counter;
+    }
+
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array.length; j++) {
-                res.append(array[i][j] ? 'X' : '.');
+                if (array[i][j]) {
+                    res.append('X');
+                } else {
+                    final int count = getMinesCounter(i, j);
+                    res.append(count == 0 ? "." : count);
+                }
             }
             res.append("\n");
         }
