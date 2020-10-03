@@ -9,7 +9,6 @@ public enum Dir {
     SW(-1, 1),
     W(-1, 0),
     NW(-1, -1);
-
     final int x;
     final int y;
     Dir(int x, int y) {
