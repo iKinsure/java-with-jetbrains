@@ -6,28 +6,14 @@ public class Main {
 
     private static final Scanner SCANNER = new Scanner(System.in);
     private static final int SIZE = 9;
-
     private static int xPos = 0;
     private static int yPos = 0;
     private static String decision = null;
-    private static Map map = null;
-    private static GameState state = null;
+    private static final Map map = new Map(SIZE);
+    private static GameState state = GameState.RUNNING;
 
     public static void main(String[] args) {
-
-        // prepare
-        map = new Map(SIZE);
-        state = GameState.RUNNING;
-        System.out.print("How many mines do you want on the field? ");
-        int mines = SCANNER.nextInt();
-        System.out.print("\n" + map);
-        getInput();
-        map.placeMines(mines, xPos, yPos);
-        map.placeDefaults();
-        map.markAsFree(xPos, yPos);
-        map.discover(xPos, yPos);
-
-        // game loop
+        prepare();
         while (state == GameState.RUNNING) {
             System.out.print("\n" + map);
             checkInput();
@@ -37,8 +23,6 @@ public class Main {
                 moveMine();
             }
         }
-
-        // end
         System.out.print("\n" + map);
         System.out.println(state.text);
     }
@@ -47,11 +31,21 @@ public class Main {
         map.markAsFree(xPos, yPos);
         if (map.checkLose(xPos, yPos)) {
             state = GameState.LOST;
-            map.setMinesMode(Mode.SHOWED);
+            map.setMinesMode();
         } else if (map.isValueZero(xPos, yPos)) {
             map.discover(xPos, yPos);
         }
         checkWin();
+    }
+
+    private static void prepare() {
+        System.out.print("How many mines do you want on the field? ");
+        int mines = SCANNER.nextInt();
+        System.out.print("\n" + map);
+        getInput();
+        map.placeMines(mines, xPos, yPos);
+        map.placeDefaults();
+        moveFree();
     }
 
     private static void moveMine() {

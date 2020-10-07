@@ -1,7 +1,7 @@
 package hard.minesweeper;
 
 public enum GameState {
-    RUNNING(""),
+    RUNNING("Its impossible!"),
     LOST("You stepped on a mine and failed!"),
     WON("Congratulations! You found all mines!");
     final String text;

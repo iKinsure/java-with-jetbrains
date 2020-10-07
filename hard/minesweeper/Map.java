@@ -19,7 +19,7 @@ public class Map {
     public void placeMines(int mines, int x, int y) {
         for (int i = 0; i < mines; i++) {
             while (true) {
-                final int xRand = RANDOM.nextInt(array.length);;
+                final int xRand = RANDOM.nextInt(array.length);
                 final int yRand = RANDOM.nextInt(array.length);
                 if (isGood(x, y, xRand, yRand)) {
                     if (!(array[xRand][yRand] instanceof Mine)) {
@@ -32,21 +32,12 @@ public class Map {
     }
 
     private boolean isGood(int x, int y, int xRand, int yRand) {
-        boolean good = true;
         for (Dir dir : Dir.values()) {
-            final int X = dir.x + x;
-            final int Y = dir.y + y;
-            if (X >= 0 && X < array.length && Y >= 0 && Y < array.length) {
-                if (xRand == X && yRand == Y) {
-                    good = false;
-                    break;
-                }
+            if (xRand == dir.x + x && yRand == dir.y + y) {
+                return false;
             }
         }
-        if (xRand == x && yRand == y) {
-            good = false;
-        }
-        return good;
+        return (xRand != x || yRand != y);
     }
 
     public void placeDefaults() {
@@ -72,7 +63,6 @@ public class Map {
         }
         return counter;
     }
-
 
     public void discover(int x, int y) {
         for (Dir dir : Dir.values()) {
@@ -108,14 +98,14 @@ public class Map {
     }
 
     public boolean checkWinFirst() {
-        for (int i = 0; i < array.length; i++) {
+        for (Field[] a : array) {
             for (int j = 0; j < array.length; j++) {
-                if (array[i][j] instanceof Mine) {
-                    if (array[i][j].getMode() != Mode.MARKED) {
+                if (a[j] instanceof Mine) {
+                    if (a[j].getMode() != Mode.MARKED) {
                         return false;
                     }
-                } else if (array[i][j] instanceof Default) {
-                    if (array[i][j].getMode() == Mode.MARKED) {
+                } else if (a[j] instanceof Default) {
+                    if (a[j].getMode() == Mode.MARKED) {
                         return false;
                     }
                 }
@@ -125,10 +115,10 @@ public class Map {
     }
 
     public boolean checkWinSecond() {
-        for (int i = 0; i < array.length; i++) {
+        for (Field[] a : array) {
             for (int j = 0; j < array.length; j++) {
-                if (array[i][j] instanceof Default) {
-                    if (array[i][j].getMode() != Mode.SHOWED) {
+                if (a[j] instanceof Default) {
+                    if (a[j].getMode() != Mode.SHOWED) {
                         return false;
                     }
                 }
@@ -139,9 +129,7 @@ public class Map {
 
     public boolean isValueZero(int x, int y) {
         if (array[x][y] instanceof Default) {
-            if (((Default) array[x][y]).getValue() == 0) {
-                return true;
-            }
+            return ((Default) array[x][y]).getValue() == 0;
         }
         return false;
     }
@@ -150,11 +138,11 @@ public class Map {
         return array[x][y] instanceof Mine;
     }
 
-    public void setMinesMode(Mode mode) {
-        for (int i = 0; i < array.length; i++) {
+    public void setMinesMode() {
+        for (Field[] a : array) {
             for (int j = 0; j < array.length; j++) {
-                if (array[i][j] instanceof Mine) {
-                    array[i][j].setMode(Mode.SHOWED);
+                if (a[j] instanceof Mine) {
+                    a[j].setMode(Mode.SHOWED);
                 }
             }
         }
