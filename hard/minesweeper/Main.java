@@ -20,8 +20,12 @@ public class Main {
         state = GameState.RUNNING;
         System.out.print("How many mines do you want on the field? ");
         int mines = SCANNER.nextInt();
-        map.placeMines(mines);
+        System.out.print("\n" + map);
+        getInput();
+        map.placeMines(mines, xPos, yPos);
         map.placeDefaults();
+        map.markAsFree(xPos, yPos);
+        map.discover(xPos, yPos);
 
         // game loop
         while (state == GameState.RUNNING) {
@@ -47,14 +51,16 @@ public class Main {
         } else if (map.isValueZero(xPos, yPos)) {
             map.discover(xPos, yPos);
         }
-        if (map.checkWin()) {
-            state = GameState.WON;
-        }
+        checkWin();
     }
 
     private static void moveMine() {
         map.markAsMine(xPos, yPos);
-        if (map.checkWin()) {
+        checkWin();
+    }
+
+    private static void checkWin() {
+        if (map.checkWinFirst() || map.checkWinSecond()) {
             state = GameState.WON;
         }
     }

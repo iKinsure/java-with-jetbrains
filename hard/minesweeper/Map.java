@@ -1,6 +1,5 @@
 package hard.minesweeper;
 
-import java.util.ArrayDeque;
 import java.util.Random;
 
 public class Map {
@@ -17,17 +16,37 @@ public class Map {
         }
     }
 
-    public void placeMines(int mines) {
+    public void placeMines(int mines, int x, int y) {
         for (int i = 0; i < mines; i++) {
             while (true) {
-                final int X = RANDOM.nextInt(array.length);
-                final int Y = RANDOM.nextInt(array.length);
-                if (!(array[X][Y] instanceof Mine)) {
-                    array[X][Y] = new Mine(Mode.HIDDEN);
+                final int xRand = RANDOM.nextInt(array.length);;
+                final int yRand = RANDOM.nextInt(array.length);
+                if (isGood(x, y, xRand, yRand)) {
+                    if (!(array[xRand][yRand] instanceof Mine)) {
+                        array[xRand][yRand] = new Mine(Mode.HIDDEN);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isGood(int x, int y, int xRand, int yRand) {
+        boolean good = true;
+        for (Dir dir : Dir.values()) {
+            final int X = dir.x + x;
+            final int Y = dir.y + y;
+            if (X >= 0 && X < array.length && Y >= 0 && Y < array.length) {
+                if (xRand == X && yRand == Y) {
+                    good = false;
                     break;
                 }
             }
         }
+        if (xRand == x && yRand == y) {
+            good = false;
+        }
+        return good;
     }
 
     public void placeDefaults() {
@@ -56,13 +75,17 @@ public class Map {
 
 
     public void discover(int x, int y) {
-        ArrayDeque<Integer> deque = new ArrayDeque<>();
         for (Dir dir : Dir.values()) {
             final int X = dir.x + x;
             final int Y = dir.y + y;
             if (X >= 0 && X < array.length && Y >= 0 && Y < array.length) {
                 if (isValueZero(X, Y) && array[X][Y].getMode() != Mode.MARKED) {
-
+                    if (array[X][Y].getMode() != Mode.SHOWED) {
+                        array[X][Y].setMode(Mode.SHOWED);
+                        discover(X, Y);
+                    }
+                } else {
+                    array[X][Y].setMode(Mode.SHOWED);
                 }
             }
         }
@@ -84,7 +107,7 @@ public class Map {
         }
     }
 
-    public boolean checkWin() {
+    public boolean checkWinFirst() {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array.length; j++) {
                 if (array[i][j] instanceof Mine) {
@@ -101,6 +124,18 @@ public class Map {
         return true;
     }
 
+    public boolean checkWinSecond() {
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array.length; j++) {
+                if (array[i][j] instanceof Default) {
+                    if (array[i][j].getMode() != Mode.SHOWED) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     public boolean isValueZero(int x, int y) {
         if (array[x][y] instanceof Default) {
