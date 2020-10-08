@@ -8,8 +8,8 @@ public class Main {
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
-        String number = getRandom(4);
-        System.out.println("The secret code is prepared: ****.");
+//        String number = getRandom(4);
+//        System.out.println("The secret code is prepared: ****.");
 //        int round = 1;
 //        while (true) {
 //            System.out.println("\nTurn " + (round++) + ". Answer:");
@@ -23,15 +23,10 @@ public class Main {
 //            }
 //        }
 
-        System.out.println("\nTurn 1. Answer:\n" +
-                "1234\n" +
-                "Grade: 1 cow.");
-
-        System.out.println("\nTurn 2. Answer:\n" +
-                "5678\n" +
-                "Grade: 1 cow.");
-
-        System.out.println("9305");
+        String input = SCANNER.next();
+        String number = "9305";
+        System.out.println(getString(getBulls(input, number), getCows(input, number)));
+        System.out.println("The secret code is " + number + ".");
     }
 
     private static String getString(int bulls, int cows) {
