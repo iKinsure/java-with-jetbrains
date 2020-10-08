@@ -8,35 +8,25 @@ public class Main {
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
-//        String number = getRandom(4);
-//        System.out.println("The secret code is prepared: ****.");
-//        int round = 1;
-//        while (true) {
-//            System.out.println("\nTurn " + (round++) + ". Answer:");
-//            String input = SCANNER.next();
-//            final int bulls = getBulls(input, number);
-//            final int cows = getCows(input, number);
-//            System.out.println(getString(bulls, cows));
-//            if (bulls == 4) {
-//                System.out.println("Congrats! The secret code is " + number + ".");
-//                break;
-//            }
-//        }
-
-        long input = SCANNER.nextLong();
-        if (input > 10) {
-            System.out.println("Error: can't generate a secret number with a length of " + input + " because there aren't enough unique digits.");
-        } else {
-            String n = String.valueOf(System.nanoTime());
-            StringBuilder res = new StringBuilder();
-            for (int i = 0; i < input; i++) {
-                if (res.indexOf(String.valueOf(n.charAt(i))) == -1) {
-                    res.append(n.charAt(i));
-                }  else {
-                    input++;
-                }
+        System.out.println("Please, enter the secret code's length:");
+        int size = SCANNER.nextInt();
+        if (size > 10) {
+            System.out.println("Error: can't generate a secret number with a length of " + size + " because there aren't enough unique digits.");
+            return;
+        }
+        String number = getRandom(size);
+        System.out.println("Okay, let's start a game!");
+        int round = 1;
+        while (true) {
+            System.out.println("Turn " + (round++) + ":");
+            String input = SCANNER.next();
+            final int bulls = getBulls(input, number);
+            final int cows = getCows(input, number);
+            System.out.println(getString(bulls, cows));
+            if (bulls == size) {
+                System.out.println("Congratulations! You guessed the secret code.");
+                break;
             }
-            System.out.println("The random secret number is " + res + ".");
         }
     }
 
@@ -86,7 +76,12 @@ public class Main {
         Random rand = new Random();
         StringBuilder number = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            number.append(rand.nextInt(10));
+            int r = rand.nextInt(10);
+            if (number.indexOf(String.valueOf(r)) == -1) {
+                number.append(r);
+            } else {
+                size++;
+            }
         }
         return number.toString();
     }
