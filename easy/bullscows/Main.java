@@ -23,10 +23,21 @@ public class Main {
 //            }
 //        }
 
-        String input = SCANNER.next();
-        String number = "9305";
-        System.out.println(getString(getBulls(input, number), getCows(input, number)));
-        System.out.println("The secret code is " + number + ".");
+        long input = SCANNER.nextLong();
+        if (input > 10) {
+            System.out.println("Error: can't generate a secret number with a length of " + input + " because there aren't enough unique digits.");
+        } else {
+            String n = String.valueOf(System.nanoTime());
+            StringBuilder res = new StringBuilder();
+            for (int i = 0; i < input; i++) {
+                if (res.indexOf(String.valueOf(n.charAt(i))) == -1) {
+                    res.append(n.charAt(i));
+                }  else {
+                    input++;
+                }
+            }
+            System.out.println("The random secret number is " + res + ".");
+        }
     }
 
     private static String getString(int bulls, int cows) {
