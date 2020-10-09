@@ -11,9 +11,30 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("Input the length of the secret code: ");
-        int length = SCANNER.nextInt();
+        int length;
+        try {
+            length = SCANNER.nextInt();
+        } catch (Exception e) {
+            System.out.println("Error: invalid input.");
+            return;
+        }
         System.out.println("Input the number of possible symbols in the code: ");
-        int range = SCANNER.nextInt();
+        int range;
+        try {
+            range = SCANNER.nextInt();
+        } catch (Exception e) {
+            System.out.println("Error: invalid input.");
+            return;
+        }
+        if (range > MAX_RANGE) {
+            System.out.println("Error: maximum number of possible symbols in the code is 36 (0-9, a-z).");
+            return;
+        }
+        if (length > range || length == 0) {
+            System.out.println("Error: it's not possible to generate a code with a length of " + length + " with " + range + " unique symbols.");
+            return;
+        }
+
 
         String number = getRandom(length, range);
         System.out.println(getPrepareString(length, range));
@@ -22,7 +43,22 @@ public class Main {
         int round = 1;
         while (true) {
             System.out.println("Turn " + (round++) + ":");
-            String input = SCANNER.next();
+            String input;
+            try {
+                input = SCANNER.next();
+            } catch (Exception e) {
+                System.out.println("Error: invalid input.");
+                break;
+            }
+            if (input.length() != length) {
+                System.out.println("Error: invalid size");
+                break;
+            }
+            if (!isCorrectFormat(input, range)) {
+                System.out.println("Error: invalid format");
+                break;
+            }
+
             final int bulls = getBulls(input, number);
             final int cows = getCows(input, number);
             System.out.println(getGradeString(bulls, cows));
@@ -31,6 +67,23 @@ public class Main {
                 break;
             }
         }
+    }
+
+    private static boolean isCorrectFormat(String input, int range) {
+        for (int i = 0; i < input.length(); i++) {
+            boolean isGood = false;
+            for (int j = 0; j < range; j++) {
+                char val = (char) (j < 10 ? j + 48 : j + 87);
+                if (input.charAt(i) == val) {
+                    isGood = true;
+                    break;
+                }
+            }
+            if (!isGood) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static String getPrepareString(int length, int range ) {
