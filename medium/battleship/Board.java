@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 public class Board {
 
-    public static final char FOG_OF_WAR = '~';
-    public static final char OUR_SHIP = 'O';
+    public static final char EMPTY = '~';
+    public static final char SHIP = 'O';
     public static final char MISS = 'M';
     public static final char HIT = 'X';
 
@@ -14,23 +14,12 @@ public class Board {
     public Board(int size) {
         this.array = new char[size][size];
         for (int i = 0; i < size; i++) {
-            Arrays.fill(array[i], FOG_OF_WAR);
+            Arrays.fill(array[i], EMPTY);
         }
-
-    }
-
-
-
-    public void setPosition(String pos, char sign) {
-        array[getY(pos)][getX(pos)] = sign;
     }
 
     public void setPosition(int x, int y, char sign) {
         array[y][x] = sign;
-    }
-
-    public char getPosition(String pos) {
-        return array[getY(pos)][getX(pos)];
     }
 
     public char getPosition(int x, int y) {

@@ -5,44 +5,56 @@ import java.util.Scanner;
 public class Main {
 
     public static final int BOARD_SIZE = 10;
+    public static final int PLAYERS = 2;
     public static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
 
-        Board board = new Board(BOARD_SIZE);
-        System.out.println(board);
+        Board[] boards = new Board[PLAYERS];
+        for (int i = 0; i < PLAYERS; i++) {
+            boards[i] = new Board(BOARD_SIZE);
+        }
 
-        prepare(board);
+        System.out.println(boards[0]);
+
+        prepare(boards[0]);
 
         System.out.println("\nThe game starts!\n");
-        System.out.println(board);
+        System.out.println(boards[1]);
 
         System.out.println("Take a shot!\n");
 
         int x;
         int y;
+        char sign;
         while (true) {
 
             String shot = SCANNER.next();
-            x = board.getX(shot);
-            y = board.getY(shot);
+            x = boards[0].getX(shot);
+            y = boards[0].getY(shot);
 
             if (isPositionCorrect(x, y)) {
+                sign = boards[0].getPosition(x, y);
+                if (sign == Board.EMPTY) {
+                    boards[1].setPosition(x, y, Board.MISS);
+                    boards[0].setPosition(x, y, Board.MISS);
+                } else if (sign == Board.SHIP) {
+                    boards[1].setPosition(x, y, Board.HIT);
+                    boards[0].setPosition(x, y, Board.HIT);
+                }
+
                 break;
             } else {
                 System.out.println("\nError! You entered the wrong coordinates! Try again: \n");
             }
         }
-        char sign = board.getPosition(x, y);
-        if (sign == Board.FOG_OF_WAR) {
+        if (sign == Board.EMPTY) {
             System.out.println("You missed!");
-            board.setPosition(x, y, Board.MISS);
-        } else if (sign == Board.OUR_SHIP) {
+        } else if (sign == Board.SHIP) {
             System.out.println("You hit a ship!");
-            board.setPosition(x, y, Board.HIT);
         }
 
-        System.out.println("\n" + board);
+        System.out.println("\n" + boards[0]);
     }
 
     private static void prepare(Board board) {
@@ -80,7 +92,7 @@ public class Main {
     private static void setShips(int x1, int x2, int y1, int y2, Ship ship, Board board) {
         for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
             for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-                board.setPosition(x, y, Board.OUR_SHIP);
+                board.setPosition(x, y, Board.SHIP);
             }
         }
     }
@@ -92,7 +104,7 @@ public class Main {
                     final int X = x + dir.x;
                     final int Y = y + dir.y;
                     if (isPositionCorrect(X, Y)) {
-                        if (board.getPosition(X, Y) == Board.OUR_SHIP) {
+                        if (board.getPosition(X, Y) == Board.SHIP) {
                             return true;
                         }
                     }
