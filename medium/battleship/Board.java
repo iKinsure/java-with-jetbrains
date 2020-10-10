@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 public class Board {
 
-    private static final char FOG_OF_WAR = '~';
-    private static final char OUR_SHIP = 'O';
-    private static final char MISS = 'M';
-    private static final char HIT = 'X';
+    public static final char FOG_OF_WAR = '~';
+    public static final char OUR_SHIP = 'O';
+    public static final char MISS = 'M';
+    public static final char HIT = 'X';
 
     private final char[][] array;
 
@@ -25,8 +25,16 @@ public class Board {
         array[getY(pos)][getX(pos)] = sign;
     }
 
+    public void setPosition(int x, int y, char sign) {
+        array[y][x] = sign;
+    }
+
     public char getPosition(String pos) {
         return array[getY(pos)][getX(pos)];
+    }
+
+    public char getPosition(int x, int y) {
+        return array[y][x];
     }
 
     public int getX(String pos) {
