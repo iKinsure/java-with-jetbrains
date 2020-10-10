@@ -1,6 +1,7 @@
 package medium.battleship;
 
 import java.util.Scanner;
+import static medium.battleship.BoardManager.*;
 
 public class Main {
 
@@ -33,7 +34,7 @@ public class Main {
             x = boards[0].getX(shot);
             y = boards[0].getY(shot);
 
-            if (isPositionCorrect(x, y)) {
+            if (isCorrectPosition(x, y, boards[0])) {
                 sign = boards[0].getPosition(x, y);
                 if (sign == Board.EMPTY) {
                     boards[1].setPosition(x, y, Board.MISS);
@@ -70,12 +71,12 @@ public class Main {
                 final int X2 = board.getX(endPos);
                 final int Y2 = board.getY(endPos);
 
-                if (isCorrectSize(X1, X2, Y1, Y2, ship)) {
-                    if (isTooClose(X1, X2, Y1, Y2, ship, board)) {
-                        System.out.println("\nError! You placed it too close to another one. Try again: ");
-                    } else {
-                        setShips(X1, X2, Y1, Y2, ship, board);
+                if (isCorrectShipSize(X1, X2, Y1, Y2, ship)) {
+                    if (isCorrectShipNeighbour(X1, X2, Y1, Y2, board)) {
+                        setShip(X1, X2, Y1, Y2, board);
                         break;
+                    } else {
+                        System.out.println("\nError! You placed it too close to another one. Try again: ");
                     }
                 } else {
                     System.out.println("\nError! Wrong length of the Submarine! Try again: ");
@@ -83,40 +84,5 @@ public class Main {
             }
             System.out.println("\n" + board);
         }
-    }
-
-    private static boolean isPositionCorrect(int x, int y) {
-        return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
-    }
-
-    private static void setShips(int x1, int x2, int y1, int y2, Ship ship, Board board) {
-        for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-            for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-                board.setPosition(x, y, Board.SHIP);
-            }
-        }
-    }
-
-    private static boolean isTooClose(int x1, int x2, int y1, int y2, Ship ship, Board board) {
-        for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-            for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-                for (Direction dir : Direction.values()) {
-                    final int X = x + dir.x;
-                    final int Y = y + dir.y;
-                    if (isPositionCorrect(X, Y)) {
-                        if (board.getPosition(X, Y) == Board.SHIP) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private static boolean isCorrectSize(int x1, int x2, int y1, int y2, Ship ship) {
-        boolean isHorizontal = y1 == y2 && Math.abs(x1 - x2) == ship.size - 1;
-        boolean isVertical = x1 == x2 && Math.abs(y1 - y2) == ship.size - 1;
-        return isHorizontal || isVertical;
     }
 }

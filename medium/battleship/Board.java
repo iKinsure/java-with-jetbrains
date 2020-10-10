@@ -34,6 +34,10 @@ public class Board {
         return pos.charAt(0) - 65;
     }
 
+    public int getSize() {
+        return array.length;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(" ");
