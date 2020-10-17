@@ -16,6 +16,14 @@ public enum Ship {
         this.size = size;
     }
 
+    public static int getAllSize() {
+        int counter = 0;
+        for (Ship ship : Ship.values()) {
+            counter += ship.size;
+        }
+        return counter;
+    }
+
     @Override
     public String toString() {
         return name + " (" + size + " cells)";

@@ -2,6 +2,22 @@ package medium.battleship;
 
 public class BoardManager {
 
+    public static boolean isWin(Board shots) {
+        return countSigns(shots, Board.HIT) == Ship.getAllSize();
+    }
+
+    public static int countSigns(Board board,char sign) {
+        int counter = 0;
+        for (int x = 0; x < board.getSize(); x++) {
+            for (int y = 0; y < board.getSize(); y++) {
+                if (board.getPosition(x, y) == sign) {
+                    counter++;
+                }
+            }
+        }
+        return counter;
+    }
+
     public static boolean isCorrectPosition(int x, int y, Board board) {
         return x >= 0 && x < board.getSize() && y >= 0 && y < board.getSize();
     }
