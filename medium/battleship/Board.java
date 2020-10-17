@@ -11,6 +11,7 @@ public class Board {
 
     private final char[][] array;
 
+
     public Board(int size) {
         this.array = new char[size][size];
         for (int i = 0; i < size; i++) {
@@ -36,6 +37,18 @@ public class Board {
 
     public int getSize() {
         return array.length;
+    }
+
+    public int getSignCounter(char sign) {
+        int counter = 0;
+        for (int x = 0; x < array.length; x++) {
+            for (int y = 0; y < array.length; y++) {
+                if (array[y][x] == sign) {
+                    counter++;
+                }
+            }
+        }
+        return counter;
     }
 
     @Override

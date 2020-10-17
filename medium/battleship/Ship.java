@@ -1,31 +1,50 @@
 package medium.battleship;
 
-public enum Ship {
+public class Ship {
 
-    CARRIER("the Aircraft Carrier", 5),
-    BATTLESHIP("the Battleship", 4),
-    SUBMARINE("the Submarine", 3),
-    CRUISER("the Cruiser", 3),
-    DESTROYER("the Destroyer", 2);
+    private final ShipType type;
+    private int hp;
 
-    final int size;
-    final String name;
+    private final int xMin;
+    private final int yMin;
 
-    Ship(String name, int size) {
-        this.name = name;
-        this.size = size;
+    private final int xMax;
+    private final int yMax;
+
+    public Ship(ShipType type, int x1, int x2, int y1, int y2) {
+        this.type = type;
+        this.xMin = Math.min(x1, x2);
+        this.yMin = Math.min(y1, y2);
+        this.xMax = Math.max(x1, x2);
+        this.yMax = Math.max(y1, y2);
+        this.hp = type.size;
     }
 
-    public static int getAllSize() {
-        int counter = 0;
-        for (Ship ship : Ship.values()) {
-            counter += ship.size;
-        }
-        return counter;
+    public int getHp() {
+        return hp;
     }
 
-    @Override
-    public String toString() {
-        return name + " (" + size + " cells)";
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public ShipType getType() {
+        return type;
+    }
+
+    public int getXMin() {
+        return xMin;
+    }
+
+    public int getYMin() {
+        return yMin;
+    }
+
+    public int getXMax() {
+        return xMax;
+    }
+
+    public int getYMax() {
+        return yMax;
     }
 }
