@@ -1,48 +1,84 @@
 package com.ikinsure.hyperskill.hard.maze;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Comparator;
 
-/**
- * Generic class represents weighted graph
- * @param <T> vertex class
- * @param <U> weight class
- */
-public class Graph<T, U> {
+public class Graph {
 
-    private final Map<T, LinkedHashMap<T, U>> adj;
+    int vertices;
+    int edges;
+    Edge[] edge;
 
-    public Graph() {
-        adj = new HashMap<>();
+    public Graph(int vertices, int edges) {
+        this.vertices = vertices;
+        this.edges = edges;
+        edge = new Edge[edges];
+        for (int i = 0; i < edges; ++i)
+            edge[i] = new Edge();
     }
 
-    public void addVertex(T vertex) {
-        adj.putIfAbsent(vertex, new LinkedHashMap<>());
-    }
-
-    public void removeVertex(T vertex) {
-        adj.values().forEach(e -> e.remove(vertex));
-        adj.remove(vertex);
-    }
-
-    public void addEdge(T v1, T v2, U weight) {
-        adj.get(v1).put(v2, weight);
-        adj.get(v2).put(v1, weight);
-    }
-
-    public void removeEdge(T v1, T v2) {
-        LinkedHashMap<T, U> ev1 = adj.get(v1);
-        LinkedHashMap<T, U> ev2 = adj.get(v2);
-        if (ev1 != null) {
-            ev1.remove(v2);
+    public int find(Subset[] subsets, int i) {
+        if (subsets[i].parent != i) {
+            subsets[i].parent = find(subsets, subsets[i].parent);
         }
-        if (ev2 != null) {
-            ev2.remove(v1);
+        return subsets[i].parent;
+    }
+
+
+    public void union(Subset[] subsets, int x, int y) {
+        int xRoot = find(subsets, x);
+        int yRoot = find(subsets, y);
+        if (subsets[xRoot].rank < subsets[yRoot].rank) {
+            subsets[xRoot].parent = yRoot;
+        } else if (subsets[xRoot].rank > subsets[yRoot].rank) {
+            subsets[yRoot].parent = xRoot;
+        } else {
+            subsets[yRoot].parent = xRoot;
+            subsets[xRoot].rank++;
         }
     }
 
-    public LinkedHashMap<T, U> getAdjVertices(T v) {
-        return adj.get(v);
+    public Edge[] kruskal(boolean minimize)
+    {
+        Edge[] result = new Edge[vertices];
+
+        for (int i = 0; i < vertices; ++i) {
+            result[i] = new Edge();
+        }
+        Arrays.sort(edge, minimize
+                ? Comparator.comparingInt(e -> e.weight)
+                : (e1, e2) -> e2.weight - e1.weight);
+        Subset[] subsets = new Subset[vertices];
+        for (int i = 0; i < vertices; ++i) {
+            subsets[i] = new Subset();
+        }
+        for (int v = 0; v < vertices; ++v) {
+            subsets[v].parent = v;
+            subsets[v].rank = 0;
+        }
+
+        int k = 0;
+        int ee = 0;
+        while (ee < vertices - 1) {
+            Edge next_edge = new Edge();
+            next_edge = edge[k];
+            k++;
+            int x = find(subsets, next_edge.source);
+            int y = find(subsets, next_edge.destination);
+            if (x != y) {
+                result[ee] = next_edge;
+                ee++;
+                union(subsets, x, y);
+            }
+        }
+
+//        System.out.println("Following are the edges in the constructed MST");
+//        int minimumCost = 0;
+//        for (int i = 0; i < ee; ++i) {
+//            System.out.println(result[i].source + " -- " + result[i].destination + " == " + result[i].weight);
+//            minimumCost += result[i].weight;
+//        }
+//        System.out.println("Minimum Cost Spanning Tree " + minimumCost);
+        return result;
     }
 }
