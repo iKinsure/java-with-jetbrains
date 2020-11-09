@@ -1,9 +1,12 @@
 package com.ikinsure.hyperskill.hard.maze;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Maze {
+public class Maze implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final int[][] array;
     private final int height;
