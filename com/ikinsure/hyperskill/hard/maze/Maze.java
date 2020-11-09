@@ -1,5 +1,6 @@
 package com.ikinsure.hyperskill.hard.maze;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Maze {
@@ -13,9 +14,7 @@ public class Maze {
         this.height = height;
         this.array = new int[height][width];
         for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                array[i][j] = Block.WALL.id;
-            }
+            Arrays.fill(array[i], Block.WALL.id);
         }
     }
 
@@ -56,7 +55,7 @@ public class Maze {
         graph.edge[graph.edge.length - 1].destination = (random.nextInt(h) * w) + w - 1;
         graph.edge[graph.edge.length - 1].weight = 1;
 
-        // set passage where are edges of minimum spanning tree
+        // set passage where edges are part of minimum spanning tree
         for (Edge e : graph.kruskal(true)) {
             if (e.source == size) {
                 array[(e.destination / w) * 2 + 1][0] = Block.PASSAGE.id;
@@ -90,15 +89,12 @@ public class Maze {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("o ".repeat(width + 1)).append("\n");
         for (int i = 0; i < height; i++) {
-            builder.append("o");
             for (int j = 0; j < width; j++) {
                 builder.append(Block.findTextureById(array[i][j]));
             }
-            builder.append("o\n");
+            builder.append("\n");
         }
-        builder.append("o ".repeat(width + 1)).append("\n");
         return builder.toString();
     }
 }

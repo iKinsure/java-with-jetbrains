@@ -39,13 +39,11 @@ public class Graph {
         }
     }
 
-    public Edge[] kruskal(boolean minimize)
-    {
+    public Edge[] kruskal(boolean minimize) {
         Edge[] result = new Edge[vertices];
         for (int i = 0; i < vertices; ++i) {
             result[i] = new Edge();
         }
-
         Arrays.sort(edge, minimize
                 ? Comparator.comparingInt(e -> e.weight)
                 : (e1, e2) -> e2.weight - e1.weight);
@@ -77,10 +75,10 @@ public class Graph {
         StringBuilder builder = new StringBuilder("Edges constructed in graph: \n");
         int weightCounter = 0;
         for (Edge e : edge) {
+            weightCounter += e.weight;
             builder.append(e.source).append(" -> ")
                     .append(e.destination).append(" = ")
                     .append(e.weight).append("\n");
-            weightCounter += e.weight;
         }
         builder.append("Cost to build: ").append(weightCounter).append("\n");
         return builder.toString();
