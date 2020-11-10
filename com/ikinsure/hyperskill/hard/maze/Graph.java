@@ -40,14 +40,19 @@ public class Graph {
     }
 
     public Edge[] kruskal(boolean minimize) {
+
+        // creating an array for result
         Edge[] result = new Edge[vertices];
         for (int i = 0; i < vertices; ++i) {
             result[i] = new Edge();
         }
+
+        // sorting by weight
         Arrays.sort(edge, minimize
                 ? Comparator.comparingInt(e -> e.weight)
                 : (e1, e2) -> e2.weight - e1.weight);
 
+        // creating a subset array
         Subset[] subsets = new Subset[vertices];
         for (int i = 0; i < vertices; ++i) {
             subsets[i] = new Subset();
@@ -55,20 +60,36 @@ public class Graph {
             subsets[i].rank = 0;
         }
 
-        int k = 0;
-        int ee = 0;
-        while (ee < vertices - 1) {
-            Edge next_edge = edge[k];
-            k++;
-            int x = find(subsets, next_edge.source);
-            int y = find(subsets, next_edge.destination);
+        int edgeCounter = 0;
+        int resultCounter = 0;
+        while (resultCounter < vertices - 1) {
+            Edge actualEdge = edge[edgeCounter];
+            edgeCounter++;
+            int x = find(subsets, actualEdge.source);
+            int y = find(subsets, actualEdge.destination);
             if (x != y) {
-                result[ee] = next_edge;
-                ee++;
+                result[resultCounter] = actualEdge;
+                resultCounter++;
                 union(subsets, x, y);
             }
         }
         return result;
+    }
+
+    public int findPos(int i, int j) {
+        for (Edge e : edge) {
+            if (e.src != null) {
+                if (e.src.j == j && e.src.i == i) {
+                    return e.source;
+                }
+            }
+            if (e.dst != null) {
+                if (e.dst.j == j && e.dst.i == i) {
+                    return e.destination;
+                }
+            }
+        }
+        return -1;
     }
 
     public static String buildGraph(Edge[] edge) {

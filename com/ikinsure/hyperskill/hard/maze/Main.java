@@ -34,11 +34,19 @@ public class Main {
                 case 4:
                     display();
                     break;
+                case 5:
+                    escape();
+                    break;
                 default:
                     isRunning = false;
             }
         }
         System.out.println("Bye!");
+    }
+
+    private static void escape() {
+        Maze path = maze.solve();
+        System.out.println(path);
     }
 
     private static void display() {
@@ -61,8 +69,9 @@ public class Main {
 
     private static void generate() {
         System.out.println("Please, enter the size of a maze: ");
-        int size = SCANNER.nextInt();
-        maze = new Maze(size, size);
+        int size1 = SCANNER.nextInt();
+        //int size2 = SCANNER.nextInt();
+        maze = new Maze(size1, size1);
         maze.randomize();
         display();
     }
@@ -74,6 +83,7 @@ public class Main {
         if (maze != null) {
             System.out.println("3. Save the maze");
             System.out.println("4. Display the maze");
+            System.out.println("5. Find the escape");
         }
         System.out.println("0. Exit");
     }

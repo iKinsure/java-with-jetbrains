@@ -3,7 +3,8 @@ package com.ikinsure.hyperskill.hard.maze;
 public enum Block {
 
     PASSAGE(0, "  "),
-    WALL(1, "\u2588\u2588");
+    WALL(1, "\u2588\u2588"),
+    PATH(2, "//");
 
     protected final int id;
     protected final String texture;

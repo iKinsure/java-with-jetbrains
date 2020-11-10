@@ -1,8 +1,7 @@
 package com.ikinsure.hyperskill.hard.maze;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class Maze implements Serializable {
 
@@ -88,6 +87,155 @@ public class Maze implements Serializable {
             }
         }
     }
+
+    public Maze solve() {
+        Maze result = new Maze(this.height, this.width);
+        int size = 0;
+
+        // copy and calculate size
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                result.array[i][j] = this.array[i][j];
+                if (this.array[i][j] == Block.PASSAGE.id) {
+                    size++;
+                }
+            }
+        }
+
+        // looking for start and finish of graph
+        int startPos = -1;
+        int endPos = -1;
+        for (int i = 0; i < height; i++) {
+            if (array[i][0] == Block.PASSAGE.id) {
+                startPos = i;
+            }
+            if (array[i][width - 1] == Block.PASSAGE.id) {
+                endPos = i;
+            }
+        }
+
+        // creating graph
+        Graph graph = new Graph(size, 2 * size);
+        int edgeCounter = 0;
+        int edgeIndex = 0;
+        for (int i = 0; i < height - 1; i++) {
+            for (int j = 0; j < width - 1; j++) {
+                if (array[i][j] == Block.PASSAGE.id) {
+
+                    if (array[i][j + 1] == Block.PASSAGE.id) {
+
+                        int srcPos = graph.findPos(i, j);
+                        if (srcPos == -1) {
+                            graph.edge[edgeCounter].source = edgeIndex;
+                            graph.edge[edgeCounter].src = new Edge.Pos(i, j);
+                            edgeIndex++;
+                        } else {
+                            graph.edge[edgeCounter].source = srcPos;
+                            graph.edge[edgeCounter].src = new Edge.Pos(i, j);
+                        }
+
+                        int dstPos = graph.findPos(i, j + 1);
+                        if (dstPos == -1) {
+                            graph.edge[edgeCounter].destination = edgeIndex;
+                            graph.edge[edgeCounter].dst = new Edge.Pos(i, j + 1);
+                            edgeIndex++;
+                        } else {
+                            graph.edge[edgeCounter].destination = dstPos;
+                            graph.edge[edgeCounter].dst = new Edge.Pos(i, j + 1);
+                        }
+
+                        graph.edge[edgeCounter].weight = 1;
+                        edgeCounter++;
+                    }
+                    if (array[i + 1][j] == Block.PASSAGE.id) {
+
+                        int srcPos = graph.findPos(i, j);
+                        if (srcPos == -1) {
+                            graph.edge[edgeCounter].source = edgeIndex;
+                            graph.edge[edgeCounter].src = new Edge.Pos(i, j);
+                            edgeIndex++;
+                        } else {
+                            graph.edge[edgeCounter].source = srcPos;
+                            graph.edge[edgeCounter].src = new Edge.Pos(i, j);
+                        }
+
+                        int dstPos = graph.findPos(i + 1, j);
+                        if (dstPos == -1) {
+                            graph.edge[edgeCounter].destination = edgeIndex;
+                            graph.edge[edgeCounter].dst = new Edge.Pos(i + 1, j);
+                            edgeIndex++;
+                        } else {
+                            graph.edge[edgeCounter].destination = dstPos;
+                            graph.edge[edgeCounter].dst = new Edge.Pos(i + 1, j);
+                        }
+
+                        graph.edge[edgeCounter].weight = 1;
+                        edgeCounter++;
+                    }
+                }
+            }
+        }
+
+        ArrayList<Edge> way = new ArrayList<>();
+        for (int i = 0; i < graph.edge.length; i++) {
+            if (graph.edge[i].destination == 0 && graph.edge[i].source == 0) {
+
+            } else {
+                way.add(graph.edge[i]);
+            }
+        }
+
+        boolean isClear = false;
+        int start = graph.findPos(startPos, 0);
+        int end = graph.findPos(endPos, width - 1);
+        if (start == -1 || end == -1) {
+            throw new IllegalStateException("Bad maze format");
+        }
+
+        while (!isClear) {
+            isClear = true;
+            for (int i = 0; i < way.size(); i++) {
+                if (way.get(i).source == start || way.get(i).destination == start) {
+
+                } else if (way.get(i).source == end || way.get(i).destination == end) {
+
+                } else {
+
+                    Edge edge = way.get(i);
+
+                    int srcCounter = 0;
+                    int dstCounter = 0;
+                    int src = edge.source;
+                    int dst = edge.destination;
+                    for (Edge e : way) {
+                        if (src == e.source || src == e.destination) {
+                            srcCounter++;
+                        }
+                        if (dst == e.source || dst == e.destination) {
+                            dstCounter++;
+                        }
+                    }
+                    if (srcCounter <= 1 || dstCounter <= 1) {
+                        way.remove(way.get(i));
+                        isClear = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        System.out.println(Graph.buildGraph(way.toArray(new Edge[0])));
+
+        for (Edge e : way) {
+            Edge.Pos pos1 = e.src;
+            Edge.Pos pos2 = e.dst;
+            result.array[pos1.i][pos1.j] = Block.PATH.id;
+            result.array[pos2.i][pos2.j] = Block.PATH.id;
+        }
+        return result;
+    }
+
+
 
     @Override
     public String toString() {
