@@ -69,9 +69,9 @@ public class Main {
 
     private static void generate() {
         System.out.println("Please, enter the size of a maze: ");
-        int size1 = SCANNER.nextInt();
-        //int size2 = SCANNER.nextInt();
-        maze = new Maze(size1, size1);
+        int height = SCANNER.nextInt();
+        int width = SCANNER.nextInt();
+        maze = new Maze(height, width);
         maze.randomize();
         display();
     }

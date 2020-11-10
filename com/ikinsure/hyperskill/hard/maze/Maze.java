@@ -89,10 +89,10 @@ public class Maze implements Serializable {
     }
 
     public Maze solve() {
+
+        // copy maze and calculate size
         Maze result = new Maze(this.height, this.width);
         int size = 0;
-
-        // copy and calculate size
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 result.array[i][j] = this.array[i][j];
@@ -176,15 +176,15 @@ public class Maze implements Serializable {
             }
         }
 
+        // remove empty edges and add them to list
         ArrayList<Edge> way = new ArrayList<>();
         for (int i = 0; i < graph.edge.length; i++) {
-            if (graph.edge[i].destination == 0 && graph.edge[i].source == 0) {
-
-            } else {
+            if (graph.edge[i].destination != 0 || graph.edge[i].source != 0) {
                 way.add(graph.edge[i]);
             }
         }
 
+        // mark start and end
         boolean isClear = false;
         int start = graph.findPos(startPos, 0);
         int end = graph.findPos(endPos, width - 1);
@@ -192,21 +192,16 @@ public class Maze implements Serializable {
             throw new IllegalStateException("Bad maze format");
         }
 
+        // remove dead ends
         while (!isClear) {
             isClear = true;
             for (int i = 0; i < way.size(); i++) {
-                if (way.get(i).source == start || way.get(i).destination == start) {
-
-                } else if (way.get(i).source == end || way.get(i).destination == end) {
-
-                } else {
-
-                    Edge edge = way.get(i);
-
+                if ((way.get(i).source != start && way.get(i).destination != start)
+                        && (way.get(i).source != end && way.get(i).destination != end)) {
                     int srcCounter = 0;
                     int dstCounter = 0;
-                    int src = edge.source;
-                    int dst = edge.destination;
+                    int src = way.get(i).source;
+                    int dst = way.get(i).destination;
                     for (Edge e : way) {
                         if (src == e.source || src == e.destination) {
                             srcCounter++;
@@ -224,8 +219,7 @@ public class Maze implements Serializable {
             }
         }
 
-        System.out.println(Graph.buildGraph(way.toArray(new Edge[0])));
-
+        // adding path
         for (Edge e : way) {
             Edge.Pos pos1 = e.src;
             Edge.Pos pos2 = e.dst;
@@ -234,8 +228,6 @@ public class Maze implements Serializable {
         }
         return result;
     }
-
-
 
     @Override
     public String toString() {

@@ -60,6 +60,7 @@ public class Graph {
             subsets[i].rank = 0;
         }
 
+        // calculating
         int edgeCounter = 0;
         int resultCounter = 0;
         while (resultCounter < vertices - 1) {
