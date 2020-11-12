@@ -30,6 +30,10 @@ public class Scene {
         return places;
     }
 
+    public int getSeats() {
+        return seats;
+    }
+
     public int getRows() {
         return rows;
     }
@@ -38,13 +42,10 @@ public class Scene {
         return cols;
     }
 
-    public int getSeats() {
-        return seats;
-    }
-
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder("  ");
+        StringBuilder str = new StringBuilder();
+        str.append("\nCinema:\n").append("  ");
         IntStream.rangeClosed(1, cols).forEach(i -> str.append(i).append(" "));
         str.append("\n");
         for (int y = 0; y < rows; y++) {
