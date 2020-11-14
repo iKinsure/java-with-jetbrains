@@ -4,101 +4,48 @@ import java.util.*;
 
 public class Main {
 
-    private static final Scanner SCANNER = new Scanner(System.in);
-    private static final DecimalFormat FORMAT = new DecimalFormat("#");
+    private static final DecimalFormat DECIMAL = new DecimalFormat("#");
 
     public static void main(final String[] args) {
+        Map<String, String> commands = Input.createMapFromArgs(args);
+        String dataType = commands.getOrDefault("-dataType", "word");
+        String sortingType = commands.getOrDefault("-sortingType", "natural");
+        process(sortingType, dataType);
+    }
 
-        // create map from args
-        LinkedHashMap<String, String> commands = new LinkedHashMap<>();
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].startsWith("-")) {
-                if (args.length - 1 > i && !args[i + 1].startsWith("-")) {
-                    commands.put(args[i], args[i + 1]);
-                    i++;
-                } else {
-                    commands.put(args[i], null);
-                }
-            }
+    private static void process(String sortingType, String dataType) {
+        if (sortingType.equals("natural") && dataType.equals("word")) {
+            sortNatural(Input.dataTypeWord(), Comparator.naturalOrder(), " ");
         }
-
-        // process commands
-        if (commands.containsKey("-sortIntegers")) {
-            sortIntegers();
-        } else {
-            if ("long".equals(commands.get("-dataType"))) {
-                dataTypeLong();
-            } else if ("line".equals(commands.get("-dataType"))) {
-                dataTypeLine();
-            } else {
-                dataTypeWord();
-            }
+        if (sortingType.equals("natural") && dataType.equals("line")) {
+            sortNatural(Input.dataTypeLine(), (o1, o2) -> o2.length() - o1.length(), "\n");
+        }
+        if (sortingType.equals("natural") && dataType.equals("long")) {
+            sortNatural(Input.dataTypeLong(), Comparator.naturalOrder(), " ");
+        }
+        if (sortingType.equals("byCount") && dataType.equals("word")) {
+            sortByCount(Input.dataTypeWord(), Comparator.naturalOrder());
+        }
+        if (sortingType.equals("byCount") && dataType.equals("line")) {
+            sortByCount(Input.dataTypeLine(), Comparator.naturalOrder());
+        }
+        if (sortingType.equals("byCount") && dataType.equals("long")) {
+            sortByCount(Input.dataTypeLong(), Comparator.naturalOrder());
         }
     }
 
-    private static void sortIntegers() {
-        ArrayList<Long> list = new ArrayList<>();
-        while (SCANNER.hasNextLong()) {
-            list.add(SCANNER.nextLong());
-        }
-        printSortIntegers(list);
+    private static <T> void sortByCount(List<T> list, Comparator<T> comparator) {
+        HashMultiSet<T> set = new HashMultiSet<>(list);
+        set.sort(comparator);
+        System.out.println("Total: " + list.size() + ".");
+        set.getMap().forEach((k, v) ->
+                System.out.println(k + ": " + v + " time(s), " + DECIMAL.format(100.0 * v / list.size()) + "%"));
     }
 
-    private static void dataTypeWord() {
-        ArrayList<String> list = new ArrayList<>();
-        while (SCANNER.hasNext()) {
-            list.add(SCANNER.next());
-        }
-        printDataTypeWord(list);
-    }
-
-    private static void dataTypeLong() {
-        ArrayList<Long> list = new ArrayList<>();
-        while (SCANNER.hasNextLong()) {
-            list.add(SCANNER.nextLong());
-        }
-        printDataTypeLong(list);
-    }
-
-    private static void dataTypeLine() {
-        ArrayList<String> list = new ArrayList<>();
-        while (SCANNER.hasNextLine()) {
-            list.add(SCANNER.nextLine());
-        }
-        printDataTypeLine(list);
-    }
-
-    private static void printSortIntegers(ArrayList<Long> list) {
-        Collections.sort(list);
-        System.out.println("Total numbers: " + list.size() + ".");
-        System.out.print("Sorted data: ");
-        list.forEach(i -> System.out.print(i + " "));
+    private static <T> void sortNatural(List<T> list, Comparator<T> comparator, String separator) {
+        System.out.println("Total: " + list.size() + ".");
+        System.out.print("Sorted data:" + separator);
+        list.stream().sorted(comparator).forEach(i -> System.out.print(i + separator));
         System.out.println();
-    }
-
-    private static void printDataTypeLong(ArrayList<Long> list) {
-        long max = Collections.max(list);
-        int freq = Collections.frequency(list, max);
-        double percent = 100.0 * freq / list.size();
-        System.out.println("Total numbers: " + list.size() + ".");
-        System.out.println("The largest number: " + max + " (" + freq + " time(s), " + FORMAT.format(percent) + "%).");
-    }
-
-    private static void printDataTypeLine(ArrayList<String> list) {
-        String max = Collections.max(list, Comparator.comparingInt(String::length));
-        int freq = Collections.frequency(list, max);
-        double percent = 100.0 * freq / list.size();
-        System.out.println("Total lines: " + list.size() + ".");
-        System.out.println("The longest line: ");
-        System.out.println(max);
-        System.out.println("(" + freq + " time(s), " + FORMAT.format(percent) + "%).");
-    }
-
-    private static void printDataTypeWord(ArrayList<String> list) {
-        String max = Collections.max(list, Comparator.comparingInt(String::length));
-        int freq = Collections.frequency(list, max);
-        double percent = 100.0 * freq / list.size();
-        System.out.println("Total words: " + list.size() + ".");
-        System.out.println("The largest word: " + max + " (" + freq + " time(s), " + FORMAT.format(percent) + "%).");
     }
 }
