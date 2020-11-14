@@ -1,6 +1,8 @@
 package com.ikinsure.hyperskill.hard.search;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -9,15 +11,15 @@ public class Main {
 
     private static final Scanner SCANNER = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        List<Person> list = enterPeople();
+        List<Person> data = read(args[1]);
 
         while (true) {
             switch (menu()) {
                 case 1:
                     System.out.println("\nEnter a name or email to search all suitable people.");
-                    List<Person> result = search(list, SCANNER.nextLine());
+                    List<Person> result = search(data, SCANNER.nextLine());
                     if (result.isEmpty()) {
                         System.out.println("\nNo matching people found.");
                     } else {
@@ -27,7 +29,7 @@ public class Main {
                     break;
                 case 2:
                     System.out.println("\n=== List of people ===");
-                    list.forEach(System.out::println);
+                    data.forEach(System.out::println);
                     break;
                 case 0:
                     System.out.println("\nBye!");
@@ -47,22 +49,17 @@ public class Main {
         return Integer.parseInt(SCANNER.nextLine());
     }
 
-    private static List<Person> enterPeople() {
-        System.out.println("\nEnter the number of people");
-        int people = Integer.parseInt(SCANNER.nextLine());
-        ArrayList<Person> list = new ArrayList<>();
-        System.out.println("\nEnter all people:");
-        for (int i = 0; i < people; i++) {
-            list.add(Person.parsePerson(SCANNER.nextLine()));
-        }
-        return list;
-    }
-
     private static List<Person> search(List<Person> data, String datum) {
         return data.stream().filter(p ->
                     p.getFirstName().toLowerCase().contains(datum.toLowerCase()) ||
                     p.getLastName().toLowerCase().contains(datum.toLowerCase()) ||
                     p.getEmail().toLowerCase().contains(datum.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    private static List<Person> read(String fileName) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            return reader.lines().map(Person::parsePerson).collect(Collectors.toList());
+        }
     }
 }
