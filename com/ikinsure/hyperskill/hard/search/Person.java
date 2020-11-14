@@ -6,26 +6,34 @@ public class Person {
     private final String lastName;
     private final String email;
 
-    public Person(String firstName, String lastName, String email) {
+    protected Person(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    public String getFirstName() {
+    protected static Person parsePerson(String parser) {
+        String[] data = parser.split("\\s+");
+        return new Person(
+                data.length >= 1 ? data[0] : "",
+                data.length >= 2 ? data[1] : "",
+                data.length >= 3 ? data[2] : "");
+    }
+
+    protected String getFirstName() {
         return firstName;
     }
 
-    public String getLastName() {
+    protected String getLastName() {
         return lastName;
     }
 
-    public String getEmail() {
+    protected String getEmail() {
         return email;
     }
 
     @Override
     public String toString() {
-        return firstName + " " + lastName + " " + email;
+        return firstName + (lastName.isEmpty() ? "" : " ") + lastName + (email.isEmpty() ? "" : " ")  + email;
     }
 }

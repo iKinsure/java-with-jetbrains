@@ -3,6 +3,7 @@ package com.ikinsure.hyperskill.hard.search;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -10,46 +11,58 @@ public class Main {
 
     public static void main(String[] args) {
 
+        List<Person> list = enterPeople();
+
+        while (true) {
+            switch (menu()) {
+                case 1:
+                    System.out.println("\nEnter a name or email to search all suitable people.");
+                    List<Person> result = search(list, SCANNER.nextLine());
+                    if (result.isEmpty()) {
+                        System.out.println("\nNo matching people found.");
+                    } else {
+                        System.out.println("\nFound people:");
+                        result.forEach(System.out::println);
+                    }
+                    break;
+                case 2:
+                    System.out.println("\n=== List of people ===");
+                    list.forEach(System.out::println);
+                    break;
+                case 0:
+                    System.out.println("\nBye!");
+                    return;
+                default:
+                    System.out.println("\nIncorrect option! Try again.");
+                    break;
+            }
+        }
+    }
+
+    private static int menu() {
+        System.out.println("\n=== Menu ===\n" +
+                "1. Find a person\n" +
+                "2. Print all people\n" +
+                "0. Exit");
+        return Integer.parseInt(SCANNER.nextLine());
+    }
+
+    private static List<Person> enterPeople() {
         System.out.println("\nEnter the number of people");
         int people = Integer.parseInt(SCANNER.nextLine());
-
         ArrayList<Person> list = new ArrayList<>();
         System.out.println("\nEnter all people:");
         for (int i = 0; i < people; i++) {
-            String[] data = SCANNER.nextLine().split("\\s+");
-            list.add(new Person(
-                    data.length >= 1 ? data[0] : "",
-                    data.length >= 2 ? data[1] : "",
-                    data.length >= 3 ? data[2] : ""));
+            list.add(Person.parsePerson(SCANNER.nextLine()));
         }
-
-        System.out.println("\nEnter the number of search queries:");
-        int queries = Integer.parseInt(SCANNER.nextLine());
-
-        for (int i = 0; i < queries; i++) {
-            System.out.println("\nEnter data to search people:");
-            List<Person> result = search(list, SCANNER.nextLine());
-            if (result.isEmpty()) {
-                System.out.println("\nNo matching people found.");
-            } else {
-                System.out.println("\nFound people:");
-                result.forEach(System.out::println);
-            }
-        }
-
+        return list;
     }
 
-    private static List<Person> search(List<Person> list, String data) {
-        ArrayList<Person> result = new ArrayList<>();
-        for (Person p : list) {
-            if (p.getFirstName().toLowerCase().contains(data.toLowerCase())) {
-                result.add(p);
-            } else if (p.getLastName().toLowerCase().contains(data.toLowerCase())) {
-                result.add(p);
-            } else if (p.getEmail().toLowerCase().contains(data.toLowerCase())) {
-                result.add(p);
-            }
-        }
-        return result;
+    private static List<Person> search(List<Person> data, String datum) {
+        return data.stream().filter(p ->
+                    p.getFirstName().toLowerCase().contains(datum.toLowerCase()) ||
+                    p.getLastName().toLowerCase().contains(datum.toLowerCase()) ||
+                    p.getEmail().toLowerCase().contains(datum.toLowerCase()))
+                .collect(Collectors.toList());
     }
 }
