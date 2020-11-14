@@ -37,21 +37,18 @@ public class Main {
     private static void process(String sortingType, String dataType) {
         if (sortingType.equals("natural") && dataType.equals("word")) {
             sortNatural(Input.getInstance().dataTypeWord(), Comparator.naturalOrder(), " ");
-        }
-        if (sortingType.equals("natural") && dataType.equals("line")) {
+        } else if (sortingType.equals("natural") && dataType.equals("line")) {
             sortNatural(Input.getInstance().dataTypeLine(), (o1, o2) -> o2.length() - o1.length(), "\n");
-        }
-        if (sortingType.equals("natural") && dataType.equals("long")) {
+        } else if (sortingType.equals("natural") && dataType.equals("long")) {
             sortNatural(Input.getInstance().dataTypeLong(), Comparator.naturalOrder(), " ");
-        }
-        if (sortingType.equals("byCount") && dataType.equals("word")) {
+        } else if (sortingType.equals("byCount") && dataType.equals("word")) {
             sortByCount(Input.getInstance().dataTypeWord(), Comparator.naturalOrder());
-        }
-        if (sortingType.equals("byCount") && dataType.equals("line")) {
+        } else if (sortingType.equals("byCount") && dataType.equals("line")) {
             sortByCount(Input.getInstance().dataTypeLine(), Comparator.naturalOrder());
-        }
-        if (sortingType.equals("byCount") && dataType.equals("long")) {
+        } else if (sortingType.equals("byCount") && dataType.equals("long")) {
             sortByCount(Input.getInstance().dataTypeLong(), Comparator.naturalOrder());
+        } else {
+            System.out.println("There is not sorting \"" + sortingType + "\" or data \"" + dataType + "\"");
         }
     }
 
