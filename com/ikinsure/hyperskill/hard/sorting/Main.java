@@ -7,30 +7,51 @@ public class Main {
     private static final DecimalFormat DECIMAL = new DecimalFormat("#");
 
     public static void main(final String[] args) {
-        Map<String, String> commands = Input.createMapFromArgs(args);
-        String dataType = commands.getOrDefault("-dataType", "word");
-        String sortingType = commands.getOrDefault("-sortingType", "natural");
+        Map<String, String> commands = Input.getInstance().createMapFromArgs(args);
+
+        String dataType = "word";
+        String sortingType = "natural";
+        for (var entry : commands.entrySet()) {
+            if (entry.getKey().equals("-dataType")) {
+                if (entry.getValue() == null) {
+                    System.out.println("No data type defined!");
+                    return;
+                } else {
+                    dataType = entry.getValue();
+                }
+            } else if (entry.getKey().equals("-sortingType")) {
+                if (entry.getValue() == null) {
+                    System.out.println("No sorting type defined!");
+                    return;
+                } else {
+                    sortingType = entry.getValue();
+                }
+            } else {
+                System.out.println("\"" + entry.getKey() + "\" is not a valid parameter. It will be skipped.");
+            }
+        }
+
         process(sortingType, dataType);
     }
 
     private static void process(String sortingType, String dataType) {
         if (sortingType.equals("natural") && dataType.equals("word")) {
-            sortNatural(Input.dataTypeWord(), Comparator.naturalOrder(), " ");
+            sortNatural(Input.getInstance().dataTypeWord(), Comparator.naturalOrder(), " ");
         }
         if (sortingType.equals("natural") && dataType.equals("line")) {
-            sortNatural(Input.dataTypeLine(), (o1, o2) -> o2.length() - o1.length(), "\n");
+            sortNatural(Input.getInstance().dataTypeLine(), (o1, o2) -> o2.length() - o1.length(), "\n");
         }
         if (sortingType.equals("natural") && dataType.equals("long")) {
-            sortNatural(Input.dataTypeLong(), Comparator.naturalOrder(), " ");
+            sortNatural(Input.getInstance().dataTypeLong(), Comparator.naturalOrder(), " ");
         }
         if (sortingType.equals("byCount") && dataType.equals("word")) {
-            sortByCount(Input.dataTypeWord(), Comparator.naturalOrder());
+            sortByCount(Input.getInstance().dataTypeWord(), Comparator.naturalOrder());
         }
         if (sortingType.equals("byCount") && dataType.equals("line")) {
-            sortByCount(Input.dataTypeLine(), Comparator.naturalOrder());
+            sortByCount(Input.getInstance().dataTypeLine(), Comparator.naturalOrder());
         }
         if (sortingType.equals("byCount") && dataType.equals("long")) {
-            sortByCount(Input.dataTypeLong(), Comparator.naturalOrder());
+            sortByCount(Input.getInstance().dataTypeLong(), Comparator.naturalOrder());
         }
     }
 

@@ -4,9 +4,19 @@ import java.util.*;
 
 public class Input {
 
-    private static final Scanner SCANNER = new Scanner(System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);;
+    private static Input instance;
 
-    static Map<String, String> createMapFromArgs(String[] args) {
+    private Input() { }
+
+    public static Input getInstance() {
+        if (instance == null) {
+            instance = new Input();
+        }
+        return instance;
+    }
+
+    protected Map<String, String> createMapFromArgs(String[] args) {
         LinkedHashMap<String, String> commands = new LinkedHashMap<>();
         for (int i = 0; i < args.length; i++) {
             if (args[i].startsWith("-")) {
@@ -21,15 +31,20 @@ public class Input {
         return commands;
     }
 
-    static List<Long> dataTypeLong() {
+    protected List<Long> dataTypeLong() {
         ArrayList<Long> list = new ArrayList<>();
-        while (SCANNER.hasNextLong()) {
-            list.add(SCANNER.nextLong());
+        while (SCANNER.hasNext()) {
+            String in = SCANNER.next();
+            if (in.matches("-?\\d+")) {
+                list.add(Long.parseLong(in));
+            } else {
+                System.out.println("\"" + in + "\" is not a long. It will be skipped.");
+            }
         }
         return list;
     }
 
-    static List<String> dataTypeWord() {
+    protected List<String> dataTypeWord() {
         ArrayList<String> list = new ArrayList<>();
         while (SCANNER.hasNext()) {
             list.add(SCANNER.next());
@@ -37,7 +52,7 @@ public class Input {
         return list;
     }
 
-    static List<String> dataTypeLine() {
+    protected List<String> dataTypeLine() {
         ArrayList<String> list = new ArrayList<>();
         while (SCANNER.hasNextLine()) {
             list.add(SCANNER.nextLine());
