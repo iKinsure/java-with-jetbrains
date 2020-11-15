@@ -1,6 +1,6 @@
 package com.ikinsure.hyperskill.hard.search;
 
-public class Person {
+public class Person implements Mappable {
 
     private final String firstName;
     private final String lastName;
@@ -30,6 +30,11 @@ public class Person {
 
     protected String getEmail() {
         return email;
+    }
+
+    @Override
+    public String[] fields() {
+        return new String[]{firstName, lastName, email};
     }
 
     @Override
