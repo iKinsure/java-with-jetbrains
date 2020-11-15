@@ -10,12 +10,16 @@ public class Main {
         while (true) {
             String[] commands = SCANNER.nextLine().split("\\s+");
             if (commands.length >= 2) {
-                long a = Long.parseLong(commands[0]);
-                long b = Long.parseLong(commands[1]);
-                System.out.println(a + b);
+                long sum = 0;
+                for (String command : commands) {
+                    sum += Long.parseLong(command);
+                }
+                System.out.println(sum);
             } else if (commands.length >= 1) {
                 if ("/exit".equals(commands[0])) {
                     break;
+                } else if ("/help".equals(commands[0])) {
+                    System.out.println("The program calculates the sum of numbers");
                 } else {
                     if (!commands[0].isBlank()) {
                         System.out.println(commands[0]);
