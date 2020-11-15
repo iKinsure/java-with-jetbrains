@@ -72,16 +72,18 @@ public class Main {
                 temp.add(entry);
             }
         }
-        for (Integer i : temp.get(0)) {
-            boolean contains = true;
-            for (int j = 1; j < temp.size(); j++) {
-                if (!temp.get(j).contains(i)) {
-                    contains = false;
-                    break;
+        if (temp.size() >= 1) {
+            for (Integer i : temp.get(0)) {
+                boolean contains = true;
+                for (int j = 1; j < temp.size(); j++) {
+                    if (!temp.get(j).contains(i)) {
+                        contains = false;
+                        break;
+                    }
                 }
-            }
-            if (contains) {
-                result.add(i);
+                if (contains) {
+                    result.add(i);
+                }
             }
         }
         return result;
@@ -89,12 +91,8 @@ public class Main {
 
     private static Set<Integer> difference(Map<String, ArrayList<Integer>> map, String[] queries) {
         Set<Integer> result = new HashSet<>();
-        for (var entry :  map.values()) {
-            result.addAll(entry);
-        }
-
-        Set<Integer> inter = intersection(map, queries);
-        result.removeAll(inter);
+        map.values().forEach(result::addAll);
+        result.removeAll(union(map, queries));
         return result;
     }
 
