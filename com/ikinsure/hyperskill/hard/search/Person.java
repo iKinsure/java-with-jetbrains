@@ -20,21 +20,9 @@ public class Person implements Mappable {
                 data.length >= 3 ? data[2] : "");
     }
 
-    protected String getFirstName() {
-        return firstName;
-    }
-
-    protected String getLastName() {
-        return lastName;
-    }
-
-    protected String getEmail() {
-        return email;
-    }
-
     @Override
     public String[] fields() {
-        return new String[]{firstName, lastName, email};
+        return new String[]{firstName.toLowerCase(), lastName.toLowerCase(), email.toLowerCase()};
     }
 
     @Override

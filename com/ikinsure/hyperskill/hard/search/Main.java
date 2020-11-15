@@ -16,9 +16,21 @@ public class Main {
         while (true) {
             switch (menu()) {
                 case 1:
+                    System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
+                    String strategy = SCANNER.nextLine();
                     System.out.println("\nEnter a name or email to search all suitable people.");
-                    List<Integer> positions = map.get(SCANNER.nextLine());
-                    if (positions == null) {
+                    String[] queries = SCANNER.nextLine().toLowerCase().split("\\s+");
+
+                    Set<Integer> positions = new HashSet<>();
+                    if (strategy.equals("ALL")) {
+                        positions = intersection(map, queries);
+                    } else if (strategy.equals("ANY")) {
+                        positions = union(map, queries);
+                    } else if (strategy.equals("NONE")) {
+                        positions = difference(map, queries);
+                    }
+
+                    if (positions.isEmpty()) {
                         System.out.println("\nNo matching people found.");
                     } else {
                         List<Person> result = positions.stream().map(data::get).collect(Collectors.toList());
@@ -38,6 +50,52 @@ public class Main {
                     break;
             }
         }
+    }
+
+    private static Set<Integer> union(Map<String, ArrayList<Integer>> map, String[] queries) {
+        Set<Integer> positions = new HashSet<>();
+        for (String query : queries) {
+            List<Integer> temp = map.get(query);
+            if (temp != null && !temp.isEmpty()) {
+                positions.addAll(map.get(query));
+            }
+        }
+        return positions;
+    }
+
+    private static Set<Integer> intersection(Map<String, ArrayList<Integer>> map, String[] queries) {
+        Set<Integer> result = new HashSet<>();
+        ArrayList<ArrayList<Integer>> temp = new ArrayList<>();
+        for (String query : queries) {
+            var entry = map.get(query);
+            if (entry != null && !entry.isEmpty()) {
+                temp.add(entry);
+            }
+        }
+        for (Integer i : temp.get(0)) {
+            boolean contains = true;
+            for (int j = 1; j < temp.size(); j++) {
+                if (!temp.get(j).contains(i)) {
+                    contains = false;
+                    break;
+                }
+            }
+            if (contains) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+
+    private static Set<Integer> difference(Map<String, ArrayList<Integer>> map, String[] queries) {
+        Set<Integer> result = new HashSet<>();
+        for (var entry :  map.values()) {
+            result.addAll(entry);
+        }
+
+        Set<Integer> inter = intersection(map, queries);
+        result.removeAll(inter);
+        return result;
     }
 
     private static int menu() {
