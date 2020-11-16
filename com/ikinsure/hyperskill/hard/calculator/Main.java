@@ -1,6 +1,8 @@
 package com.ikinsure.hyperskill.hard.calculator;
 
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
 
@@ -8,25 +10,31 @@ public class Main {
 
     public static void main(String[] args) {
         while (true) {
-            String[] commands = SCANNER.nextLine().split("\\s+");
-            if (commands.length >= 2) {
-                long sum = 0;
-                for (String command : commands) {
-                    sum += Long.parseLong(command);
-                }
-                System.out.println(sum);
-            } else if (commands.length >= 1) {
-                if ("/exit".equals(commands[0])) {
-                    break;
-                } else if ("/help".equals(commands[0])) {
-                    System.out.println("The program calculates the sum of numbers");
-                } else {
-                    if (!commands[0].isBlank()) {
-                        System.out.println(commands[0]);
-                    }
-                }
+            String command = SCANNER.nextLine().replaceAll("\\s+", "");
+            if ("/exit".equals(command)) {
+                System.out.println("Bye!");
+                break;
+            } else if ("/help".equals(command)) {
+                System.out.println("The program calculates the sum of numbers");
+            } else if (command.matches("[-0-9+]{2,}|\\d")) {
+                command = command.replaceAll("(--)+", "+");
+                command = command.replaceAll("\\++", "+");
+                command = command.replaceAll("(\\+-)+", "-");
+                command = command.replaceAll("(-\\+)+", "-");
+                System.out.println(eval(command));
+            } else {
+                System.out.println("Invalid input");
             }
         }
-        System.out.println("Bye!");
+    }
+
+    private static long eval(String command) {
+        long counter = 0;
+        Pattern pattern = Pattern.compile("[+-]?\\d+");
+        Matcher matcher = pattern.matcher(command);
+        while (matcher.find()) {
+            counter += Long.parseLong(matcher.group());
+        }
+        return counter;
     }
 }
