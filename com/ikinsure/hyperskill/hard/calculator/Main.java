@@ -10,20 +10,22 @@ public class Main {
 
     public static void main(String[] args) {
         while (true) {
-            String command = SCANNER.nextLine().replaceAll("\\s+", "");
-            if ("/exit".equals(command)) {
+            String order = SCANNER.nextLine();
+            if (order.matches("([-+ ]*\\d* *[-+]+ *\\d+|\\d)+")) {
+                System.out.println(eval(order.replaceAll("\\s+", "")
+                        .replaceAll("(--)+", "+")
+                        .replaceAll("\\++", "+")
+                        .replaceAll("(\\+-)+", "-")
+                        .replaceAll("(-\\+)+", "-")));
+            } else if (order.equals("/exit")) {
                 System.out.println("Bye!");
                 break;
-            } else if ("/help".equals(command)) {
+            } else if (order.equals("/help")) {
                 System.out.println("The program calculates the sum of numbers");
-            } else if (command.matches("[-0-9+]{2,}|\\d")) {
-                command = command.replaceAll("(--)+", "+");
-                command = command.replaceAll("\\++", "+");
-                command = command.replaceAll("(\\+-)+", "-");
-                command = command.replaceAll("(-\\+)+", "-");
-                System.out.println(eval(command));
+            } else if (order.isBlank()) {
+
             } else {
-                System.out.println("Invalid input");
+                System.out.println(order.startsWith("/") ? "Unknown command" : "Invalid expression");
             }
         }
     }
