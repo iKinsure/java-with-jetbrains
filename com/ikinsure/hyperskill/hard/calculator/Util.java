@@ -1,5 +1,6 @@
 package com.ikinsure.hyperskill.hard.calculator;
 
+import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,31 +74,35 @@ public class Util {
      * @param values expression in postfix
      * @return result as long
      */
-    static long calculatePostfix(List<String> values) {
-        ArrayDeque<Long> stack = new ArrayDeque<>();
+    static BigInteger calculatePostfix(List<String> values) {
+        ArrayDeque<BigInteger> stack = new ArrayDeque<>();
         for (String val : values) {
             if (val.matches("-?\\d+")) {
-                stack.offerLast(Long.parseLong(val));
+                stack.offerLast(new BigInteger(val));
             } else {
-                Long aLong = stack.pollLast();
-                Long bLong = stack.pollLast();
-                long a = aLong == null ? 0 : aLong;
-                long b = bLong == null ? 0 : bLong;
+                BigInteger a = stack.pollLast();
+                BigInteger b = stack.pollLast();
+                if (a == null) {
+                    a = BigInteger.ZERO;
+                }
+                if (b == null) {
+                    b = BigInteger.ZERO;
+                }
                 switch (val) {
                     case "+":
-                        stack.offerLast(b + a);
+                        stack.offerLast(b.add(a));
                         break;
                     case "-":
-                        stack.offerLast(b - a);
+                        stack.offerLast(b.subtract(a));
                         break;
                     case "*":
-                        stack.offerLast(b * a);
+                        stack.offerLast(b.multiply(a));
                         break;
                     case "/":
-                        stack.offerLast(b / a);
+                        stack.offerLast(b.divide(a));
                         break;
                     case "^":
-                        stack.offerLast((long) Math.pow(b, a));
+                        stack.offerLast(b.pow(a.intValue()));
                         break;
                 }
             }

@@ -1,5 +1,6 @@
 package com.ikinsure.hyperskill.hard.calculator;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,7 +8,7 @@ import java.util.regex.Pattern;
 public class Main {
 
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static final Map<String, Long> vars = new LinkedHashMap<>(); // variables in memory
+    private static final Map<String, BigInteger> vars = new LinkedHashMap<>(); // variables in memory
 
     //private static final String EQUATION_REGEX = "([A-Za-z]+\\s*=)?[-+*/^(\\s]*((\\d+|[A-Za-z]+)(\\s*[-+*/^()]+\\s*)+)*(\\d+|[A-Za-z]+)\\)*";
     //private static final String EQUATION_REGEX = "([A-Za-z]+\\s*=)?(\\s*[-+(]*\\s*)*((\\d+|[A-Za-z]+)((\\s*[*/^()]\\s*)?|(\\s*[-+()]+\\s*)+))*(\\d+|[A-Za-z]+)\\)*";
@@ -57,9 +58,9 @@ public class Main {
     }
 
     // decode existing variables
-    private static Map<Long, String> decode(Map<Long, String> variables) {
+    private static Map<Integer, String> decode(Map<Integer, String> variables) {
         for (var entry : variables.entrySet()) {
-            Long k = entry.getKey();
+            Integer k = entry.getKey();
             String v = entry.getValue();
             if (vars.containsKey(v)) {
                 variables.replace(k, String.valueOf(vars.get(v)));
@@ -71,8 +72,8 @@ public class Main {
     }
 
     // prepare data structure from command and get result
-    private static long eval(String command) throws IllegalStateException {
-        Map<Long, String> map = new TreeMap<>();
+    private static BigInteger eval(String command) throws IllegalStateException {
+        Map<Integer, String> map = new TreeMap<>();
         map.putAll(find("\\d+", command));
         map.putAll(decode(find("[A-Za-z]+", command)));
         map.putAll(find("[-+*/^()]", command));
@@ -81,11 +82,11 @@ public class Main {
     }
 
     // return map with positions and found regex result
-    private static Map<Long, String> find(String regex, String command) {
-        Map<Long, String> results = new TreeMap<>();
+    private static Map<Integer, String> find(String regex, String command) {
+        Map<Integer, String> results = new TreeMap<>();
         Matcher matcher = Pattern.compile(regex).matcher(command);
         while (matcher.find()) {
-            results.put((long) matcher.start(), matcher.group());
+            results.put(matcher.start(), matcher.group());
         }
         return results;
     }
