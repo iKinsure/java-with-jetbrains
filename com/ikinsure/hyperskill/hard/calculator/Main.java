@@ -8,7 +8,10 @@ public class Main {
 
     private static final Scanner SCANNER = new Scanner(System.in);
     private static final Map<String, Long> vars = new LinkedHashMap<>(); // variables in memory
-    private static final String EQUATION_REGEX = "([A-Za-z]+\\s*=)?[-+*/^(\\s]*((\\d+|[A-Za-z]+)(\\s*[-+*/^()]+\\s*)+)*(\\d+|[A-Za-z]+)\\)*";
+
+    //private static final String EQUATION_REGEX = "([A-Za-z]+\\s*=)?[-+*/^(\\s]*((\\d+|[A-Za-z]+)(\\s*[-+*/^()]+\\s*)+)*(\\d+|[A-Za-z]+)\\)*";
+    //private static final String EQUATION_REGEX = "([A-Za-z]+\\s*=)?(\\s*[-+(]*\\s*)*((\\d+|[A-Za-z]+)((\\s*[*/^()]\\s*)?|(\\s*[-+()]+\\s*)+))*(\\d+|[A-Za-z]+)\\)*";
+    private static final String EQUATION_REGEX = "([A-Za-z]+\\s*=)?(\\s*[-+(]*\\s*)*((\\d+|[A-Za-z]+)(((\\s*[-+()]+\\s*)+)|(\\s*[()]*\\s*[*/^]\\s*[()]*\\s*)))*(\\d+|[A-Za-z]+)\\)*";
 
     private static final String COMMAND_SIGN = "/";
     private static final String EXIT = "exit";
