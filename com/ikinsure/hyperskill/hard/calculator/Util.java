@@ -1,6 +1,7 @@
 package com.ikinsure.hyperskill.hard.calculator;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +20,7 @@ public class Util {
         ArrayDeque<String> braces = new ArrayDeque<>();
         ArrayList<String> result = new ArrayList<>();
         for (String val : values) {
-            if (val.matches("-?\\d+")) { // add all numbers
+            if (val.matches(Main.DECIMAL_WITH_MINUS_REGEX)) { // add all numbers
                 result.add(val);
             }  else if (val.matches("[-+*/^]")) { // operators
                 if (stack.isEmpty() || stack.getLast().equals("(")) {
@@ -50,7 +51,7 @@ public class Util {
                     if (last.equals("(")) {
                         break;
                     }
-                    if (last.matches("[-+*/]")) {
+                    if (last.matches("[-+*/^]")) {
                         result.add(last);
                     }
                 }
@@ -74,19 +75,19 @@ public class Util {
      * @param values expression in postfix
      * @return result as long
      */
-    static BigInteger calculatePostfix(List<String> values) {
-        ArrayDeque<BigInteger> stack = new ArrayDeque<>();
+    static BigDecimal calculatePostfix(List<String> values) {
+        ArrayDeque<BigDecimal> stack = new ArrayDeque<>();
         for (String val : values) {
-            if (val.matches("-?\\d+")) {
-                stack.offerLast(new BigInteger(val));
+            if (val.matches(Main.DECIMAL_WITH_MINUS_REGEX)) {
+                stack.offerLast(new BigDecimal(val));
             } else {
-                BigInteger a = stack.pollLast();
-                BigInteger b = stack.pollLast();
+                BigDecimal a = stack.pollLast();
+                BigDecimal b = stack.pollLast();
                 if (a == null) {
-                    a = BigInteger.ZERO;
+                    a = BigDecimal.ZERO;
                 }
                 if (b == null) {
-                    b = BigInteger.ZERO;
+                    b = BigDecimal.ZERO;
                 }
                 switch (val) {
                     case "+":
@@ -99,7 +100,7 @@ public class Util {
                         stack.offerLast(b.multiply(a));
                         break;
                     case "/":
-                        stack.offerLast(b.divide(a));
+                        stack.offerLast(b.divide(a, RoundingMode.CEILING));
                         break;
                     case "^":
                         stack.offerLast(b.pow(a.intValue()));
