@@ -8,12 +8,20 @@ public class Main {
     private static final Scanner SCANNER = new Scanner(System.in);
     private static final ArrayList<String> terms = new ArrayList<>();
     private static final ArrayList<String> defs = new ArrayList<>();
+    private static final ArrayList<Integer> errors = new ArrayList<>();
+    private static final StringBuilder log = new StringBuilder();
 
     public static void main(String[] args) {
+        ArrayList<String> arguments = new ArrayList<>(List.of(args));
+
+        int index = arguments.indexOf("-import");
+        if (index != -1) {
+            importFromFile(arguments.get(index + 1));
+        }
 
         while (true) {
-            System.out.println("\nInput the action (add, remove, import, export, ask, exit):");
-            String command = SCANNER.nextLine();
+            printLog("\nInput the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):");
+            String command = scanLog();
             if (command.equalsIgnoreCase("add")) {
                 addCommand();
             } else if (command.equalsIgnoreCase("remove")) {
@@ -24,48 +32,109 @@ public class Main {
                 exportCommand();
             } else if (command.equalsIgnoreCase("ask")) {
                 askCommand();
+            } else if (command.equalsIgnoreCase("log")) {
+                logCommand();
+            } else if (command.equalsIgnoreCase("hardest card")) {
+                hardestCardCommand();
+            } else if (command.equalsIgnoreCase("reset stats")) {
+                printLog("Card statistics have been reset.");
+                errors.clear();
             } else if (command.equalsIgnoreCase("exit")) {
-                System.out.println("Bye bye!");
+                printLog("Bye bye!");
                 break;
+            } else {
+                printLog("Unknown command");
             }
+        }
+
+        index = arguments.indexOf("-export");
+        if (index != -1) {
+            exportToFile(arguments.get(index + 1));
+        }
+    }
+
+    private static void hardestCardCommand() {
+        int max = 0;
+        if (!errors.isEmpty()) {
+            max = Collections.max(errors);
+        }
+        ArrayList<String> hardest = new ArrayList<>();
+        for (int i = 0; i < errors.size(); i++) {
+            if (errors.get(i) == max) {
+                hardest.add(terms.get(i));
+            }
+        }
+        if (hardest.isEmpty() || max == 0) {
+            printLog("There are no cards with errors.");
+        } else if (hardest.size() == 1) {
+            printLog("The hardest card is \"" + hardest.get(0) + "\". You have " + max + " errors answering it.");
+        } else {
+            StringBuilder builder = new StringBuilder("The hardest cards are ");
+            for (int i = 0; i < hardest.size() - 1; i++) {
+                builder.append("\"").append(hardest.get(i)).append("\", ");
+            }
+            builder.append("\"").append(hardest.get(hardest.size() - 1)).append("\". ");
+            printLog(builder.toString() + "You have " + max + " errors answering them.");
+        }
+    }
+
+    private static void logCommand() {
+        printLog("File name:");
+        String file = scanLog();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(log.toString());
+            printLog("The log has been saved.");
+        } catch (IOException e) {
+            printLog("Error when saving.");
         }
     }
 
     private static void askCommand() {
-        System.out.println("How many times to ask?");
-        int size = Integer.parseInt(SCANNER.nextLine());
+        printLog("How many times to ask?");
+        int size = Integer.parseInt(scanLog());
         for (int i = 0; i < size; i++) {
-            System.out.println("Print the definition of \"" + terms.get(i) + "\":");
-            String input = SCANNER.nextLine();
+            printLog("Print the definition of \"" + terms.get(i) + "\":");
+            String input = scanLog();
             if (defs.get(i).equals(input)) {
-                System.out.println("Correct!");
+                printLog("Correct!");
             } else {
-                System.out.println("Wrong. The right answer is \"" + defs.get(i) + (defs.contains(input)
+                printLog("Wrong. The right answer is \"" + defs.get(i) + (defs.contains(input)
                         ? "\", " + "but your definition is correct for \"" + terms.get(defs.indexOf(input)) + "\"."
                         : "\"."));
+                errors.set(i, errors.get(i) + 1);
             }
         }
     }
 
     private static void exportCommand() {
-        System.out.println("File name:");
-        String file = SCANNER.nextLine();
+        printLog("File name:");
+        String file = scanLog();
+        exportToFile(file);
+    }
+
+    private static void exportToFile(String file) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (int i = 0; i < terms.size(); i++) {
                 writer.write(terms.get(i));
                 writer.write(";");
                 writer.write(defs.get(i));
+                writer.write(";");
+                writer.write(String.valueOf(errors.get(i)));
                 writer.newLine();
             }
-            System.out.println(terms.size() + " cards have been saved.");
+            printLog(terms.size() + " cards have been saved.");
         } catch (IOException e) {
-            System.out.println("Error when saving.");
+            printLog("Error when saving.");
         }
     }
 
     private static void importCommand() {
-        System.out.println("File name:");
-        String file = SCANNER.nextLine();
+        printLog("File name:");
+        String file = scanLog();
+        importFromFile(file);
+    }
+
+    private static void importFromFile(String file) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             int counter = 0;
@@ -76,44 +145,58 @@ public class Main {
                 if (termIndex == -1) {
                     terms.add(data[0]);
                     defs.add(data[1]);
+                    errors.add(Integer.parseInt(data[2]));
                 } else {
                     defs.set(termIndex, data[1]);
+                    errors.set(termIndex, Integer.parseInt(data[2]));
                 }
             }
-            System.out.println(counter + " cards have been loaded.");
+            printLog(counter + " cards have been loaded.");
         } catch (IOException e) {
-            System.out.println("File not found.");
+            printLog("File not found.");
         }
     }
 
     private static void removeCommand() {
-        System.out.println("Which card?");
-        String term = SCANNER.nextLine();
+        printLog("Which card?");
+        String term = scanLog();
         int index = terms.indexOf(term);
         if (index == -1) {
-            System.out.println("Can't remove \"" + term + "\": there is no such card.");
+            printLog("Can't remove \"" + term + "\": there is no such card.");
         } else {
             terms.remove(index);
             defs.remove(index);
-            System.out.println("The card has been removed.");
+            errors.remove(index);
+            printLog("The card has been removed.");
         }
     }
 
     private static void addCommand() {
-        System.out.println("The card:");
-        String term = SCANNER.nextLine();
+        printLog("The card:");
+        String term = scanLog();
         if (terms.contains(term)) {
-            System.out.println("The card \"" + term + "\" already exists.");
+            printLog("The card \"" + term + "\" already exists.");
             return;
         }
-        System.out.println("The definition of the card:");
-        String def = SCANNER.nextLine();
+        printLog("The definition of the card:");
+        String def = scanLog();
         if (defs.contains(def)) {
-            System.out.println("The definition \"" + def + "\" already exists.");
+            printLog("The definition \"" + def + "\" already exists.");
             return;
         }
         terms.add(term);
         defs.add(def);
-        System.out.println("The pair (\"" + term + "\":\"" + def + "\") has been added.");
+        errors.add(0);
+        printLog("The pair (\"" + term + "\":\"" + def + "\") has been added.");
+    }
+
+    private static void printLog(String string) {
+        System.out.println(string);
+        log.append(string).append("\n");
+    }
+    private static String scanLog() {
+        String string = SCANNER.nextLine();
+        log.append(string).append("\n");
+        return string;
     }
 }
