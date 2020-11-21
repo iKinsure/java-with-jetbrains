@@ -1,8 +1,6 @@
 package com.ikinsure.hyperskill.hard.flashcards;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -14,22 +12,51 @@ public class Main {
         System.out.println("Input the number of cards:");
         int size = Integer.parseInt(SCANNER.nextLine());
 
-        List<Card> list = new ArrayList<>(size);
+        Set<String> terms = new LinkedHashSet<>(size);
+        Set<String> defs = new LinkedHashSet<>(size);
+
         for (int i = 0; i < size; i++) {
+
             System.out.println("Card #" + (i + 1) + ":");
-            String name = SCANNER.nextLine();
+            while (true) {
+                String term = SCANNER.nextLine();
+                if (terms.add(term)) {
+                    break;
+                } else {
+                    System.out.println("The term \"" + term + "\" already exists. Try again:");
+                }
+            }
+
             System.out.println("The definition for card #" + (i + 1) + ":");
-            String def = SCANNER.nextLine();
-            list.add(new Card(name, def));
+            while (true) {
+                String def = SCANNER.nextLine();
+                if (defs.add(def)) {
+                    break;
+                } else {
+                    System.out.println("The definition \"" + def + "\" already exists. Try again:");
+                }
+            }
+
         }
 
-        for (Card card : list) {
-            System.out.println("Print the definition of \"" + card.getTerm() + "\":");
-            if (card.getDefinition().equals(SCANNER.nextLine())) {
+        ArrayList<String> termsList = new ArrayList<>(terms);
+        ArrayList<String> defsList = new ArrayList<>(defs);
+
+
+        for (int i = 0; i < size; i++) {
+            System.out.println("Print the definition of \"" + termsList.get(i) + "\":");
+            String input = SCANNER.nextLine();
+            if (defsList.get(i).equals(input)) {
                 System.out.println("Correct!");
             } else {
-                System.out.println("Wrong. The right answer is \"" + card.getDefinition() + "\".");
+                if (defsList.contains(input)) {
+                    System.out.println("Wrong. The right answer is \"" + defsList.get(i) + "\", " +
+                            "but your definition is correct for \"" + termsList.get(defsList.indexOf(input)) + "\".");
+                } else {
+                    System.out.println("Wrong. The right answer is \"" + defsList.get(i) + "\".");
+                }
             }
         }
+
     }
 }
