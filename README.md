@@ -31,6 +31,8 @@ Hard:
   - [Flashcards]
   - [Linear Equation Solver]
   - [Minesweeper]
+  
+Challenging:
 
    [Cinema Room Manager]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/easy/cinema>
    [Bulls and Cows]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/easy/bullscows>
