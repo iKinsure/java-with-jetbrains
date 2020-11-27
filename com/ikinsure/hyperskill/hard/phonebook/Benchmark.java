@@ -9,6 +9,7 @@ public class Benchmark <T extends Comparable<T>> {
     private Sortable<T> sortMethod;
     private Searchable<T> mainSearchMethod;
     private Searchable<T> failSearchMethod;
+    private long timer;
 
     void setMethods(Sortable<T> sortMethod, Searchable<T> mainSearchMethod, Searchable<T> failSearchMethod) {
         this.sortMethod = sortMethod;
@@ -17,44 +18,37 @@ public class Benchmark <T extends Comparable<T>> {
     }
 
     Duration start(List<T> data, List<T> queries, Duration maxSortingDuration) {
+        System.out.println("\nStart searching (" + (sortMethod != null ? sortMethod + " + " : "") + mainSearchMethod + ")...");
 
-        boolean isSortMethod = sortMethod != null;
-        boolean isFailSearchMethod = failSearchMethod != null;
+        startTimer(); // sorting benchmark
+        boolean isSuccess = sortMethod == null || sortMethod.sort(data, maxSortingDuration);
+        Duration sortDuration = stopTimer();
 
-        System.out.println("\nStart searching (" + (isSortMethod ? sortMethod + " + " : "") + mainSearchMethod + ")...");
+        startTimer(); // searching benchmark
+        int counter = isSuccess ? mainSearchMethod.search(data, queries) : failSearchMethod.search(data, queries);
+        Duration searchDuration = stopTimer();
 
-        boolean isSuccess = true;
-        Duration sortDuration = Duration.ZERO;
-        if (isSortMethod) {
-            long start = System.currentTimeMillis();
-            isSuccess = sortMethod.sort(data, maxSortingDuration);
-            long end = System.currentTimeMillis();
-            sortDuration = Duration.of(end - start, ChronoUnit.MILLIS);
-        }
-
-
-        long start = System.currentTimeMillis();
-        final int counter;
-        final Duration searchDuration;
-        if (isSuccess) {
-            counter = mainSearchMethod.search(data, queries);
-        } else {
-            counter = failSearchMethod.search(data, queries);
-        }
-        long end = System.currentTimeMillis();
-
-        searchDuration = Duration.of(end - start, ChronoUnit.MILLIS);
         Duration totalDuration = searchDuration.plus(sortDuration);
-        System.out.println("Found " + counter + " / " + queries.size() + " entries. Time taken: " + formatTime(totalDuration));
-        if (isSortMethod) {
-            if (isSuccess) {
-                System.out.println("Sorting time: " + formatTime(sortDuration));
-            } else {
-                System.out.println("Sorting time: " + formatTime(sortDuration) + " - STOPPED, moved to linear search");
-            }
-            System.out.println("Searching time: " + formatTime(searchDuration));
-        }
+        System.out.println(summarizing(counter, queries.size(), isSuccess, sortDuration, searchDuration, totalDuration));
         return totalDuration;
+    }
+
+    private String summarizing(int found, int size, boolean isSuccess, Duration sortTime, Duration searchTime, Duration totalTime) {
+        StringBuilder res = new StringBuilder("Found " + found + " / " + size + " entries. Time taken: " + formatTime(totalTime) + "\n");
+        if (sortMethod != null) {
+            res.append("Sorting time: ").append(formatTime(sortTime))
+                    .append(isSuccess ? "" : " - STOPPED, moved to linear search").append("\n")
+                    .append("Searching time: ").append(formatTime(searchTime)).append("\n");
+        }
+        return res.toString();
+    }
+
+    private void startTimer() {
+        this.timer = System.currentTimeMillis();
+    }
+
+    private Duration stopTimer() {
+        return Duration.of(System.currentTimeMillis() - timer, ChronoUnit.MILLIS);
     }
 
     static String formatTime(Duration duration) {
