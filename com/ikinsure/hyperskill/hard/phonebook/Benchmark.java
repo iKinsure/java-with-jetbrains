@@ -57,12 +57,7 @@ public class Benchmark <T extends Comparable<T>> {
         return totalDuration;
     }
 
-    private void sort(List<T> data, Duration maxSortingDuration) {
-
-
-    }
-
-    private static String formatTime(Duration duration) {
+    static String formatTime(Duration duration) {
         return duration.toMinutesPart() + " min. " + duration.toSecondsPart() + " sec. " + duration.toMillisPart() + " ms.";
     }
 }

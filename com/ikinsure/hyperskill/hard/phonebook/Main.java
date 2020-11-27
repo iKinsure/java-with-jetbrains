@@ -5,9 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -33,17 +31,40 @@ public class Main {
 
         // linear search
         benchmark.setMethods(null, linearSearch, null);
-        Duration maxTime = benchmark.start(data, queries,null);
+        Duration linearTime = benchmark.start(data, queries,null);
 
         // bubble sort + jump search
         Collections.copy(data, srcData);
         benchmark.setMethods(bubbleSort, jumpSearch, linearSearch);
-        benchmark.start(data, queries, maxTime);
+        benchmark.start(data, queries, linearTime);
 
         // quick sort + binary search
         Collections.copy(data, srcData);
         benchmark.setMethods(quickSort, binarySearch, null);
         benchmark.start(data, queries, null);
+
+        // hash table
+        System.out.println("\nStart searching (hash table)...");
+        Map<Integer, String> dataMap = new HashMap<>();
+        long start = System.currentTimeMillis();
+        for (String datum : srcData) {
+            dataMap.put(datum.hashCode(), datum);
+        }
+        long end = System.currentTimeMillis();
+        Duration createTime = Duration.of(end - start, ChronoUnit.MILLIS);
+        start = System.currentTimeMillis();
+        int counter = 0;
+        for (String query : queries) {
+            if (dataMap.get(query.hashCode()) != null) {
+                counter++;
+            }
+        }
+        end = System.currentTimeMillis();
+        Duration searchTime = Duration.of(end - start, ChronoUnit.MILLIS);
+        Duration totalTime = createTime.plus(searchTime);
+        System.out.println("Found " + counter + " / " + queries.size() + " entries. Time taken: " + Benchmark.formatTime(totalTime));
+        System.out.println("Creating time: " + Benchmark.formatTime(createTime));
+        System.out.println("Searching time: " + Benchmark.formatTime(searchTime));
     }
 
     private static List<String> load(String file) throws IOException {
