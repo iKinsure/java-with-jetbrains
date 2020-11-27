@@ -31,6 +31,7 @@ Hard:
   - [Flashcards]
   - [Linear Equation Solver]
   - [Minesweeper]
+  - [Digit Recognition]
   
 Challenging:
 
@@ -56,4 +57,5 @@ Challenging:
    [Flashcards]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/flashcards>
    [Linear Equation Solver]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/solver>
    [Minesweeper]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/minesweeper>
+   [Digit Recognition]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/recognition>
 
