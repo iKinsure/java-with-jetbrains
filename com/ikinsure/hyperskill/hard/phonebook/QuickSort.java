@@ -32,4 +32,9 @@ public class QuickSort<T extends Comparable<T>> implements Sortable<T> {
         Collections.swap(data, partitionIndex, right);
         return partitionIndex;
     }
+
+    @Override
+    public String toString() {
+        return "quick sort";
+    }
 }

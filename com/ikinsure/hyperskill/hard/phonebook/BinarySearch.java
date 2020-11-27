@@ -28,4 +28,9 @@ public class BinarySearch<T extends Comparable<T>> implements Searchable<T> {
         }
         return -1;
     }
+
+    @Override
+    public String toString() {
+        return "binary search";
+    }
 }

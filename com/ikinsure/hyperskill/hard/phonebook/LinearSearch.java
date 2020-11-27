@@ -16,4 +16,9 @@ public class LinearSearch<T extends Comparable<T>> implements Searchable<T> {
         }
         return counter;
     }
+
+    @Override
+    public String toString() {
+        return "linear search";
+    }
 }
