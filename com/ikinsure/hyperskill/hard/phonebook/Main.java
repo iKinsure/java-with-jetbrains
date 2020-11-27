@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,17 +17,18 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        // searches
+        // searches & sorting
         Searchable<String> linearSearch = new LinearSearch<>();
         Searchable<String> jumpSearch = new JumpSearch<>();
-
-        // sorting
+        Searchable<String> binarySearch = new BinarySearch<>();
         Sortable<String> bubbleSort = new BubbleSort<>();
+        Sortable<String> quickSort = new QuickSort<>();
 
         // loading data
-        List<String> data = load(BASE_FILE);
+        List<String> srcData = load(BASE_FILE).stream()
+                .map(s -> s.substring(s.indexOf(" ") + 1)).collect(Collectors.toList());
         List<String> queries = load(FIND_FILE);
-        data = data.stream().map(s -> s.substring(s.indexOf(" ") + 1)).collect(Collectors.toList());
+        List<String> data = new ArrayList<>(srcData);
 
 
         // linear search
@@ -39,6 +41,7 @@ public class Main {
 
 
         // bubble sort + jump search
+        Collections.copy(data, srcData);
         System.out.println("\nStart searching (bubble sort + jump search)...");
         start = System.currentTimeMillis();
         //Collections.sort(data);
@@ -62,6 +65,23 @@ public class Main {
             System.out.println("Sorting time: " + formatTime(sortDuration) + " - STOPPED, moved to linear search");
             System.out.println("Searching time: " + formatTime(searchDuration));
         }
+
+
+        // quick sort + binary search
+        Collections.copy(data, srcData);
+        System.out.println("\nStart searching (quick sort + binary search)...");
+        start = System.currentTimeMillis();
+        quickSort.sort(data, duration);
+        end = System.currentTimeMillis();
+        sortDuration = Duration.of(end - start, ChronoUnit.MILLIS);
+
+        start = System.currentTimeMillis();
+        counter = binarySearch.search(data, queries);
+        end = System.currentTimeMillis();
+        Duration searchDuration = Duration.of(end - start, ChronoUnit.MILLIS);
+        System.out.println("Found " + counter + " / " + queries.size() + " entries. Time taken: " + formatTime(searchDuration.plus(sortDuration)));
+        System.out.println("Sorting time: " + formatTime(sortDuration));
+        System.out.println("Searching time: " + formatTime(searchDuration));
     }
 
     private static List<String> load(String file) throws IOException {
