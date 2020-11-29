@@ -1,23 +1,46 @@
 package com.ikinsure.hyperskill.hard.recognition;
 
-public enum NumberData {
-    N1(new int[]{-1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1}, 6, "1"),
-    N2(new int[]{1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1}, 1, "2"),
-    N3(new int[]{1, 1, 1, -1, -1, 1, 1, 1, 1, -1, -1, 1, 1, 1 ,1 }, 0, "3"),
-    N4(new int[]{1, -1, 1, 1, -1, 1, 1, 1, 1, -1, -1, 1, -1, -1, 1}, 2, "4"),
-    N5(new int[]{1, 1, 1, 1, -1, -1, 1, 1, 1 , -1, -1, 1, 1, 1, 1}, 0, "5"),
-    N6(new int[]{1, 1, 1, 1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, 1}, -1, "6"),
-    N7(new int[]{1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1}, 3, "7"),
-    N8(new int[]{1, 1, 1, 1, -1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1}, -2, "8"),
-    N9(new int[]{1, 1, 1, 1, -1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1}, -1, "9"),
-    N0(new int[]{1, 1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, 1, 1}, -1, "0");
+import java.util.Arrays;
+import java.util.Random;
 
-    int[] weight;
-    int bias;
+public enum NumberData {
+
+    N0(new double[]{1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1},
+            new double[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0},"0"),
+    N1(new double[]{0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1},
+            new double[]{0, 1, 0, 0, 0, 0, 0, 0, 0, 0},"1"),
+    N2(new double[]{1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
+            new double[]{0, 0, 1, 0, 0, 0, 0, 0, 0, 0},"2"),
+    N3(new double[]{1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1 ,1, 1},
+            new double[]{0, 0, 0, 1, 0, 0, 0, 0, 0, 0},"3"),
+    N4(new double[]{1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1},
+            new double[]{0, 0, 0, 0, 1, 0, 0, 0, 0, 0},"4"),
+    N5(new double[]{1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1},
+            new double[]{0, 0, 0, 0, 0, 1, 0, 0, 0, 0},"5"),
+    N6(new double[]{1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1},
+            new double[]{0, 0, 0, 0, 0, 0, 1, 0, 0, 0},"6"),
+    N7(new double[]{1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1},
+            new double[]{0, 0, 0, 0, 0, 0, 0, 1, 0, 0},"7"),
+    N8(new double[]{1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1},
+            new double[]{0, 0, 0, 0, 0, 0, 0, 0, 1, 0},"8"),
+    N9(new double[]{1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1},
+            new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 1},"9");
+
+
+    double[] idealInput;
+    double[] idealOutput;
+    double[] weight;
     String sign;
-    NumberData(int[] weight, int bias, String sign) {
-        this.weight = weight;
-        this.bias = bias;
+
+    NumberData(double[] idealInput, double[] idealOutput, String sign) {
+        this.idealInput = idealInput;
+        this.idealOutput = idealOutput;
+        this.weight = initWeight(16);
         this.sign = sign;
+    }
+
+    private double[] initWeight(int size) {
+        Random random = new Random();
+        return Arrays.stream(new double[size]).map(d -> random.nextGaussian()).toArray();
     }
 }
