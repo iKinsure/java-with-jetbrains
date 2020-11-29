@@ -32,6 +32,7 @@ Hard:
   - [Linear Equation Solver]
   - [Minesweeper]
   - [Digit Recognition]
+  - [Simple Banking System]
   
 Challenging:
 
@@ -58,4 +59,5 @@ Challenging:
    [Linear Equation Solver]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/solver>
    [Minesweeper]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/minesweeper>
    [Digit Recognition]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/recognition>
+   [Simple Banking System]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/banking>
 
