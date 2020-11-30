@@ -16,32 +16,52 @@ public class Bank {
 
     public Card createCard() {
         while (true) {
-            String number = generateNumber();
-            if (cards.stream().anyMatch(c -> c.getNumber().equals(number))) {
-                continue;
+            Card card = new Card(generateNumber(), generatePin(), 0.0);
+            if (cards.add(card)) {
+                return card;
             }
-            String pin = generatePin();
-            Card card = new Card(number, pin);
-            cards.add(card);
-            return card;
         }
     }
 
     public Card logToCard(String number, String pin) {
-        for (Card card : cards) {
-            if (card.getNumber().equals(number) && card.getPin().equals(pin)) {
-                return card;
-            }
+        if (isCardValid(number)) {
+            return cards.stream().filter(c -> c.getNumber().equals(number) && c.getPin().equals(pin))
+                    .findFirst().orElse(null);
         }
         return null;
     }
 
     private String generateNumber() {
         StringBuilder builder = new StringBuilder(Bank.IIN);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 9; i++) {
             builder.append(RANDOM.nextInt(10));
         }
+        builder.append(generateCheckSum(builder.toString()));
         return builder.toString();
+    }
+
+    private int generateCheckSum(String data) {
+        int num = luhnFormula(data) % 10;
+        return num == 0 ? 0 : 10 - num;
+    }
+
+    private boolean isCardValid(String data) {
+        return luhnFormula(data) % 10 == 0;
+    }
+
+    private int luhnFormula(String data) {
+        int counter = 0;
+        for (int i = 0; i < data.length(); i++) {
+            int num = Integer.parseInt(String.valueOf(data.charAt(i)));
+            if (i % 2 == 0) {
+                num *= 2;
+                if (num > 9) {
+                    num -= 9;
+                }
+            }
+            counter += num;
+        }
+        return counter;
     }
 
     private String generatePin() {

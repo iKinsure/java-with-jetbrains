@@ -62,5 +62,4 @@ public class Main {
             System.out.println("Wrong card number or PIN!");
         }
     }
-
 }

@@ -4,15 +4,14 @@ import java.util.Objects;
 
 public class Card {
 
-
     private final String number;
     private final String pin;
     private final double balance;
 
-    public Card(String number, String pin) {
+    public Card(String number, String pin, double balance) {
         this.number = number;
         this.pin = pin;
-        this.balance = 0.0;
+        this.balance = balance;
     }
 
     public String getNumber() {
@@ -32,11 +31,11 @@ public class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(number, card.number) && Objects.equals(pin, card.pin);
+        return Objects.equals(number, card.number);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, pin);
+        return Objects.hash(number);
     }
 }
