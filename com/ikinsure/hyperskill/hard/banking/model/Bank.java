@@ -1,4 +1,4 @@
-package com.ikinsure.hyperskill.hard.banking;
+package com.ikinsure.hyperskill.hard.banking.model;
 
 import java.util.HashSet;
 import java.util.Optional;

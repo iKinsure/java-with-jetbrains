@@ -1,47 +1,43 @@
-package com.ikinsure.hyperskill.hard.banking.controller;
+package com.ikinsure.hyperskill.hard.banking;
 
-import com.ikinsure.hyperskill.hard.banking.Bank;
-import com.ikinsure.hyperskill.hard.banking.Card;
+import com.ikinsure.hyperskill.hard.banking.model.Bank;
+import com.ikinsure.hyperskill.hard.banking.model.Card;
+import com.ikinsure.hyperskill.hard.banking.view.Menu;
+import com.ikinsure.hyperskill.hard.banking.view.MenuController;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayDeque;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class UserGUI {
+public class Client {
 
-    private final ArrayDeque<Menu> menuStack;
     private final Scanner scanner;
+    private final MenuController view;
     private final Bank bank;
     private final SQLiteDataSource dataSource;
     private Card activeCard;
 
-    public UserGUI(Scanner scanner, Bank bank, SQLiteDataSource dataSource) {
-        this.menuStack = new ArrayDeque<>();
-        this.scanner = scanner;
-        this.bank = bank;
-        this.dataSource = dataSource;
+    public Client(DBController database) {
 
-        menuStack.offerLast(new Menu.Builder()
+        this.scanner = new Scanner(System.in);
+        this.view = new MenuController();
+        this.bank = database.getBank();
+        this.dataSource = database.getDataSource();
+
+
+        view.run(new Menu.Builder()
                 .setScanner(scanner)
                 .addItem(1, "Create an account", this::createAccount)
                 .addItem(2, "Log into account", this::logToAccount)
-                .addItem(0, "Exit", menuStack::pollLast)
+                .addItem(0, "Exit", view::exitMenu)
                 .build());
     }
 
-    public void run() {
-        while (!menuStack.isEmpty()) {
-            menuStack.getLast().selectItem().action.execute();
-        }
-        System.out.println("Bye!");
-    }
-
     private void logOut() {
-        menuStack.pollLast();
+        view.exitMenu();
         System.out.println("You have successfully logged out!\n");
     }
 
@@ -83,12 +79,14 @@ public class UserGUI {
         if (card.isPresent()) {
             this.activeCard = card.get();
             System.out.println("You have successfully logged in\n");
-            menuStack.offerLast(new Menu.Builder()
+
+            view.setMenu(new Menu.Builder()
                     .setScanner(scanner)
                     .addItem(1, "Balance", this::printBalance)
                     .addItem(2, "Log out", this::logOut)
-                    .addItem(0, "Exit", menuStack::clear)
+                    .addItem(0, "Exit", view::exitAll)
                     .build());
+
         } else {
             System.out.println("Wrong card number or PIN!\n");
         }

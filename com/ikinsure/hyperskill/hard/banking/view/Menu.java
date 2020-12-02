@@ -1,4 +1,4 @@
-package com.ikinsure.hyperskill.hard.banking.controller;
+package com.ikinsure.hyperskill.hard.banking.view;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class Menu {
     /**
      * Static class for building menu, builder pattern
      */
-    static class Builder {
+    public static class Builder {
 
         private final Menu menu;
 
