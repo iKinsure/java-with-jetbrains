@@ -1,6 +1,7 @@
 package com.ikinsure.hyperskill.hard.banking;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
@@ -16,19 +17,22 @@ public class Bank {
 
     public Card createCard() {
         while (true) {
-            Card card = new Card(generateNumber(), generatePin(), 0.0);
+            Card card = new Card(generateNumber(), generatePin(), 0);
             if (cards.add(card)) {
                 return card;
             }
         }
     }
 
-    public Card logToCard(String number, String pin) {
+    public Optional<Card> logToCard(String number, String pin) {
         if (isCardValid(number)) {
-            return cards.stream().filter(c -> c.getNumber().equals(number) && c.getPin().equals(pin))
-                    .findFirst().orElse(null);
+            return cards.stream().filter(c -> c.getNumber().equals(number) && c.getPin().equals(pin)).findFirst();
         }
-        return null;
+        return Optional.empty();
+    }
+
+    public int getCardsCounter() {
+        return cards.size();
     }
 
     private String generateNumber() {

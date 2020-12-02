@@ -6,9 +6,9 @@ public class Card {
 
     private final String number;
     private final String pin;
-    private final double balance;
+    private int balance;
 
-    public Card(String number, String pin, double balance) {
+    public Card(String number, String pin, int balance) {
         this.number = number;
         this.pin = pin;
         this.balance = balance;
@@ -22,8 +22,12 @@ public class Card {
         return pin;
     }
 
-    public double getBalance() {
+    public int getBalance() {
         return balance;
+    }
+
+    public void addBalance(int value) {
+        this.balance += value;
     }
 
     @Override
