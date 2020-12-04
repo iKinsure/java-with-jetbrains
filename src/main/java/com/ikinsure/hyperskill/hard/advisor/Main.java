@@ -5,9 +5,25 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
+        String token = null;
+        String input = null;
+
         while (true) {
-            switch (scanner.nextLine().toLowerCase()) {
+            input = scanner.nextLine().toLowerCase();
+            if (token == null) {
+                if (!input.equals("auth") && !input.equals("exit")) {
+                    System.out.println("Please, provide access for application.");
+                    continue;
+                }
+            }
+            switch (input) {
+                case "auth":
+                    token = "https://accounts.spotify.com/authorize?client_id=6e70a3870fbe4d4bae4982467b032a2f&redirect_uri=http://localhost:8080&response_type=code";
+                    System.out.println(token);
+                    System.out.println("---SUCCESS---");
+                    break;
                 case "new":
                     System.out.println("---NEW RELEASES---\n" +
                             "Mountains [Sia, Diplo, Labrinth]\n" +
