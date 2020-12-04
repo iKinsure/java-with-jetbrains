@@ -33,6 +33,7 @@ Hard:
   - [Minesweeper]
   - [Digit Recognition]
   - [Simple Banking System]
+  - [Music Advisor]
   
 Challenging:
 
@@ -62,4 +63,5 @@ Challenging:
    [Minesweeper]: <src/main/java/com/ikinsure/hyperskill/hard/minesweeper>
    [Digit Recognition]: <src/main/java/com/ikinsure/hyperskill/hard/recognition>
    [Simple Banking System]: <src/main/java/com/ikinsure/hyperskill/hard/banking>
+   [Music Advisor]: <src/main/java/com/ikinsure/hyperskill/hard/advisor>
 
