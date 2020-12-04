@@ -2,11 +2,14 @@ package com.ikinsure.hyperskill.hard.banking.model;
 
 import java.util.Objects;
 
+/**
+ * immutable class represents card
+ */
 public class Card {
 
     private final String number;
     private final String pin;
-    private int balance;
+    private final int balance;
 
     public Card(String number, String pin, int balance) {
         this.number = number;
@@ -26,8 +29,8 @@ public class Card {
         return balance;
     }
 
-    public void addBalance(int value) {
-        this.balance += value;
+    public Card addBalance(int value) {
+        return new Card(number, pin, balance + value);
     }
 
     @Override

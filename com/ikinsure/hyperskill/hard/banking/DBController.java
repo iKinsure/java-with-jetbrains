@@ -1,17 +1,16 @@
 package com.ikinsure.hyperskill.hard.banking;
 
 import com.ikinsure.hyperskill.hard.banking.model.Bank;
-import org.sqlite.SQLiteDataSource;
 
 public class DBController {
 
     private static DBController instance;
-    private final SQLiteDataSource dataSource;
     private final Bank bank;
+    private final Database database;
 
     private DBController() {
-        this.dataSource = new SQLiteDataSource();
         this.bank = new Bank();
+        this.database = new Database();
     }
 
     public static DBController getInstance() {
@@ -21,11 +20,11 @@ public class DBController {
         return instance;
     }
 
-    public SQLiteDataSource getDataSource() {
-        return dataSource;
-    }
-
     public Bank getBank() {
         return bank;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 }
