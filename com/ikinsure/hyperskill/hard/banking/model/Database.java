@@ -1,6 +1,5 @@
-package com.ikinsure.hyperskill.hard.banking;
+package com.ikinsure.hyperskill.hard.banking.model;
 
-import com.ikinsure.hyperskill.hard.banking.model.Card;
 import org.sqlite.SQLiteDataSource;
 
 import java.sql.*;
@@ -10,10 +9,18 @@ import java.util.Set;
 
 public class Database {
 
+    private static Database instance;
     private final SQLiteDataSource dataSource;
 
-    public Database() {
+    private Database() {
         this.dataSource = new SQLiteDataSource();
+    }
+
+    public static Database getInstance() {
+        if (instance == null) {
+            instance = new Database();
+        }
+        return instance;
     }
 
     public void createTable(String fileName) {
@@ -82,18 +89,16 @@ public class Database {
 
     public Set<Card> selectAll() {
         Set<Card> result = new HashSet<>();
-        String sql = "SELECT * FROM card";
         try (Connection con = dataSource.getConnection()) {
-            PreparedStatement statement = con.prepareStatement(sql);
-            ResultSet set = statement.executeQuery();
+            ResultSet set = con.prepareStatement("SELECT * FROM card").executeQuery();
             while (set.next()) {
                 String number = set.getString(2);
                 String pin = set.getString(3);
                 int balance = set.getInt(4);
                 result.add(new Card(number, pin, balance));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return result;
     }
