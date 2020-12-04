@@ -36,6 +36,8 @@ Hard:
   
 Challenging:
 
+    
+
    [Cinema Room Manager]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/easy/cinema>
    [Bulls and Cows]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/easy/bullscows>
    [Coffee Machine]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/easy/machine>
@@ -59,5 +61,5 @@ Challenging:
    [Linear Equation Solver]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/solver>
    [Minesweeper]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/minesweeper>
    [Digit Recognition]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/recognition>
-   [Simple Banking System]: <https://github.com/iKinsure/java-with-jetbrains/tree/master/com/ikinsure/hyperskill/hard/banking>
+   [Simple Banking System]: <src/main/java/com/ikinsure/hyperskill/hard/banking>
 
