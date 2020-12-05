@@ -13,17 +13,16 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static final String REDIRECT_URI = "http://localhost:8080/";
-    private static final String ACCESS_TOKEN_URL = "https://accounts.spotify.com/api/token";
-    private static final String CLIENT_ID = "6e70a3870fbe4d4bae4982467b032a2f";
-    private static final String CLIENT_SECRET = "90f7f9f1909548aa8f3f6c5ce74e3e8c";
-    private static final String AUTH = "https://accounts.spotify.com/authorize?response_type=code&client_id=6e70a3870fbe4d4bae4982467b032a2f&redirect_uri=http://localhost:8080/";
-
     private static String code = null;
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
+        // set the server path
+        Config.SERVER_PATH = (args == null || args.length < 2)
+                ? Config.SERVER_PATH
+                : args[List.of(args).indexOf("-access") + 1];
 
+        // main loop
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String input = scanner.nextLine().toLowerCase();
@@ -35,7 +34,7 @@ public class Main {
             }
             switch (input) {
                 case "auth":
-                    System.out.println(auth() ? "---SUCCESS---" : "---FAILED---");
+                    System.out.println(auth() ? "---SUCCESS---" : "Server error");
                     break;
                 case "new":
                     System.out.println("---NEW RELEASES---\n" +
@@ -74,8 +73,14 @@ public class Main {
     }
 
     private static boolean auth() throws IOException, InterruptedException {
+
+        String uri = Config.SERVER_PATH + "/authorize" +
+                "?client_id=" + Config.CLIENT_ID +
+                "&redirect_uri=" + Config.REDIRECT_URI +
+                "&response_type=code";
+
         System.out.println("use this link to request the access code:");
-        System.out.println(AUTH);
+        System.out.println(uri);
         System.out.println("waiting for code...");
 
         // create server
@@ -116,13 +121,13 @@ public class Main {
             HttpClient client = HttpClient.newBuilder().build();
             HttpRequest request = HttpRequest.newBuilder()
                     .header("Content-Type", "application/x-www-form-urlencoded")
-                    .uri(URI.create(ACCESS_TOKEN_URL))
+                    .uri(URI.create(Config.SERVER_PATH + "/api/token"))
                     .POST(HttpRequest.BodyPublishers.ofString(
                             "grant_type=authorization_code" +
                                     "&" + code +
-                                    "&redirect_uri=" + REDIRECT_URI +
-                                    "&client_id=" + CLIENT_ID +
-                                    "&client_secret=" + CLIENT_SECRET))
+                                    "&redirect_uri=" + Config.REDIRECT_URI +
+                                    "&client_id=" + Config.CLIENT_ID +
+                                    "&client_secret=" + Config.CLIENT_SECRET))
                     .build();
 
             // show response
