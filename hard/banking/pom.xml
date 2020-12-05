@@ -11,5 +11,14 @@
 
     <artifactId>banking</artifactId>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.32.3.2</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

@@ -39,29 +39,31 @@ Challenging:
 
     
 
-   [Cinema Room Manager]: <src/main/java/com/ikinsure/hyperskill/easy/cinema>
-   [Bulls and Cows]: <src/main/java/com/ikinsure/hyperskill/easy/bullscows>
-   [Coffee Machine]: <src/main/java/com/ikinsure/hyperskill/easy/machine>
-   [Tic-Tac-Toe]: <src/main/java/com/ikinsure/hyperskill/easy/tictactoe>
-   [Simple Chatty Bot]: <src/main/java/com/ikinsure/hyperskill/easy/bot>
-   [Battleship]: <src/main/java/com/ikinsure/hyperskill/medium/battleship>
-   [Encryption-Decryption]: <src/main/java/com/ikinsure/hyperskill/medium/encryptdecrypt>
-   [Numeric Matrix Processor]: <src/main/java/com/ikinsure/hyperskill/medium/processor>
-   [Game of Life]: <src/main/java/com/ikinsure/hyperskill/medium/life>
-   [Tic-Tac-Toe with AI]: <src/main/java/com/ikinsure/hyperskill/medium/tictactoe>
-   [Readability Score]: <src/main/java/com/ikinsure/hyperskill/medium/readability>
-   [Error Correcting Encoder-Decoder]: <src/main/java/com/ikinsure/hyperskill/medium/correcter>
-   [Numeral System Converter]: <src/main/java/com/ikinsure/hyperskill/medium/converter>
-   [Phone Book]: <src/main/java/com/ikinsure/hyperskill/hard/phonebook>
-   [Budget Manager]: <src/main/java/com/ikinsure/hyperskill/hard/budget>
-   [Smart Calculator]: <src/main/java/com/ikinsure/hyperskill/hard/calculator>
-   [Sorting Tool]: <src/main/java/com/ikinsure/hyperskill/hard/sorting>
-   [Simple Search Engine]: <src/main/java/com/ikinsure/hyperskill/hard/search>
-   [Maze Runner]: <src/main/java/com/ikinsure/hyperskill/hard/maze>
-   [Flashcards]: <src/main/java/com/ikinsure/hyperskill/hard/flashcards>
-   [Linear Equation Solver]: <src/main/java/com/ikinsure/hyperskill/hard/solver>
-   [Minesweeper]: <src/main/java/com/ikinsure/hyperskill/hard/minesweeper>
-   [Digit Recognition]: <src/main/java/com/ikinsure/hyperskill/hard/recognition>
-   [Simple Banking System]: <src/main/java/com/ikinsure/hyperskill/hard/banking>
-   [Music Advisor]: <src/main/java/com/ikinsure/hyperskill/hard/advisor>
+   [Cinema Room Manager]: <easy/cinema/src/main/java/org/ikinsure/easy/cinema>
+   [Bulls and Cows]: <easy/bullscows/src/main/java/org/ikinsure/easy/bullscows>
+   [Coffee Machine]: <easy/machine/src/main/java/org/ikinsure/easy/machine>
+   [Tic-Tac-Toe]: <easy/tictactoe/src/main/java/org/ikinsure/easy/tictactoe>
+   [Simple Chatty Bot]: <easy/bot/src/main/java/org/ikinsure/easy/bot>
+   
+   [Battleship]: <medium/battleship/src/main/java/org/ikinsure/medium/battleship>
+   [Encryption-Decryption]: <medium/encryptdecrypt/src/main/java/org/ikinsure/medium/encryptdecrypt>
+   [Numeric Matrix Processor]: <medium/processor/src/main/java/org/ikinsure/medium/processor>
+   [Game of Life]: <medium/life/src/main/java/org/ikinsure/medium/life>
+   [Tic-Tac-Toe with AI]: <medium/tictactoeai/src/main/java/org/ikinsure/medium/tictactoeai>
+   [Readability Score]: <medium/readability/src/main/java/org/ikinsure/medium/readability>
+   [Error Correcting Encoder-Decoder]: <medium/correcter/src/main/java/org/ikinsure/medium/correcter>
+   [Numeral System Converter]: <medium/converter/src/main/java/org/ikinsure/medium/converter>
+   
+   [Phone Book]: <hard/phonebook/src/main/java/org/ikinsure/hard/phonebook>
+   [Budget Manager]: <hard/budget/src/main/java/org/ikinsure/hard/budget>
+   [Smart Calculator]: <hard/calculator/src/main/java/org/ikinsure/hard/calculator>
+   [Sorting Tool]: <hard/sorting/src/main/java/org/ikinsure/hard/sorting>
+   [Simple Search Engine]: <hard/search/src/main/java/org/ikinsure/hard/search>
+   [Maze Runner]: <hard/maze/src/main/java/org/ikinsure/hard/maze>
+   [Flashcards]: <hard/flashcards/src/main/java/org/ikinsure/hard/flashcards>
+   [Linear Equation Solver]: <hard/solver/src/main/java/org/ikinsure/hard/solver>
+   [Minesweeper]: <hard/minesweeper/src/main/java/org/ikinsure/hard/minesweeper>
+   [Digit Recognition]: <hard/recognition/src/main/java/org/ikinsure/hard/recognition>
+   [Simple Banking System]: <hard/banking/src/main/java/org/ikinsure/hard/banking>
+   [Music Advisor]: <hard/advisor/src/main/java/org/ikinsure/hard/advisor>
 
