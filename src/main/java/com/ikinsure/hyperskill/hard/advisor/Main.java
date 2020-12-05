@@ -72,16 +72,21 @@ public class Main {
         }
     }
 
-    private static boolean auth() throws IOException, InterruptedException {
 
-        String uri = Config.SERVER_PATH + "/authorize" +
+    private static String createPermissionUri() {
+        return Config.SERVER_PATH + "/authorize" +
                 "?client_id=" + Config.CLIENT_ID +
                 "&redirect_uri=" + Config.REDIRECT_URI +
                 "&response_type=code";
+    }
 
-        System.out.println("use this link to request the access code:");
-        System.out.println(uri);
-        System.out.println("waiting for code...");
+    private static boolean auth() throws IOException, InterruptedException {
+
+        // uri
+        String uri = createPermissionUri();
+        System.out.println("use this link to request the access code:\n" +
+                uri + "\n" +
+                "waiting for code...");
 
         // create server
         HttpServer server = HttpServer.create();
@@ -91,17 +96,19 @@ public class Main {
         server.createContext("/",
                 exchange -> {
                     String query = exchange.getRequestURI().getQuery();
-                    if (query != null && query.startsWith("code")) {
-                        code = query;
+                    if (query == null) {
+                        query = "Processing...";
+                    } else if (query.startsWith("code")) {
+                        code = query.substring(5);
                         query = "Got the code. Return back to your program.";
                     } else {
                         query = "Authorization code not found. Try again.";
+                        code = query;
                     }
                     exchange.sendResponseHeaders(200, query.length());
                     exchange.getResponseBody().write(query.getBytes());
                     exchange.getResponseBody().close();
-                }
-        );
+                });
 
         // running
         server.start();
@@ -110,33 +117,27 @@ public class Main {
         }
         server.stop(1);
 
-        // correct code
-        if (code.startsWith("code")) {
+        // when received
+        System.out.println("code received\n" +
+                "making http request for access_token... ");
 
-            // when received
-            System.out.println("code received");
-            System.out.println("making http request for access_token...");
+        // create client with request
+        HttpClient client = HttpClient.newBuilder().build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .uri(URI.create(Config.SERVER_PATH + "/api/token"))
+                .POST(HttpRequest.BodyPublishers.ofString("grant_type=authorization_code" +
+                                                                "&code=" + code +
+                                                                "&redirect_uri=" + Config.REDIRECT_URI +
+                                                                "&client_id=" + Config.CLIENT_ID +
+                                                                "&client_secret=" + Config.CLIENT_SECRET))
+                .build();
 
-            // create client with request
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .uri(URI.create(Config.SERVER_PATH + "/api/token"))
-                    .POST(HttpRequest.BodyPublishers.ofString(
-                            "grant_type=authorization_code" +
-                                    "&" + code +
-                                    "&redirect_uri=" + Config.REDIRECT_URI +
-                                    "&client_id=" + Config.CLIENT_ID +
-                                    "&client_secret=" + Config.CLIENT_SECRET))
-                    .build();
-
-            // show response
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("response:");
-            System.out.println(response.body());
-            return !response.body().contains("error");
-        }
-        return false;
+        // show response
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println("response:");
+        System.out.println(response.body());
+        return !response.body().contains("error");
     }
 }
 
