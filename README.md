@@ -45,6 +45,7 @@ Challenging:
    [Tic-Tac-Toe]: <easy/tictactoe/src/main/java/org/ikinsure/easy/tictactoe>
    [Simple Chatty Bot]: <easy/bot/src/main/java/org/ikinsure/easy/bot>
    
+   <!-- TODO: -->
    [Battleship]: <medium/battleship/src/main/java/org/ikinsure/medium/battleship>
    [Encryption-Decryption]: <medium/encryptdecrypt/src/main/java/org/ikinsure/medium/encryptdecrypt>
    [Numeric Matrix Processor]: <medium/processor/src/main/java/org/ikinsure/medium/processor>

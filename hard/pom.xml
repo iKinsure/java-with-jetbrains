@@ -17,7 +17,6 @@
     <artifactId>hard</artifactId>
 
     <modules>
-
         <module>advisor</module>
         <module>banking</module>
         <module>budget</module>
