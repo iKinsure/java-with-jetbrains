@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    private static final String BASE_FILE = "C:\\Users\\Wojciech\\IdeaProjects\\zabawa\\directory.txt";
-    private static final String FIND_FILE = "C:\\Users\\Wojciech\\IdeaProjects\\zabawa\\find.txt";
+    private static final String BASE_FILE = "directory.txt";
+    private static final String FIND_FILE = "find.txt";
 
     public static void main(String[] args) throws IOException {
 
