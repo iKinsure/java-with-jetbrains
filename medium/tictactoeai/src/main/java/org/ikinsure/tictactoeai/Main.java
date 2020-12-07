@@ -89,21 +89,21 @@ public class Main {
                 break;
             case EASY:
                 moveEasy(player);
-                System.out.println("Making move level \"com.ikinsure.hyperskill.easy\"");
+                System.out.println("Making move level \"easy\"");
                 break;
             case MEDIUM:
                 moveMedium(player);
-                System.out.println("Making move level \"com.ikinsure.hyperskill.medium\"");
+                System.out.println("Making move level \"medium\"");
                 break;
             case HARD:
                 moveHard(player);
-                System.out.println("Making move level \"com.ikinsure.hyperskill.hard\"");
+                System.out.println("Making move level \"hard\"");
                 break;
         }
         round++;
     }
 
-    /** com.ikinsure.hyperskill.easy mode move */
+    /** easy mode move */
     private static void moveEasy(Player player) {
         boolean done = false;
         while (!done) {
@@ -139,7 +139,7 @@ public class Main {
         }
     }
 
-    /** com.ikinsure.hyperskill.medium mode move */
+    /** medium mode move */
     private static void moveMedium(Player player) {
         boolean done = false;
         int thisPos = Utilities.oneMoveToWin(player.getSide().sign, board, WIN_COMBINATIONS);
@@ -156,7 +156,7 @@ public class Main {
         }
     }
 
-    /** com.ikinsure.hyperskill.hard mode move */
+    /** hard mode move */
     private static void moveHard(Player player) {
         int bestScore = Integer.MIN_VALUE;
         int bestPosition = -1;
