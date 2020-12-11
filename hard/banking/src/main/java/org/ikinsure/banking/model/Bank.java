@@ -19,10 +19,11 @@ public class Bank {
 
     // generate new unique card
     public Card createCard() {
-        Set<Card> cards = database.selectAll();
+        Set<String> numbers = database.selectAllNumbers();
         while (true) {
-            Card card = new Card(generateNumber(), generatePin(), 0);
-            if (cards.add(card)) {
+            String number = generateNumber();
+            if (numbers.add(number)) {
+                Card card = new Card(number, generatePin(), 0);
                 database.insert(card);
                 return card;
             }

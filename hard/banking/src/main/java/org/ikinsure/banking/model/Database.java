@@ -87,15 +87,14 @@ public class Database {
         return Optional.empty();
     }
 
-    public Set<Card> selectAll() {
-        Set<Card> result = new HashSet<>();
+    public Set<String> selectAllNumbers() {
+        Set<String> result = new HashSet<>();
         try (Connection con = dataSource.getConnection()) {
-            ResultSet set = con.prepareStatement("SELECT * FROM card").executeQuery();
+            ResultSet set = con.prepareStatement("SELECT number FROM card").executeQuery();
             while (set.next()) {
-                String number = set.getString(2);
-                String pin = set.getString(3);
-                int balance = set.getInt(4);
-                result.add(new Card(number, pin, balance));
+                String number = set.getString(1);
+                System.out.println(number);
+                result.add(number);
             }
         } catch (SQLException e) {
             e.printStackTrace();
