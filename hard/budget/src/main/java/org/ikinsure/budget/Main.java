@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
@@ -101,7 +102,8 @@ public class Main {
     }
 
     private static void save() throws IOException {
-        try (FileWriter writer = new FileWriter(FILENAME)) {
+        String root = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
+        try (FileWriter writer = new FileWriter(root + FILENAME)) {
             writer.write(String.valueOf(balance));
             writer.write("\n");
             for (Purchase p : manager.getPurchases()) {
@@ -117,7 +119,8 @@ public class Main {
     }
 
     private static void load() throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILENAME))) {
+        String root = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
+        try (BufferedReader reader = new BufferedReader(new FileReader(root + FILENAME))) {
             manager.clear();
             balance = Double.parseDouble(reader.readLine());
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {

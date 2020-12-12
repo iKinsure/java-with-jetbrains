@@ -26,7 +26,7 @@ public class HashMultiSet<E> implements MultiSet<E> {
     }
 
     /**
-     * for project purpose, TODO: need to make more generic
+     * for project purpose
      * @param comparator for comparing then keys
      */
     public void sort(Comparator<E> comparator) {

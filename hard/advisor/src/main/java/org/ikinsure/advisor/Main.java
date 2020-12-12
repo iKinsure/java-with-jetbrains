@@ -2,25 +2,32 @@ package org.ikinsure.advisor;
 
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
     private static String code = null;
+    private static final String settingsFile = "settings.properties";
+    private static final Properties settings = new Properties();
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
+        // load default settings
+        String root = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
+        settings.load(new FileInputStream(root + settingsFile));
+
         // set the server path
-        Config.SERVER_PATH = (args == null || args.length < 2)
-                ? Config.SERVER_PATH
+        String serverPath = (args == null || args.length < 2)
+                ? settings.getProperty("serverPath")
                 : args[List.of(args).indexOf("-access") + 1];
+        settings.setProperty("serverPath", serverPath);
 
         // main loop
         Scanner scanner = new Scanner(System.in);
@@ -72,11 +79,10 @@ public class Main {
         }
     }
 
-
     private static String createPermissionUri() {
-        return Config.SERVER_PATH + "/authorize" +
-                "?client_id=" + Config.CLIENT_ID +
-                "&redirect_uri=" + Config.REDIRECT_URI +
+        return settings.getProperty("serverPath") + "/authorize" +
+                "?client_id=" + settings.getProperty("clientID") +
+                "&redirect_uri=" + settings.getProperty("redirectURI") +
                 "&response_type=code";
     }
 
@@ -125,12 +131,12 @@ public class Main {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                .uri(URI.create(Config.SERVER_PATH + "/api/token"))
+                .uri(URI.create(settings.getProperty("serverPath") + "/api/token"))
                 .POST(HttpRequest.BodyPublishers.ofString("grant_type=authorization_code" +
                                                                 "&code=" + code +
-                                                                "&redirect_uri=" + Config.REDIRECT_URI +
-                                                                "&client_id=" + Config.CLIENT_ID +
-                                                                "&client_secret=" + Config.CLIENT_SECRET))
+                                                                "&redirect_uri=" + settings.getProperty("redirectURI") +
+                                                                "&client_id=" + settings.getProperty("clientID") +
+                                                                "&client_secret=" + settings.getProperty("clientSecret")))
                 .build();
 
         // show response

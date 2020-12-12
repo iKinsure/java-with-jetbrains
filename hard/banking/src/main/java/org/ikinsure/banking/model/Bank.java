@@ -7,8 +7,8 @@ import java.util.Set;
 public class Bank {
 
     private final Database database;
-    private final Random random;
     private final String IIN;
+    private final Random random;
 
     public Bank(String file) {
         this.database = Database.getInstance();
@@ -56,7 +56,7 @@ public class Bank {
     }
 
     // luhn algorithm implemented
-    private int luhnFormula(String data) {
+    public int luhnFormula(String data) {
         int counter = 0;
         for (int i = 0; i < data.length(); i++) {
             int num = Integer.parseInt(String.valueOf(data.charAt(i)));
@@ -71,7 +71,7 @@ public class Bank {
         return counter;
     }
 
-    private String generateNumber() {
+    public String generateNumber() {
         StringBuilder builder = new StringBuilder(IIN);
         for (int i = 0; i < 9; i++) {
             builder.append(random.nextInt(10));
@@ -81,13 +81,13 @@ public class Bank {
     }
 
     // last number of card
-    private int generateCheckSum(String data) {
+    public int generateCheckSum(String data) {
         int num = luhnFormula(data) % 10;
         return num == 0 ? 0 : 10 - num;
     }
 
     // 4 digits pin for card
-    private String generatePin() {
+    public String generatePin() {
         return String.valueOf(random.nextInt(10)) + random.nextInt(10) +
                 random.nextInt(10) + random.nextInt(10);
     }

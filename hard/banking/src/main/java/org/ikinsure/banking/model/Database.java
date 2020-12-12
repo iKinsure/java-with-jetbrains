@@ -4,6 +4,7 @@ import org.sqlite.SQLiteDataSource;
 
 import java.sql.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,7 +25,9 @@ public class Database {
     }
 
     public void createTable(String fileName) {
-        dataSource.setUrl("jdbc:sqlite:" + fileName);
+        String root = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
+        System.out.println(root);
+        dataSource.setUrl("jdbc:sqlite:" + root + fileName);
         try (Connection con = dataSource.getConnection()) {
             con.createStatement().execute("CREATE TABLE IF NOT EXISTS card" +
                     "(id INTEGER, number TEXT, pin TEXT, balance INTEGER DEFAULT 0)");
