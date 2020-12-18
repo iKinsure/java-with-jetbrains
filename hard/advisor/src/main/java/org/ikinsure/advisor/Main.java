@@ -13,27 +13,14 @@ import java.util.*;
 
 public class Main {
 
-    private static String code = null;
-    private static final String settingsFile = "settings.properties";
-    private static final Properties settings = new Properties();
-
     public static void main(String[] args) throws IOException, InterruptedException {
-
-        // load default settings
-        String root = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
-        settings.load(new FileInputStream(root + settingsFile));
-
-        // set the server path
-        String serverPath = (args == null || args.length < 2)
-                ? settings.getProperty("serverPath")
-                : args[List.of(args).indexOf("-access") + 1];
-        settings.setProperty("serverPath", serverPath);
+        Config.matchArguments(args);
 
         // main loop
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String input = scanner.nextLine().toLowerCase();
-            if (code == null) {
+            if (Config.AUTH_CODE.get().isEmpty()) {
                 if (!input.equals("auth") && !input.equals("exit")) {
                     System.out.println("Please, provide access for application.");
                     continue;
@@ -80,9 +67,9 @@ public class Main {
     }
 
     private static String createPermissionUri() {
-        return settings.getProperty("serverPath") + "/authorize" +
-                "?client_id=" + settings.getProperty("clientID") +
-                "&redirect_uri=" + settings.getProperty("redirectURI") +
+        return Config.ACCESS + "/authorize" +
+                "?client_id=" + Config.CLIENT_ID +
+                "&redirect_uri=" + Config.REDIRECT_URI +
                 "&response_type=code";
     }
 
@@ -105,11 +92,11 @@ public class Main {
                     if (query == null) {
                         query = "Processing...";
                     } else if (query.startsWith("code")) {
-                        code = query.substring(5);
+                        Config.AUTH_CODE.set(query.substring(5));
                         query = "Got the code. Return back to your program.";
                     } else {
                         query = "Authorization code not found. Try again.";
-                        code = query;
+                        Config.AUTH_CODE.set(query);
                     }
                     exchange.sendResponseHeaders(200, query.length());
                     exchange.getResponseBody().write(query.getBytes());
@@ -118,7 +105,7 @@ public class Main {
 
         // running
         server.start();
-        while (code == null) {
+        while (Config.AUTH_CODE.get().isEmpty()) {
             Thread.sleep(10);
         }
         server.stop(1);
@@ -131,12 +118,12 @@ public class Main {
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                .uri(URI.create(settings.getProperty("serverPath") + "/api/token"))
+                .uri(URI.create(Config.ACCESS + "/api/token"))
                 .POST(HttpRequest.BodyPublishers.ofString("grant_type=authorization_code" +
-                                                                "&code=" + code +
-                                                                "&redirect_uri=" + settings.getProperty("redirectURI") +
-                                                                "&client_id=" + settings.getProperty("clientID") +
-                                                                "&client_secret=" + settings.getProperty("clientSecret")))
+                                                                "&code=" + Config.AUTH_CODE +
+                                                                "&redirect_uri=" + Config.REDIRECT_URI +
+                                                                "&client_id=" + Config.CLIENT_ID +
+                                                                "&client_secret=" + Config.SECRET))
                 .build();
 
         // show response
