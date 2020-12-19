@@ -31,7 +31,11 @@ public enum Config {
         return actual;
     }
 
-    static void matchArguments(String[] args) {
+    /**
+     * match all input params to config
+     * @param args input program arguments
+     */
+    public static void matchArguments(String[] args) {
         List<String> list = List.of(args);
         for (Config config : Config.values()) {
             int index = list.indexOf("-" + config.name().toLowerCase());
@@ -39,5 +43,37 @@ public enum Config {
                 config.actual = list.get(index + 1);
             }
         }
+    }
+
+    /** creates spotify permission link */
+    public static String getPermissionUri() {
+        return Config.ACCESS + "/authorize" +
+                "?client_id=" + Config.CLIENT_ID +
+                "&redirect_uri=" + Config.REDIRECT_URI +
+                "&response_type=code";
+    }
+
+    public static String getApiToken() {
+        return Config.ACCESS + "/api/token";
+    }
+
+    public static String getCategoriesUri(int limit) {
+        return Config.RESOURCE + "/v1/browse/categories?limit=" + limit;
+    }
+
+    public static String getNewReleasesUri(int limit) {
+        return Config.RESOURCE + "/v1/browse/new-releases?limit=" + limit;
+    }
+
+    public static String getFeaturedPlaylistsUri(int limit) {
+        return Config.RESOURCE + "/v1/browse/featured-playlists?limit=" + limit;
+    }
+
+    public static String getPlaylist(String id, int limit) {
+        return Config.RESOURCE + "/v1/browse/categories/" + id + "/playlists?limit=" + limit;
+    }
+
+    public static String getAccess() {
+        return Config.RESOURCE + "/v1/me";
     }
 }

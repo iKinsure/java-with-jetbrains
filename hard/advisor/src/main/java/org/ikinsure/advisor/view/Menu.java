@@ -25,7 +25,7 @@ public class Menu {
     }
 
     public Item selectItem() {
-        String id = scanner.nextLine();
+        String id = scanner.next();
         return items.stream()
                 .filter(i -> i.id.equals(id))
                 .findFirst()

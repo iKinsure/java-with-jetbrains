@@ -1,7 +1,5 @@
 package org.ikinsure.advisor.model;
 
-import java.net.URI;
-
 public class User {
 
     private final String name;
