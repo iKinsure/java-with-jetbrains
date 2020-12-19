@@ -4,11 +4,13 @@ import java.util.List;
 
 public enum Config {
 
-    ACCESS("https://accounts.spotify.com"), // server path
+    ACCESS("https://accounts.spotify.com"), // connect server path
     REDIRECT_URI("http://localhost:8080/"), // local server address
-    CLIENT_ID("6e70a3870fbe4d4bae4982467b032a2f"),
+    CLIENT_ID("6e70a3870fbe4d4bae4982467b032a2f"), // user id
     SECRET("90f7f9f1909548aa8f3f6c5ce74e3e8c"), // test secret code of spotify app
-    AUTH_CODE(""); // permission code
+    AUTH_CODE(""), // permission code
+    RESOURCE("https://api.spotify.com"), // API server path
+    ACCESS_TOKEN(""); // token works as a permission for resources
 
     private String actual;
 
