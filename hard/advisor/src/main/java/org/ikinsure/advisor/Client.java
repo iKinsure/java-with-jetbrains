@@ -17,6 +17,19 @@ public class Client {
     private final Scanner scanner;
     private final MenuController view;
 
+    private enum ResponseFlag {
+        CORRECT, EXCEPTION, ERROR;
+
+        static ResponseFlag validate(String response) {
+            if (response == null || response.isBlank()) {
+                return ResponseFlag.EXCEPTION;
+            } else if (response.contains("error")) {
+                return ResponseFlag.ERROR;
+            }
+            return ResponseFlag.CORRECT;
+        }
+    }
+
     public Client() {
 
         this.session = new Session();
@@ -38,32 +51,45 @@ public class Client {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void authDecision() {
-        if (authenticate()) {
-            String response = session.sendApiGetRequest(Config.getAccess());
-            if (session.validateResponse(response, false)) {
-                User user = manager.createUser(response);
-                System.out.println("Success!");
-            } else {
-                System.out.println("Failed to get access!");
-            }
-        } else {
+        String response = authenticate();
+        ResponseFlag flag = ResponseFlag.validate(response);
+        if (flag == ResponseFlag.ERROR) {
+            Config.AUTH_CODE.set("");
+            System.out.println(getErrorMessage(response));
+        } else if (flag == ResponseFlag.EXCEPTION) {
             Config.AUTH_CODE.set("");
             System.out.println("Failed to authenticate!");
+        } else {
+            JsonObject json = new Gson().fromJson(response, JsonObject.class);
+            Config.ACCESS_TOKEN.set(json.get("access_token").getAsString());
+            response = session.sendApiGetRequest(Config.getAccess());
+            flag = ResponseFlag.validate(response);
+            if (flag == ResponseFlag.ERROR) {
+                System.out.println(getErrorMessage(response));
+            } else if (flag == ResponseFlag.EXCEPTION) {
+                System.out.println("Failed to get API access!");
+            } else {
+                User user = manager.createUser(response);
+                System.out.println("Success!");
+            }
         }
     }
 
     private void newDecision() {
         if (isActive()) {
             String response = session.sendApiGetRequest(Config.getNewReleasesUri(7));
-            if (session.validateResponse(response, false)) {
+            ResponseFlag flag = ResponseFlag.validate(response);
+            if (flag == ResponseFlag.ERROR) {
+                System.out.println(getErrorMessage(response));
+            } else if (flag == ResponseFlag.EXCEPTION) {
+                System.out.println("Failed to get response!");
+            } else {
                 Playlist[] playlists = manager.createPlaylists(response);
                 for (var playlist : playlists) {
                     System.out.println(playlist.getName());
                     System.out.println(playlist.getArtists());
                     System.out.println(playlist.getUri() + "\n");
                 }
-            } else {
-                System.out.println("Failed to get response!");
             }
         }
     }
@@ -71,14 +97,17 @@ public class Client {
     private void featuredDecision() {
         if (isActive()) {
             String response = session.sendApiGetRequest(Config.getFeaturedPlaylistsUri(7));
-            if (session.validateResponse(response, false)) {
+            ResponseFlag flag = ResponseFlag.validate(response);
+            if (flag == ResponseFlag.ERROR) {
+                System.out.println(getErrorMessage(response));
+            } else if (flag == ResponseFlag.EXCEPTION) {
+                System.out.println("Failed to get response!");
+            } else {
                 Playlist[] playlists = manager.createFeatured(response);
                 for (var playlist : playlists) {
                     System.out.println(playlist.getName());
                     System.out.println(playlist.getUri() + "\n");
                 }
-            } else {
-                System.out.println("Failed to get response!");
             }
         }
     }
@@ -86,55 +115,61 @@ public class Client {
     private void categoriesDecision() {
         if (isActive()) {
             String response = session.sendApiGetRequest(Config.getCategoriesUri(15));
-            if (session.validateResponse(response, false)) {
+            ResponseFlag flag = ResponseFlag.validate(response);
+            if (flag == ResponseFlag.ERROR) {
+                System.out.println(getErrorMessage(response));
+            } else if (flag == ResponseFlag.EXCEPTION) {
+                System.out.println("Failed to get response!");
+            } else {
                 JsonObject json = new Gson().fromJson(response, JsonObject.class).getAsJsonObject("categories");
                 JsonArray array = json.getAsJsonArray("items");
                 for (int i = 0; i < array.size(); i++) {
                     System.out.println(array.get(i).getAsJsonObject().get("name").getAsString());
                 }
-            } else {
-                System.out.println("Failed to get response!");
             }
         }
     }
 
     private void playlistsDecision() {
         String category = view.getLastInput().substring(10).toLowerCase();
+        //String category = view.getLastInput().split("\\s+")[1].toLowerCase(); // for test?
         category = category.replace(" ", "");
         if (isActive()) {
             String response = session.sendApiGetRequest(Config.getPlaylist(category, 5));
-            if (session.validateResponse(response, false)) {
+            ResponseFlag flag = ResponseFlag.validate(response);
+            if (flag == ResponseFlag.ERROR) {
+                System.out.println(getErrorMessage(response));
+            } else if (flag == ResponseFlag.EXCEPTION) {
+                System.out.println("Failed to get response!");
+            } else {
                 Playlist[] playlists = manager.createFeatured(response);
                 for (var playlist : playlists) {
                     System.out.println(playlist.getName());
                     System.out.println(playlist.getUri() + "\n");
                 }
-            } else {
-                System.out.println("Unknown category name.");
             }
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private String getErrorMessage(String response) {
+        JsonObject json = new Gson().fromJson(response, JsonObject.class);
+        return json.get("error").getAsJsonObject().get("message").getAsString();
+    }
+
     /**
      * Spotify user authentication with OAuth 2.0
      * @return true if success
      */
-    private boolean authenticate() {
+    private String authenticate() {
         System.out.println("use this link to request the access code:\n" +
                 Config.getPermissionUri() + "\n" +
                 "waiting for code...");
         session.createAndRunRequestServer();
         System.out.println("code received\n" +
                 "making http request for access_token... ");
-        String response = session.sendAuthorizationRequest();
-        if (session.validateResponse(response, false)) {
-            JsonObject json = new Gson().fromJson(response, JsonObject.class);
-            Config.ACCESS_TOKEN.set(json.get("access_token").getAsString());
-            return true;
-        }
-        return false;
+        return session.sendAuthorizationRequest();
     }
 
     /**

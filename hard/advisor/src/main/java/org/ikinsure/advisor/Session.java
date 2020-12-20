@@ -1,7 +1,5 @@
 package org.ikinsure.advisor;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,29 +25,10 @@ public class Session {
                 .build();
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             return "";
         }
     }
-
-    /**
-     * checks if response format is correct
-     * @param response response to valid
-     * @return true if everything is okay
-     */
-    public boolean validateResponse(String response, boolean deep) {
-        final boolean error = response != null && !response.isBlank() && !response.contains("error");
-        if (deep) {
-            try {
-                new Gson().fromJson(response, Object.class);
-                return error;
-            } catch (JsonSyntaxException e) {
-                return false;
-            }
-        }
-        return error;
-    }
-
 
     /**
      * sends a user authorization code
@@ -67,7 +46,7 @@ public class Session {
                 .build();
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             return "";
         }
     }

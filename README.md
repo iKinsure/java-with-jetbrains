@@ -15,8 +15,8 @@ Medium:
   - [Battleship]
   - [Encryption-Decryption]
   - [Numeric Matrix Processor]
-  - [Game of Life]
-  - [Tic-Tac-Toe with AI]
+  - [Game of Life] - java swing
+  - [Tic-Tac-Toe with AI] - minimax algorithm
   - [Readability Score]
   - [Error Correcting Encoder-Decoder]
   - [Numeral System Converter]
@@ -27,13 +27,13 @@ Hard:
   - [Smart Calculator]
   - [Sorting Tool]
   - [Simple Search Engine]
-  - [Maze Runner]
+  - [Maze Runner] - graph kruskal algorithm
   - [Flashcards]
   - [Linear Equation Solver]
   - [Minesweeper]
-  - [Digit Recognition]
-  - [Simple Banking System]
-  - [Music Advisor]
+  - [Digit Recognition] - machine learning
+  - [Simple Banking System] - with SQLite
+  - [Music Advisor] - spotify API
   
 Challenging:
 
