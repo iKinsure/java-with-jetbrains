@@ -1,7 +1,7 @@
 package org.ikinsure.advisor;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -18,19 +18,6 @@ public class Session {
         this.client = HttpClient.newBuilder().build();
     }
 
-    public boolean auth() {
-        String uri = Config.getPermissionUri();
-        System.out.println("use this link to request the access code:\n" + uri + "\n" + "waiting for code...");
-        createAndRunRequestServer();
-        System.out.println("code received\n" + "making http request for access_token... ");
-        String response = sendAuthorizationRequest();
-        if (response == null || response.contains("error")) {
-            return false;
-        }
-        JsonObject json = new Gson().fromJson(response, JsonObject.class);
-        Config.ACCESS_TOKEN.set(json.get("access_token").getAsString());
-        return true;
-    }
 
     public String sendApiGetRequest(String uri) {
         HttpRequest request = HttpRequest.newBuilder()
@@ -46,22 +33,29 @@ public class Session {
     }
 
     /**
-     * checks if app has a permission
-     * @return true if there is permission
+     * checks if response format is correct
+     * @param response response to valid
+     * @return true if everything is okay
      */
-    public boolean isActive() {
-        if (Config.AUTH_CODE.get().isEmpty()) {
-            System.out.println("Please, provide access for application.");
-            return false;
+    public boolean validateResponse(String response, boolean deep) {
+        final boolean error = response != null && !response.isBlank() && !response.contains("error");
+        if (deep) {
+            try {
+                new Gson().fromJson(response, Object.class);
+                return error;
+            } catch (JsonSyntaxException e) {
+                return false;
+            }
         }
-        return true;
+        return error;
     }
+
 
     /**
      * sends a user authorization code
-     * @return response as String
+     * @return response as a String
      */
-    private String sendAuthorizationRequest() {
+    public String sendAuthorizationRequest() {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .uri(URI.create(Config.getApiToken()))
@@ -82,20 +76,16 @@ public class Session {
      * runs local server and waits for authorization permission from user
      * @return true if no exception
      */
-    private boolean createAndRunRequestServer() {
+    public boolean createAndRunRequestServer() {
         try {
-            HttpServer server = HttpServer.create();
-            server.bind(new InetSocketAddress(8080), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
             server.createContext("/", exchange -> {
                 String query = exchange.getRequestURI().getQuery();
-                if (query == null) {
-                    query = "Processing...";
-                } else if (query.startsWith("code")) {
+                if (query != null && query.contains("code")) {
                     Config.AUTH_CODE.set(query.substring(5));
                     query = "Got the code. Return back to your program.";
                 } else {
                     query = "Authorization code not found. Try again.";
-                    Config.AUTH_CODE.set(query);
                 }
                 exchange.sendResponseHeaders(200, query.length());
                 exchange.getResponseBody().write(query.getBytes());
@@ -105,7 +95,7 @@ public class Session {
             while (Config.AUTH_CODE.get().isEmpty()) {
                 Thread.sleep(10);
             }
-            server.stop(1);
+            server.stop(10);
         } catch (IOException | InterruptedException e) {
             return false;
         }

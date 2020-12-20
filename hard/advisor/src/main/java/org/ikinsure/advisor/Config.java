@@ -10,7 +10,8 @@ public enum Config {
     SECRET("90f7f9f1909548aa8f3f6c5ce74e3e8c"), // test secret code of spotify app
     AUTH_CODE(""), // permission code
     RESOURCE("https://api.spotify.com"), // API server path
-    ACCESS_TOKEN(""); // token works as a permission for resources
+    ACCESS_TOKEN(""), // token works as a permission for resources
+    PAGE("5"); // pages per request
 
     private String actual;
 
@@ -45,12 +46,9 @@ public enum Config {
         }
     }
 
-    /** creates spotify permission link */
     public static String getPermissionUri() {
-        return Config.ACCESS + "/authorize" +
-                "?client_id=" + Config.CLIENT_ID +
-                "&redirect_uri=" + Config.REDIRECT_URI +
-                "&response_type=code";
+        return Config.ACCESS + "/authorize" + "?client_id=" + Config.CLIENT_ID +
+                "&redirect_uri=" + Config.REDIRECT_URI + "&response_type=code";
     }
 
     public static String getApiToken() {

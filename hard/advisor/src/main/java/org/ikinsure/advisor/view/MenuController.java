@@ -1,6 +1,7 @@
 package org.ikinsure.advisor.view;
 
 import java.util.ArrayDeque;
+import java.util.Scanner;
 
 /**
  * Class controls menus and views
@@ -8,17 +9,29 @@ import java.util.ArrayDeque;
 public class MenuController {
 
     private final ArrayDeque<Menu> menus;
+    private final String endMessage;
+    private final Scanner scanner;
+    private String lastInput;
 
-    public MenuController() {
+    public MenuController(String endMessage, Scanner scanner) {
         this.menus = new ArrayDeque<>();
+        this.endMessage = endMessage;
+        this.scanner = scanner;
     }
 
+    // customize run method
     public void run(Menu main) {
         menus.offerLast(main);
         while (!menus.isEmpty()) {
-            menus.getLast().selectItem().action.execute();
+            this.lastInput = scanner.nextLine();
+            String id = lastInput.split("\\s+")[0];
+            menus.getLast().selectItem(id).action.execute();
         }
-        System.out.println("---GOODBYE!---");
+        System.out.println(endMessage);
+    }
+
+    public String getLastInput() {
+        return lastInput;
     }
 
     public void setMenu(Menu menu) {

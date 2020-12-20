@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class Menu {
 
     private final List<Item> items; // list of options
-    private Scanner scanner; // linked input
 
     public Menu() {
         this.items = new ArrayList<>();
@@ -20,12 +19,7 @@ public class Menu {
         items.add(item);
     }
 
-    public void setScanner(Scanner scanner) {
-        this.scanner = scanner;
-    }
-
-    public Item selectItem() {
-        String id = scanner.next();
+    public Item selectItem(final String id) {
         return items.stream()
                 .filter(i -> i.id.equals(id))
                 .findFirst()
@@ -41,11 +35,6 @@ public class Menu {
 
         public Builder() {
             menu = new Menu();
-        }
-
-        public Builder setScanner(Scanner scanner) {
-            menu.setScanner(scanner);
-            return this;
         }
 
         public Builder addItem(Item item) {
