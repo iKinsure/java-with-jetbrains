@@ -5,39 +5,39 @@ This repository contains all java developer track projects, created while learni
 ### List of projects
 
 Easy:
-  - [Cinema Room Manager]
-  - [Bulls and Cows]
-  - [Coffee Machine]
-  - [Tic-Tac-Toe]
-  - [Simple Chatty Bot]
+  - [Cinema Room Manager] - reserve your sit
+  - [Bulls and Cows] - guess secret code
+  - [Coffee Machine] - simulation
+  - [Tic-Tac-Toe] - player vs player game
+  - [Simple Chatty Bot] - basic chatty bot
 
 Medium:
-  - [Battleship]
-  - [Encryption-Decryption]
-  - [Numeric Matrix Processor]
-  - [Game of Life] - java swing
-  - [Tic-Tac-Toe with AI] - minimax algorithm
-  - [Readability Score]
-  - [Error Correcting Encoder-Decoder]
-  - [Numeral System Converter]
+  - [Battleship] - classic game
+  - [Encryption-Decryption] - encrypt and decrypt message
+  - [Numeric Matrix Processor] - basic matrix operations
+  - [Game of Life] - java swing app
+  - [Tic-Tac-Toe with AI] - AI uses minimax algorithm
+  - [Readability Score] - text difficulty
+  - [Error Correcting Encoder-Decoder] - binary cipher simulation
+  - [Numeral System Converter] - change number radix 
 
 Hard:
-  - [Phone Book]
-  - [Budget Manager]
-  - [Smart Calculator]
-  - [Sorting Tool]
-  - [Simple Search Engine]
-  - [Maze Runner] - graph kruskal algorithm
-  - [Flashcards]
-  - [Linear Equation Solver]
-  - [Minesweeper]
+  - [Phone Book] - searching and sorting benchmark
+  - [Budget Manager] - app uses comparators
+  - [Smart Calculator] - postfix notation with stacks
+  - [Sorting Tool] - with HashMultiSet
+  - [Simple Search Engine] - uses inverted indexes to improve efficiency
+  - [Maze Runner] - uses graph kruskal's algorithm for minimum spanning tree
+  - [Flashcards] - memorize with possibility to save progress
+  - [Linear Equation Solver] - uses Gauss elimination, works with complex numbers
+  - [Minesweeper] - classic game
   - [Digit Recognition] - machine learning
   - [Simple Banking System] - with SQLite
   - [Music Advisor] - spotify API
   
 Challenging:
 
-    
+
 
    [Cinema Room Manager]: <easy/cinema>
    [Bulls and Cows]: <easy/bullscows>
