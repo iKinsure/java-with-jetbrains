@@ -8,14 +8,30 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/**
+ * Singleton connectivity class
+ */
 public class Session {
 
     private final HttpClient client;
+    private static Session instance;
 
-    public Session() {
+    private Session() {
         this.client = HttpClient.newBuilder().build();
     }
 
+    public static Session getInstance() {
+        if (instance == null) {
+            instance = new Session();
+        }
+        return instance;
+    }
+
+    /**
+     * sends a GET request to spotify API
+     * @param uri resource path
+     * @return a String response body
+     */
     public String sendApiGetRequest(String uri) {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + Config.ACCESS_TOKEN)
@@ -52,9 +68,8 @@ public class Session {
 
     /**
      * runs local server and waits for authorization permission from user
-     * @return true if no exception
      */
-    public boolean createAndRunRequestServer() {
+    public void createAndRunRequestServer() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
             server.createContext("/", exchange -> {
@@ -75,8 +90,7 @@ public class Session {
             }
             server.stop(10);
         } catch (IOException | InterruptedException e) {
-            return false;
+            e.printStackTrace();
         }
-        return true;
     }
 }

@@ -2,6 +2,9 @@ package org.ikinsure.advisor;
 
 import java.util.List;
 
+/**
+ * settings which can be passed from args
+ */
 public enum Config {
 
     ACCESS("https://accounts.spotify.com"), // connect server path

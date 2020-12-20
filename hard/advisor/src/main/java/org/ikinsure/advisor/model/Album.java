@@ -7,6 +7,9 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class represents Spotify album
+ */
 public class Album extends Playlist {
 
     private final List<String> artists;

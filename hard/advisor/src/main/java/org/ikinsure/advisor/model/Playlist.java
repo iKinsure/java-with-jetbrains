@@ -7,6 +7,9 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class represents Spotify playlist
+ */
 public class Playlist implements Printable {
 
     private final String name;
