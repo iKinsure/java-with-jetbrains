@@ -16,7 +16,6 @@ public class Session {
         this.client = HttpClient.newBuilder().build();
     }
 
-
     public String sendApiGetRequest(String uri) {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + Config.ACCESS_TOKEN)
@@ -37,7 +36,7 @@ public class Session {
     public String sendAuthorizationRequest() {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                .uri(URI.create(Config.getApiToken()))
+                .uri(URI.create(Config.ACCESS + "/api/token"))
                 .POST(HttpRequest.BodyPublishers.ofString("grant_type=authorization_code" +
                         "&code=" + Config.AUTH_CODE +
                         "&redirect_uri=" + Config.REDIRECT_URI +

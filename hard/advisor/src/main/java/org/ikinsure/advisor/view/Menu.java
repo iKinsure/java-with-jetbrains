@@ -2,7 +2,6 @@ package org.ikinsure.advisor.view;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Menu represents "take a decision" action with printed list of possibilities

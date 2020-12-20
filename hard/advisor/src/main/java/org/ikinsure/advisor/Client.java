@@ -1,48 +1,35 @@
 package org.ikinsure.advisor;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.ikinsure.advisor.model.Playlist;
-import org.ikinsure.advisor.model.SpotifyManager;
-import org.ikinsure.advisor.model.User;
+import org.ikinsure.advisor.model.*;
 import org.ikinsure.advisor.view.Menu;
 import org.ikinsure.advisor.view.MenuController;
+
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class Client {
 
     private final Session session;
-    private final SpotifyManager manager;
     private final Scanner scanner;
     private final MenuController view;
-
-    private enum ResponseFlag {
-        CORRECT, EXCEPTION, ERROR;
-
-        static ResponseFlag validate(String response) {
-            if (response == null || response.isBlank()) {
-                return ResponseFlag.EXCEPTION;
-            } else if (response.contains("error")) {
-                return ResponseFlag.ERROR;
-            }
-            return ResponseFlag.CORRECT;
-        }
-    }
+    private List<? extends Printable> list;
+    private int pagePointer = 0;
 
     public Client() {
-
         this.session = new Session();
-        this.manager = new SpotifyManager();
         this.scanner = new Scanner(System.in);
         this.view = new MenuController("---GOODBYE!---", scanner);
-
         view.run(new Menu.Builder()
                 .addItem("auth", this::authDecision)
                 .addItem("new", this::newDecision)
                 .addItem("featured", this::featuredDecision)
                 .addItem("categories", this::categoriesDecision)
                 .addItem("playlists", this::playlistsDecision)
+                .addItem("prev", this::prevDecision)
+                .addItem("next", this::nextDecision)
                 .addItem("exit", view::exitAll)
                 .addItem("invalid", () -> System.out.println("Invalid option. Try again."))
                 .build());
@@ -62,96 +49,84 @@ public class Client {
         } else {
             JsonObject json = new Gson().fromJson(response, JsonObject.class);
             Config.ACCESS_TOKEN.set(json.get("access_token").getAsString());
-            response = session.sendApiGetRequest(Config.getAccess());
+            response = session.sendApiGetRequest(Config.RESOURCE + "/v1/me");
             flag = ResponseFlag.validate(response);
             if (flag == ResponseFlag.ERROR) {
                 System.out.println(getErrorMessage(response));
             } else if (flag == ResponseFlag.EXCEPTION) {
                 System.out.println("Failed to get API access!");
             } else {
-                User user = manager.createUser(response);
                 System.out.println("Success!");
             }
         }
     }
 
     private void newDecision() {
-        if (isActive()) {
-            String response = session.sendApiGetRequest(Config.getNewReleasesUri(7));
-            ResponseFlag flag = ResponseFlag.validate(response);
-            if (flag == ResponseFlag.ERROR) {
-                System.out.println(getErrorMessage(response));
-            } else if (flag == ResponseFlag.EXCEPTION) {
-                System.out.println("Failed to get response!");
-            } else {
-                Playlist[] playlists = manager.createPlaylists(response);
-                for (var playlist : playlists) {
-                    System.out.println(playlist.getName());
-                    System.out.println(playlist.getArtists());
-                    System.out.println(playlist.getUri() + "\n");
-                }
-            }
-        }
+        execute(Config.RESOURCE + "/v1/browse/new-releases", new Album.Parser());
     }
 
     private void featuredDecision() {
-        if (isActive()) {
-            String response = session.sendApiGetRequest(Config.getFeaturedPlaylistsUri(7));
-            ResponseFlag flag = ResponseFlag.validate(response);
-            if (flag == ResponseFlag.ERROR) {
-                System.out.println(getErrorMessage(response));
-            } else if (flag == ResponseFlag.EXCEPTION) {
-                System.out.println("Failed to get response!");
-            } else {
-                Playlist[] playlists = manager.createFeatured(response);
-                for (var playlist : playlists) {
-                    System.out.println(playlist.getName());
-                    System.out.println(playlist.getUri() + "\n");
-                }
-            }
-        }
+        execute(Config.RESOURCE + "/v1/browse/featured-playlists", new Playlist.Parser());
     }
 
     private void categoriesDecision() {
+        execute(Config.RESOURCE + "/v1/browse/categories", new Category.Parser());
+    }
+
+    private void playlistsDecision() {
+        String id = view.getLastInput().substring(10).toLowerCase();
+        id = id.replace(" ", "");
+        execute(Config.RESOURCE + "/v1/browse/categories/" + id + "/playlists", new Playlist.Parser());
+    }
+
+    private void nextDecision() {
         if (isActive()) {
-            String response = session.sendApiGetRequest(Config.getCategoriesUri(15));
-            ResponseFlag flag = ResponseFlag.validate(response);
-            if (flag == ResponseFlag.ERROR) {
-                System.out.println(getErrorMessage(response));
-            } else if (flag == ResponseFlag.EXCEPTION) {
-                System.out.println("Failed to get response!");
+            if (list == null || pagePointer + 1 >= (list.size() / Integer.parseInt(Config.PAGE.get()))) {
+                System.out.println("No more pages.");
             } else {
-                JsonObject json = new Gson().fromJson(response, JsonObject.class).getAsJsonObject("categories");
-                JsonArray array = json.getAsJsonArray("items");
-                for (int i = 0; i < array.size(); i++) {
-                    System.out.println(array.get(i).getAsJsonObject().get("name").getAsString());
-                }
+                pagePointer++;
+                showPage(pagePointer);
             }
         }
     }
 
-    private void playlistsDecision() {
-        String category = view.getLastInput().substring(10).toLowerCase();
-        //String category = view.getLastInput().split("\\s+")[1].toLowerCase(); // for test?
-        category = category.replace(" ", "");
+    private void prevDecision() {
         if (isActive()) {
-            String response = session.sendApiGetRequest(Config.getPlaylist(category, 5));
-            ResponseFlag flag = ResponseFlag.validate(response);
-            if (flag == ResponseFlag.ERROR) {
-                System.out.println(getErrorMessage(response));
-            } else if (flag == ResponseFlag.EXCEPTION) {
-                System.out.println("Failed to get response!");
+            if (list == null || pagePointer - 1 < 0) {
+                System.out.println("No more pages.");
             } else {
-                Playlist[] playlists = manager.createFeatured(response);
-                for (var playlist : playlists) {
-                    System.out.println(playlist.getName());
-                    System.out.println(playlist.getUri() + "\n");
-                }
+                pagePointer--;
+                showPage(pagePointer);
             }
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void execute(String request, Parseable parser) {
+        if (isActive()) {
+            String response = session.sendApiGetRequest(request);
+            ResponseFlag flag = ResponseFlag.validate(response);
+            if (flag == ResponseFlag.ERROR) {
+                System.out.println(getErrorMessage(response));
+            } else if (flag == ResponseFlag.EXCEPTION) {
+                System.out.println("Failed to get response!");
+            } else {
+                list = parser.parse(response);
+                pagePointer = -1;
+                nextDecision();
+            }
+        }
+    }
+
+    private void showPage(int page) {
+        final int items = Integer.parseInt(Config.PAGE.get());
+        final int from = page * items;
+        final int to = from + items;
+        IntStream.range(from, to).forEach(i -> list.get(i).print());
+        System.out.println("---PAGE " + to / items +
+                " OF " + list.size() / items + "---");
+    }
 
     private String getErrorMessage(String response) {
         JsonObject json = new Gson().fromJson(response, JsonObject.class);
@@ -164,7 +139,7 @@ public class Client {
      */
     private String authenticate() {
         System.out.println("use this link to request the access code:\n" +
-                Config.getPermissionUri() + "\n" +
+                getPermissionUri() + "\n" +
                 "waiting for code...");
         session.createAndRunRequestServer();
         System.out.println("code received\n" +
@@ -182,5 +157,10 @@ public class Client {
             return false;
         }
         return true;
+    }
+
+    private String getPermissionUri() {
+        return Config.ACCESS + "/authorize" + "?client_id=" + Config.CLIENT_ID +
+                "&redirect_uri=" + Config.REDIRECT_URI + "&response_type=code";
     }
 }

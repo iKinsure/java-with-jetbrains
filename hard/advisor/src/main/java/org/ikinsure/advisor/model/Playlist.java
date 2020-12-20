@@ -1,15 +1,20 @@
 package org.ikinsure.advisor.model;
 
-public class Playlist {
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Playlist implements Printable {
 
     private final String name;
     private final String uri;
-    private final String[] artists;
 
-    public Playlist(String name, String uri, String[] artists) {
+    public Playlist(String name, String uri) {
         this.name = name;
         this.uri = uri;
-        this.artists = artists;
     }
 
     public String getName() {
@@ -20,15 +25,22 @@ public class Playlist {
         return uri;
     }
 
-    public String getArtists() {
-        StringBuilder builder = new StringBuilder("[");
-        for (int i = 0; i < artists.length; i++) {
-            builder.append(artists[i]);
-            if (i + 1 < artists.length) {
-                builder.append(", ");
+    @Override
+    public void print() {
+        System.out.println(name + "\n" + uri + "\n");
+    }
+
+    public static class Parser implements Parseable {
+        @Override
+        public List<? extends Printable> parse(String data) {
+            JsonObject json = new Gson().fromJson(data, JsonObject.class).getAsJsonObject("playlists");
+            JsonArray array = json.getAsJsonArray("items");
+            List<Playlist> playlists = new ArrayList<>();
+            for (int i = 0; i < array.size(); i++) {
+                playlists.add(new Playlist(array.get(i).getAsJsonObject().get("name").getAsString(),
+                        array.get(i).getAsJsonObject().get("external_urls").getAsJsonObject().get("spotify").getAsString()));
             }
+            return playlists;
         }
-        builder.append("]");
-        return builder.toString();
     }
 }

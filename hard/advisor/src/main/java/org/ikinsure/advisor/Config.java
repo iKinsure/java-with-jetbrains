@@ -11,7 +11,7 @@ public enum Config {
     AUTH_CODE(""), // permission code
     RESOURCE("https://api.spotify.com"), // API server path
     ACCESS_TOKEN(""), // token works as a permission for resources
-    PAGE("5"); // pages per request
+    PAGE("5"); // entries per single page
 
     private String actual;
 
@@ -44,34 +44,5 @@ public enum Config {
                 config.actual = list.get(index + 1);
             }
         }
-    }
-
-    public static String getPermissionUri() {
-        return Config.ACCESS + "/authorize" + "?client_id=" + Config.CLIENT_ID +
-                "&redirect_uri=" + Config.REDIRECT_URI + "&response_type=code";
-    }
-
-    public static String getApiToken() {
-        return Config.ACCESS + "/api/token";
-    }
-
-    public static String getCategoriesUri(int limit) {
-        return Config.RESOURCE + "/v1/browse/categories?limit=" + limit;
-    }
-
-    public static String getNewReleasesUri(int limit) {
-        return Config.RESOURCE + "/v1/browse/new-releases?limit=" + limit;
-    }
-
-    public static String getFeaturedPlaylistsUri(int limit) {
-        return Config.RESOURCE + "/v1/browse/featured-playlists?limit=" + limit;
-    }
-
-    public static String getPlaylist(String id, int limit) {
-        return Config.RESOURCE + "/v1/browse/categories/" + id + "/playlists?limit=" + limit;
-    }
-
-    public static String getAccess() {
-        return Config.RESOURCE + "/v1/me";
     }
 }
