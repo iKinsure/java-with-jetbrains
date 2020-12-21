@@ -16,6 +16,7 @@
 
     <!-- submodules list -->
     <modules>
+        <module>platform</module>
     </modules>
 
 </project>

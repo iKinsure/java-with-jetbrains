@@ -36,8 +36,7 @@ Hard:
   - [Music Advisor] - spotify API
   
 Challenging:
-
-
+  - [Code Sharing Platform] - spring framework
 
    [Cinema Room Manager]: <easy/cinema>
    [Bulls and Cows]: <easy/bullscows>
@@ -66,4 +65,6 @@ Challenging:
    [Digit Recognition]: <hard/recognition>
    [Simple Banking System]: <hard/banking>
    [Music Advisor]: <hard/advisor>
+
+   [Code Sharing Platform]: <challenging/platform>
 
