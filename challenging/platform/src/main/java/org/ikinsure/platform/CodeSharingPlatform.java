@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CodeSharingPlatform {
 
+    public static Code code = new Code("");
+
     public static void main(String[] args) {
         SpringApplication.run(CodeSharingPlatform.class, args);
     }

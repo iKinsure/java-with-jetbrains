@@ -1,19 +1,19 @@
 package org.ikinsure.platform;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collections;
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ApiController {
 
-    @RequestMapping(value = "/api/code", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> get() {
-        return Collections.singletonMap("code",
-                "public static void main(String[] args) {\n    SpringApplication.run(CodeSharingPlatform.class, args);\n}");
+    @GetMapping(value = "/api/code", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Code get() {
+        return CodeSharingPlatform.code;
+    }
+
+    @PostMapping(value = "/api/code/new", consumes = "application/json")
+    public String post(@RequestBody Code code) {
+        CodeSharingPlatform.code = new Code(code.getCode());
+        return "{}";
     }
 }
