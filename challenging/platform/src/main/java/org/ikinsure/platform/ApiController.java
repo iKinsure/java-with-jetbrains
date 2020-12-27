@@ -11,7 +11,7 @@ public class ApiController {
         return CodeSharingPlatform.code;
     }
 
-    @PostMapping(value = "/api/code/new", consumes = "application/json")
+    @PostMapping(value = "/api/code/new", consumes = MediaType.APPLICATION_JSON_VALUE)
     public String post(@RequestBody Code code) {
         CodeSharingPlatform.code = new Code(code.getCode());
         return "{}";

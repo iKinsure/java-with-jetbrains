@@ -18,7 +18,9 @@ public class WebController {
                 "                <title>Code</title>\n" +
                 "                <style type=\"text/css\">\n" +
                 "                        #code_snippet {\n" +
-                "\n" +
+                "            border: darkblue solid 3px;\n" +
+                            "padding: 10px 10px 10px 10px;\n" +
+                                         "background: grey;\n" +
                 "                        }\n" +
                 "                        #load_date {\n" +
                 "      \n" +
@@ -30,7 +32,7 @@ public class WebController {
                 "                </style>\n" +
                 "        </head>\n" +
                 "        <body>\n" +
-                "                <pre id=\"code_snippet\">"+CodeSharingPlatform.code.getCode()+"</pre>\n" +
+                "                <pre id=\"code_snippet\"><code>"+CodeSharingPlatform.code.getCode()+"</code></pre>\n" +
                 "                <span id=\"load_date\">"+CodeSharingPlatform.code.getDate()+"</span>\n" +
                 "        </body>\n" +
                 "</html>";
@@ -85,6 +87,26 @@ public class WebController {
                 "        </textarea>\n" +
                 "        <button id=\"send_snippet\" type=\"submit\" onclick=\"send()\">Submit</button>\n" +
                 "    </body>\n" +
+                "</html>\n";
+    }
+
+    @GetMapping(path = "")
+    public String index(HttpServletResponse response) {
+        response.addHeader("Content-Type", "text/html");
+        return "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <title>Main page</title>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <form action=\"/code\">\n" +
+                "        <input type=\"submit\" value=\"Wyświetl notatkę\" />\n" +
+                "    </form>\n" +
+                "    <form action=\"/code/new\">\n" +
+                "        <input type=\"submit\" value=\"Dodaj notatkę\" />\n" +
+                "    </form>\n" +
+                "</body>\n" +
                 "</html>\n";
     }
 }
