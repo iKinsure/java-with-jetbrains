@@ -50,4 +50,11 @@
         </pluginManagement>
     </build>
 
+    <properties>
+        <javaVersion>11</javaVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>${javaVersion}</maven.compiler.source>
+        <maven.compiler.target>${javaVersion}</maven.compiler.target>
+    </properties>
+
 </project>
