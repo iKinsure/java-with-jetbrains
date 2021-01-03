@@ -2,6 +2,7 @@ package org.ikinsure.platform;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class Code {
 
     @Id
     private String id;
+    @Column(length = 2048)
     private String code;
     private String date;
     private LocalDateTime createDate;
