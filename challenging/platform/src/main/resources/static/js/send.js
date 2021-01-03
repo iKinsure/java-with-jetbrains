@@ -1,7 +1,9 @@
 function send() {
 
     let object = {
-        "code": document.getElementById("code_snippet").value
+        "code": document.getElementById("code_snippet").value,
+        "time": document.getElementById("time_restriction").value,
+        "views": document.getElementById("views_restriction").value
     };
 
     let json = JSON.stringify(object);
@@ -12,5 +14,7 @@ function send() {
 
     if (xhr.status === 200) {
         alert("Success!");
+    } else {
+        alert("Error!");
     }
 }

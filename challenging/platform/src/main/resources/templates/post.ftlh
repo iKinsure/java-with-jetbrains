@@ -8,6 +8,8 @@
 </head>
 <body>
     <textarea id="code_snippet" placeholder="This is example code {&#13;&#10   doing...&#13;&#10}"></textarea>
+    <input id="time_restriction" type="text"/>
+    <input id="views_restriction" type="text"/>
     <button id="send_snippet" type="submit" onclick="send()">Submit</button>
 </body>
 </html>

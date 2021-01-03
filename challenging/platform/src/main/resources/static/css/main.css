@@ -29,3 +29,19 @@ body {
 #load_date {
     size: 1.5em;
 }
+
+#code_snippet {
+    position: static;
+    min-height: 30%;
+    min-width: 70%;
+}
+
+#time_restriction {
+    position: static;
+    text-align: center;
+}
+
+#views_restriction {
+    position: static;
+    text-align: center;
+}
