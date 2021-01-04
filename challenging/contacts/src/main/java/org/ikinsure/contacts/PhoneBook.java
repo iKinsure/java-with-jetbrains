@@ -1,5 +1,7 @@
 package org.ikinsure.contacts;
 
+import org.ikinsure.contacts.model.Contact;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +36,11 @@ public class PhoneBook {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        int counter = 1;
-        for (var contact : book) {
-            builder.append(counter).append(". ").append(contact).append("\n");
-            counter++;
+        for (int i = 0; i < book.size(); i++) {
+            builder.append(i + 1).append(". ").append(book.get(i));
+            if (i != book.size() - 1) {
+                builder.append("\n");
+            }
         }
         return builder.toString();
     }

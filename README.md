@@ -37,6 +37,7 @@ Hard:
   
 Challenging:
   - [Code Sharing Platform] - spring framework
+  - [Contacts] - design patterns
 
    [Cinema Room Manager]: <easy/cinema>
    [Bulls and Cows]: <easy/bullscows>
@@ -67,4 +68,5 @@ Challenging:
    [Music Advisor]: <hard/advisor>
 
    [Code Sharing Platform]: <challenging/platform>
+   [Contacts]: <challenging/contacts>
 
