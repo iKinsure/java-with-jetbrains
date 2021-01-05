@@ -1,9 +1,15 @@
 package org.ikinsure.contacts.model;
 
-public class Organization implements Owner {
+import java.util.Scanner;
+
+public class Organization implements Contactable {
 
     private String name;
     private String address;
+
+    public Organization() {
+
+    }
 
     public Organization(String name, String address) {
         this.name = name;
@@ -25,9 +31,8 @@ public class Organization implements Owner {
     public void setAddress(String address) {
         this.address = address;
     }
-
     @Override
-    public String toString() {
+    public String record() {
         return name;
     }
 
@@ -35,5 +40,11 @@ public class Organization implements Owner {
     public String info() {
         return "Organization name: " + name + "\n" +
                 "Address: " + address;
+    }
+
+    @Override
+    public void setFields(Scanner scanner) {
+        this.name = enter(scanner, "name");
+        this.address = enter(scanner, "address");
     }
 }

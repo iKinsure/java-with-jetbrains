@@ -1,11 +1,14 @@
 package org.ikinsure.contacts;
 
 import org.ikinsure.contacts.model.Contact;
+import org.ikinsure.contacts.model.Printable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-public class PhoneBook {
+public class PhoneBook implements Printable {
 
     private final List<Contact> book;
 
@@ -33,15 +36,17 @@ public class PhoneBook {
         return book.get(index);
     }
 
+
     @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < book.size(); i++) {
-            builder.append(i + 1).append(". ").append(book.get(i));
-            if (i != book.size() - 1) {
-                builder.append("\n");
-            }
-        }
-        return builder.toString();
+    public String record() {
+        AtomicInteger counter = new AtomicInteger(1);
+        return book.stream()
+                .map(c -> counter.getAndIncrement() + ". " + c.record())
+                .collect(Collectors.joining("\n"));
+    }
+
+    @Override
+    public String info() {
+        return null;
     }
 }

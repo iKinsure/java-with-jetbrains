@@ -1,11 +1,19 @@
 package org.ikinsure.contacts.model;
 
-public class Person implements Owner {
+import java.util.Map;
+import java.util.Scanner;
+
+public class Person implements Contactable {
 
     private String name;
     private String surname;
     private String birth;
     private String gender;
+
+
+    public Person() {
+
+    }
 
     public Person(String name, String surname, String birth, String gender) {
         this.name = name;
@@ -47,7 +55,7 @@ public class Person implements Owner {
     }
 
     @Override
-    public String toString() {
+    public String record() {
         return name + " " + surname;
     }
 
@@ -58,4 +66,13 @@ public class Person implements Owner {
                 "Birth date: " + birth + "\n" +
                 "Gender: " + gender;
     }
+
+    @Override
+    public void setFields(Scanner scanner) {
+        this.name = enter(scanner, "name");
+        this.surname = enter(scanner, "surname");
+        this.birth = enter(scanner, "birth");
+        this.gender = enter(scanner, "gender","M", "F");
+    }
+
 }

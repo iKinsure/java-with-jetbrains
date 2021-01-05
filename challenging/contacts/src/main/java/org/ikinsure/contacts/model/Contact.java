@@ -1,28 +1,31 @@
 package org.ikinsure.contacts.model;
 
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
-public class Contact {
+public class Contact implements Contactable, Datable {
 
-    private Owner owner;
+    private Contactable owner;
     private String number;
     private LocalDateTime timeCreated;
     private LocalDateTime timeUpdated;
+    private HashMap<String, String> properties;
 
-    public Contact(Owner owner, String number, LocalDateTime timeCreated, LocalDateTime timeUpdated) {
+    public Contact(Contactable owner, LocalDateTime timeCreated, LocalDateTime timeUpdated) {
         this.owner = owner;
-        this.number = number;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
+        this.properties = new HashMap<>();
     }
 
-    public Owner getOwner() {
+    public Contactable getOwner() {
         return owner;
     }
 
-    public void setOwner(Owner owner) {
+    public void setOwner(Contactable owner) {
         this.owner = owner;
     }
 
@@ -51,14 +54,37 @@ public class Contact {
     }
 
     @Override
-    public String toString() {
-        return owner.toString();
+    public String record() {
+        return owner.record();
     }
 
+    @Override
     public String info() {
         return owner.info() + "\n" +
                 "Number: " + number + "\n" +
                 "Time created: " + timeCreated.withSecond(0).withNano(0) + "\n" +
                 "Time last edit: " + timeUpdated.withSecond(0).withNano(0);
+    }
+
+    @Override
+    public void setFields(Scanner scanner) {
+        owner.setFields(scanner);
+        this.number = enter(scanner, "number", this::predicate);
+    }
+
+    private boolean predicate(String data) {
+        String regex = "^\\+?([\\da-zA-Z]+[\\s-]?)?(\\([\\da-zA-Z]{2,}(\\)[\\s-]|\\)$))?([\\da-zA-Z]{2,}[\\s-]?)*([\\da-zA-Z]{2,})?$";
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.matcher(data).matches();
+    }
+
+    @Override
+    public void setProperty(String key, String value) {
+        properties.replace(key, value);
+    }
+
+    @Override
+    public String getProperty(String key) {
+        return properties.get(key);
     }
 }
