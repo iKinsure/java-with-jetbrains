@@ -1,48 +1,27 @@
 package org.ikinsure.contacts.model;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class Contact implements Contactable, Datable {
+public class Contact implements Settable {
 
-    private Contactable owner;
-    private String number;
-    private LocalDateTime timeCreated;
+    private final List<Entry> properties;
+    private final LocalDateTime timeCreated;
     private LocalDateTime timeUpdated;
-    private HashMap<String, String> properties;
+    private final int[] indexes;
 
-    public Contact(Contactable owner, LocalDateTime timeCreated, LocalDateTime timeUpdated) {
-        this.owner = owner;
+    Contact(List<Entry> properties, LocalDateTime timeCreated, LocalDateTime timeUpdated, int... indexes) {
+        this.properties = properties;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
-        this.properties = new HashMap<>();
-    }
-
-    public Contactable getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Contactable owner) {
-        this.owner = owner;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
+        this.indexes = indexes;
     }
 
     public LocalDateTime getTimeCreated() {
         return timeCreated;
-    }
-
-    public void setTimeCreated(LocalDateTime timeCreated) {
-        this.timeCreated = timeCreated;
     }
 
     public LocalDateTime getTimeUpdated() {
@@ -53,38 +32,31 @@ public class Contact implements Contactable, Datable {
         this.timeUpdated = timeUpdated;
     }
 
-    @Override
-    public String record() {
-        return owner.record();
+    public Entry findEntryByKey(String key) {
+        return properties.stream().filter(p -> p.key.equals(key)).findFirst().orElseThrow(IllegalArgumentException::new);
+    }
+
+    public String getPropertiesKeysAsString() {
+       return properties.stream().map(p -> p.key).collect(Collectors.joining(", "));
     }
 
     @Override
-    public String info() {
-        return owner.info() + "\n" +
-                "Number: " + number + "\n" +
+    public void setValue(Scanner scanner) {
+        properties.forEach(p -> p.setValue(scanner));
+    }
+
+    public String getInfo() {
+        return properties.stream().map(p -> upper(p.key) + ": " + p.value).collect(Collectors.joining("\n")) + "\n" +
                 "Time created: " + timeCreated.withSecond(0).withNano(0) + "\n" +
                 "Time last edit: " + timeUpdated.withSecond(0).withNano(0);
     }
 
-    @Override
-    public void setFields(Scanner scanner) {
-        owner.setFields(scanner);
-        this.number = enter(scanner, "number", this::predicate);
-    }
-
-    private boolean predicate(String data) {
-        String regex = "^\\+?([\\da-zA-Z]+[\\s-]?)?(\\([\\da-zA-Z]{2,}(\\)[\\s-]|\\)$))?([\\da-zA-Z]{2,}[\\s-]?)*([\\da-zA-Z]{2,})?$";
-        Pattern pattern = Pattern.compile(regex);
-        return pattern.matcher(data).matches();
+    private String upper(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     @Override
-    public void setProperty(String key, String value) {
-        properties.replace(key, value);
-    }
-
-    @Override
-    public String getProperty(String key) {
-        return properties.get(key);
+    public String toString() {
+        return IntStream.of(indexes).mapToObj(i -> properties.get(i).value).collect(Collectors.joining(" "));
     }
 }

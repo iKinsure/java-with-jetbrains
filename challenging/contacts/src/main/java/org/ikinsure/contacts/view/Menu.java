@@ -2,6 +2,7 @@ package org.ikinsure.contacts.view;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Menu represents "take a decision" action with printed list of possibilities
@@ -28,7 +29,7 @@ public class Menu {
     }
 
     public String getMessage() {
-        return message;
+        return message + " (" + items.stream().map(i -> i.id).collect(Collectors.joining(", ")) + "): ";
     }
 
     /**
