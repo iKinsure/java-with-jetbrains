@@ -7,30 +7,33 @@ public class Entry implements Settable {
 
     String value;
     final String key;
+    final String printKey;
     final Predicate<String> predicate;
     final List<String> options;
 
-    Entry(String key, String value, Predicate<String> predicate, List<String> options) {
+    Entry(String key, String printKey, String value, Predicate<String> predicate, List<String> options) {
         this.key = key;
+        this.printKey = printKey;
         this.value = value;
         this.predicate = predicate;
         this.options = options;
     }
 
-    Entry(String key, String value, List<String> options) {
-        this(key, value, s -> true, options);
+    Entry(String key, String printKey, String value, List<String> options) {
+        this(key, printKey, value, s -> !s.isBlank(), options);
     }
 
-    Entry(String key, String value, Predicate<String> predicate) {
-        this(key, value, predicate, new ArrayList<>());
+    Entry(String key, String printKey, String value, Predicate<String> predicate) {
+        this(key, printKey, value, predicate, new ArrayList<>());
     }
 
-    Entry(String key, String value) {
-        this(key, value, s -> true, new ArrayList<>());
+    Entry(String key, String printKey, String value) {
+        this(key, printKey, value, s -> !s.isBlank(), new ArrayList<>());
     }
 
     Entry(Entry entry) {
         this.key = entry.key;
+        this.printKey = entry.printKey;
         this.value = new String(entry.value);
         this.predicate = entry.predicate;
         this.options = entry.options;

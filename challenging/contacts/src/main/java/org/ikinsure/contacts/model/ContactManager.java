@@ -6,19 +6,16 @@ import java.util.regex.Pattern;
 
 public class ContactManager {
 
-
     private final List<Entry> person = new ArrayList<>(List.of(
-            new Entry("name", "[no data]"),
-            new Entry("surname", "[no data]"),
-            new Entry("birth", "[no data]"),
-            new Entry("gender", "[no data]", new ArrayList<>(List.of("F", "M"))),
-            new Entry("number", "[no number]", this::phonePredicate)));
+            new Entry("name", "Name", "[no data]"),
+            new Entry("surname", "Surname", "[no data]"),
+            new Entry("birth", "Birth date", "[no data]"),
+            new Entry("gender", "Gender", "[no data]", new ArrayList<>(List.of("F", "M"))),
+            new Entry("number", "Number", "[no number]", this::phonePredicate)));
     private final List<Entry> organization = new ArrayList<>(List.of(
-            new Entry("name", "[no data]"),
-            new Entry("address", "[no data]"),
-            new Entry("number", "[no number]", this::phonePredicate)));
-
-
+            new Entry("name", "Organization name", "[no data]"),
+            new Entry("address", "Address", "[no data]"),
+            new Entry("number", "Number","[no number]", this::phonePredicate)));
 
     public Contact createContact(String type) {
         if ("person".equals(type)) {

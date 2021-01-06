@@ -24,7 +24,7 @@ public class App {
         this.phoneBook = new PhoneBook();
         this.manager = new ContactManager();
 
-        Menu mainMenu  = new Menu.Builder("[menu] Enter action")
+        Menu mainMenu  = new Menu.Builder("\n[menu] Enter action")
                 .addItem("add", this::add)
                 .addItem("list", this::list)
                 .addItem("search", this::search)
@@ -45,6 +45,20 @@ public class App {
 
     private void list() {
         System.out.println(phoneBook.size() == 0 ? "No records to show!" : list(phoneBook.getBook()));
+        System.out.print("\n[list] Enter action ([number], back): ");
+        String input = scanner.nextLine();
+        if ("back".equals(input)) {
+
+        } else {
+            int index = Integer.parseInt(input) - 1;
+            System.out.println(phoneBook.get(index).getInfo());
+            Menu recordMenu = new Menu.Builder("\n[record] Enter action")
+                    .addItem("edit", this::edit)
+                    .addItem("delete", this::delete)
+                    .addItem("menu", view::exitMenu)
+                    .build();
+            view.setMenu(recordMenu);
+        }
     }
 
     private void search() {
@@ -60,8 +74,8 @@ public class App {
             search();
         } else {
             index = Integer.parseInt(input) - 1;
-            System.out.println(result.get(index).getInfo() + "\n");
-            Menu recordMenu = new Menu.Builder("[record] Enter action")
+            System.out.println(result.get(index).getInfo());
+            Menu recordMenu = new Menu.Builder("\n[record] Enter action")
                     .addItem("edit", this::edit)
                     .addItem("delete", this::delete)
                     .addItem("menu", view::exitMenu)
@@ -83,7 +97,7 @@ public class App {
         Entry entry = contact.findEntryByKey(scanner.nextLine());
         entry.setValue(scanner);
         System.out.println("Saved");
-        System.out.println(contact.getInfo() + "\n");
+        System.out.println(contact.getInfo());
     }
 
     private void delete() {

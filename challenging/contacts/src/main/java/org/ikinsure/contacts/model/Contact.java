@@ -20,14 +20,6 @@ public class Contact implements Settable {
         this.indexes = indexes;
     }
 
-    public LocalDateTime getTimeCreated() {
-        return timeCreated;
-    }
-
-    public LocalDateTime getTimeUpdated() {
-        return timeUpdated;
-    }
-
     public void setTimeUpdated(LocalDateTime timeUpdated) {
         this.timeUpdated = timeUpdated;
     }
@@ -46,13 +38,13 @@ public class Contact implements Settable {
     }
 
     public String getInfo() {
-        return properties.stream().map(p -> upper(p.key) + ": " + p.value).collect(Collectors.joining("\n")) + "\n" +
+        return properties.stream().map(p -> p.printKey + ": " + p.value).collect(Collectors.joining("\n")) + "\n" +
                 "Time created: " + timeCreated.withSecond(0).withNano(0) + "\n" +
                 "Time last edit: " + timeUpdated.withSecond(0).withNano(0);
     }
 
-    private String upper(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    public String getPropertiesValuesAsString() {
+        return properties.stream().map(p -> p.value).collect(Collectors.joining(" "));
     }
 
     @Override

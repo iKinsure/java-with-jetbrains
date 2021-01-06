@@ -35,6 +35,8 @@ public class PhoneBook {
     }
 
     public List<Contact> search(String str) {
-        return book.stream().filter(c -> c.toString().toLowerCase().contains(str.toLowerCase())).collect(Collectors.toList());
+        return book.stream()
+                .filter(c -> c.getPropertiesValuesAsString().toLowerCase().contains(str.toLowerCase()))
+                .collect(Collectors.toList());
     }
 }
