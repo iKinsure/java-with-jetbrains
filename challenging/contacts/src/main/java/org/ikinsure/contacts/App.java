@@ -4,11 +4,8 @@ import org.ikinsure.contacts.model.*;
 import org.ikinsure.contacts.view.Menu;
 import org.ikinsure.contacts.view.MenuController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class App {
 
@@ -16,101 +13,94 @@ public class App {
     private final MenuController view;
     private final PhoneBook phoneBook;
     private final ContactManager manager;
-    private int index = 0;
 
-    public App(Scanner scanner) {
+    private int index = 0;
+    private List<Contact> searchResult;
+
+    private final Menu listMenu;
+    private final Menu recordMenu;
+    private final Menu searchMenu;
+
+    public App(Scanner scanner, PhoneBook phoneBook) {
         this.scanner = scanner;
         this.view = new MenuController(scanner);
-        this.phoneBook = new PhoneBook();
+        this.phoneBook = phoneBook;
         this.manager = new ContactManager();
 
-        Menu mainMenu  = new Menu.Builder("\n[menu] Enter action")
+        recordMenu = new Menu.Builder("record")
+                .addItem("edit", this::edit)
+                .addItem("delete", this::delete)
+                .addItem("menu", view::exitMenu)
+                .build();
+        listMenu = new Menu.Builder("list")
+                .addItem("[number]", () -> number(phoneBook.getBook()))
+                .addItem("back", view::exitMenu)
+                .build();
+        searchMenu = new Menu.Builder("search")
+                .addItem("[number]", () -> number(searchResult))
+                .addItem("back", view::exitMenu)
+                .addItem("again", this::again)
+                .build();
+        view.run(new Menu.Builder("menu")
                 .addItem("add", this::add)
                 .addItem("list", this::list)
                 .addItem("search", this::search)
-                .addItem("count", this::count)
+                .addItem("count", () -> System.out.println("The Phone Book has " + phoneBook.size() + " records."))
                 .addItem("exit", view::exitAll)
-                .build();
-        view.run(mainMenu);
+                .build());
+    }
+
+    public PhoneBook getPhoneBook() {
+        return phoneBook;
+    }
+
+    private void number(List<Contact> list) {
+        index = Integer.parseInt(view.getLastId()) - 1;
+        System.out.println(list.get(index).getProperties());
+        view.setMenu(recordMenu);
+    }
+
+    private void edit() {
+        Contact contact = phoneBook.get(index);
+        contact.updateTime();
+        System.out.print("Select a field (" + contact.getPropertiesKeys() + "): ");
+        Entry entry = contact.findEntryByKey(scanner.nextLine());
+        entry.setValue(scanner);
+        System.out.println("Saved");
+        System.out.println(contact.getProperties());
+        view.exitMenu();
+    }
+
+    private void delete() {
+        phoneBook.remove(index);
+        System.out.println("The record removed!");
+        view.exitMenu();
     }
 
     private void add() {
         System.out.print("Enter the type (person, organization): ");
-        String input = scanner.nextLine();
-        Contact contact = manager.createContact(input);
+        Contact contact = manager.createContact(scanner.nextLine());
         contact.setValue(scanner);
         phoneBook.add(contact);
         System.out.println("The record added.");
     }
 
     private void list() {
-        System.out.println(phoneBook.size() == 0 ? "No records to show!" : list(phoneBook.getBook()));
-        System.out.print("\n[list] Enter action ([number], back): ");
-        String input = scanner.nextLine();
-        if ("back".equals(input)) {
+        System.out.println(phoneBook.size() == 0 ? "No records to show!" : PhoneBook.list(phoneBook.getBook()));
+        view.addMenu(listMenu);
+    }
 
-        } else {
-            int index = Integer.parseInt(input) - 1;
-            System.out.println(phoneBook.get(index).getInfo());
-            Menu recordMenu = new Menu.Builder("\n[record] Enter action")
-                    .addItem("edit", this::edit)
-                    .addItem("delete", this::delete)
-                    .addItem("menu", view::exitMenu)
-                    .build();
-            view.setMenu(recordMenu);
-        }
+    private void again() {
+        view.exitMenu();
+        search();
     }
 
     private void search() {
         System.out.print("Enter search query: ");
         String input = scanner.nextLine();
-        List<Contact> result = phoneBook.search(input);
-        System.out.println("Found " + result.size() + " results:");
-        System.out.println(list(result));
-        System.out.print("\n[search] Enter action ([number], back, again): ");
-        input = scanner.nextLine();
-        if ("back".equals(input)) {
-        } else if ("again".equals(input)) {
-            search();
-        } else {
-            index = Integer.parseInt(input) - 1;
-            System.out.println(result.get(index).getInfo());
-            Menu recordMenu = new Menu.Builder("\n[record] Enter action")
-                    .addItem("edit", this::edit)
-                    .addItem("delete", this::delete)
-                    .addItem("menu", view::exitMenu)
-                    .build();
-            view.setMenu(recordMenu);
-        }
-    }
-
-    private void count() {
-        System.out.println("The Phone Book has " + phoneBook.size() + " records.");
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////
-
-    private void edit() {
-        Contact contact = phoneBook.get(index);
-        contact.setTimeUpdated(LocalDateTime.now());
-        System.out.print("Select a field (" + contact.getPropertiesKeysAsString() + "): ");
-        Entry entry = contact.findEntryByKey(scanner.nextLine());
-        entry.setValue(scanner);
-        System.out.println("Saved");
-        System.out.println(contact.getInfo());
-    }
-
-    private void delete() {
-        phoneBook.remove(index);
-        System.out.println("The record removed!");
-    }
-
-    ////////////////////////////////////////////////////////////////////////
-
-    public String list(List<Contact> book) {
-        AtomicInteger counter = new AtomicInteger(1);
-        return book.stream()
-                .map(c -> counter.getAndIncrement() + ". " + c.toString())
-                .collect(Collectors.joining("\n"));
+        searchResult = phoneBook.search(input);
+        System.out.println("Found " + searchResult.size() + " results:");
+        System.out.println(PhoneBook.list(searchResult));
+        view.addMenu(searchMenu);
     }
 }

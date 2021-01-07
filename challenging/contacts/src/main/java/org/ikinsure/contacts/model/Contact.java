@@ -1,17 +1,21 @@
 package org.ikinsure.contacts.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Contact implements Settable {
+/**
+ * single contact in phone
+ */
+public class Contact implements Settable, Printable, Serializable {
 
-    private final List<Entry> properties;
+    private final List<Entry> properties; // all fields
     private final LocalDateTime timeCreated;
-    private LocalDateTime timeUpdated;
-    private final int[] indexes;
+    private LocalDateTime timeUpdated; // last update
+    private final int[] indexes; // indexes of the most important properties in toString()
 
     Contact(List<Entry> properties, LocalDateTime timeCreated, LocalDateTime timeUpdated, int... indexes) {
         this.properties = properties;
@@ -20,31 +24,34 @@ public class Contact implements Settable {
         this.indexes = indexes;
     }
 
-    public void setTimeUpdated(LocalDateTime timeUpdated) {
-        this.timeUpdated = timeUpdated;
+    public void updateTime() {
+        this.timeUpdated = LocalDateTime.now();
     }
 
     public Entry findEntryByKey(String key) {
         return properties.stream().filter(p -> p.key.equals(key)).findFirst().orElseThrow(IllegalArgumentException::new);
     }
 
-    public String getPropertiesKeysAsString() {
+    @Override
+    public String getPropertiesKeys() {
        return properties.stream().map(p -> p.key).collect(Collectors.joining(", "));
     }
 
     @Override
-    public void setValue(Scanner scanner) {
-        properties.forEach(p -> p.setValue(scanner));
+    public String getPropertiesValues() {
+        return properties.stream().map(p -> p.value).collect(Collectors.joining(" "));
     }
 
-    public String getInfo() {
+    @Override
+    public String getProperties() {
         return properties.stream().map(p -> p.printKey + ": " + p.value).collect(Collectors.joining("\n")) + "\n" +
                 "Time created: " + timeCreated.withSecond(0).withNano(0) + "\n" +
                 "Time last edit: " + timeUpdated.withSecond(0).withNano(0);
     }
 
-    public String getPropertiesValuesAsString() {
-        return properties.stream().map(p -> p.value).collect(Collectors.joining(" "));
+    @Override
+    public void setValue(Scanner scanner) {
+        properties.forEach(p -> p.setValue(scanner));
     }
 
     @Override

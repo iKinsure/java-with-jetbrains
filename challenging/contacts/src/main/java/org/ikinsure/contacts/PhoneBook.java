@@ -2,11 +2,16 @@ package org.ikinsure.contacts;
 
 import org.ikinsure.contacts.model.Contact;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class PhoneBook {
+/**
+ * list of contacts
+ */
+public class PhoneBook implements Serializable {
 
     private final List<Contact> book;
 
@@ -36,7 +41,14 @@ public class PhoneBook {
 
     public List<Contact> search(String str) {
         return book.stream()
-                .filter(c -> c.getPropertiesValuesAsString().toLowerCase().contains(str.toLowerCase()))
+                .filter(c -> c.getPropertiesValues().toLowerCase().contains(str.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    public static String list(List<Contact> book) {
+        AtomicInteger counter = new AtomicInteger(1);
+        return book.stream()
+                .map(c -> counter.getAndIncrement() + ". " + c.toString())
+                .collect(Collectors.joining("\n"));
     }
 }

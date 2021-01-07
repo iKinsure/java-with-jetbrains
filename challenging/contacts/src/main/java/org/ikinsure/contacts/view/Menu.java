@@ -22,14 +22,11 @@ public class Menu {
     }
 
     public Item selectItem(final String id) {
-        return items.stream()
-                .filter(i -> i.id.equals(id))
-                .findFirst()
-                .orElse(items.get(items.size() - 1));
+        return items.stream().filter(i -> i.id.equals(id)).findFirst().orElse(Item.error);
     }
 
     public String getMessage() {
-        return message + " (" + items.stream().map(i -> i.id).collect(Collectors.joining(", ")) + "): ";
+        return "\n[" + message + "] Enter action (" + items.stream().map(i -> i.id).collect(Collectors.joining(", ")) + "): ";
     }
 
     /**
@@ -64,6 +61,8 @@ public class Menu {
 
         final String id;
         final MenuAction action;
+
+        private static final Item error = new Item("error", () -> System.out.println("[error] Incorrect input! Try again."));
 
         public Item(String id, MenuAction action) {
             this.id = id;

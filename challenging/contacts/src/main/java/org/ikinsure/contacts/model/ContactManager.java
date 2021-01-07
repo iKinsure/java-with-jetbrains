@@ -1,10 +1,15 @@
 package org.ikinsure.contacts.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class ContactManager {
+/**
+ * manages contacts, place here new group of contacts
+ */
+public class ContactManager implements Serializable {
 
     private final List<Entry> person = new ArrayList<>(List.of(
             new Entry("name", "Name", "[no data]"),
