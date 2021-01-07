@@ -1,20 +1,20 @@
 package org.ikinsure.contacts.model;
 
-import java.io.Serializable;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * class represents one entry field in contact
  */
-public class Entry implements Settable, Serializable {
+public class Entry implements Settable {
 
     String value; // mutable field
     final String key;
     final String printKey;
-    final SerialPredicate predicate; // method to test value
+    final Predicate<String> predicate; // method to test value
     final List<String> options; // value needs to be included there
 
-    Entry(String key, String printKey, String value, SerialPredicate predicate, List<String> options) {
+    Entry(String key, String printKey, String value, Predicate<String>  predicate, List<String> options) {
         this.key = key;
         this.printKey = printKey;
         this.value = value;
@@ -26,7 +26,7 @@ public class Entry implements Settable, Serializable {
         this(key, printKey, value, s -> !s.isBlank(), options);
     }
 
-    Entry(String key, String printKey, String value, SerialPredicate predicate) {
+    Entry(String key, String printKey, String value, Predicate<String>  predicate) {
         this(key, printKey, value, predicate, new ArrayList<>());
     }
 

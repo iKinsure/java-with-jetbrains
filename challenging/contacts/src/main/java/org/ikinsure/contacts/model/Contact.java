@@ -1,6 +1,5 @@
 package org.ikinsure.contacts.model;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
@@ -10,7 +9,7 @@ import java.util.stream.IntStream;
 /**
  * single contact in phone
  */
-public class Contact implements Settable, Printable, Serializable {
+public class Contact implements Settable, Printable {
 
     private final List<Entry> properties; // all fields
     private final LocalDateTime timeCreated;

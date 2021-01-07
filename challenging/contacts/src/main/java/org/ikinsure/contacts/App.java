@@ -21,10 +21,10 @@ public class App {
     private final Menu recordMenu;
     private final Menu searchMenu;
 
-    public App(Scanner scanner, PhoneBook phoneBook) {
+    public App(Scanner scanner) {
         this.scanner = scanner;
         this.view = new MenuController(scanner);
-        this.phoneBook = phoneBook;
+        this.phoneBook = new PhoneBook();
         this.manager = new ContactManager();
 
         recordMenu = new Menu.Builder("record")
