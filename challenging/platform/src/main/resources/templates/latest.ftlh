@@ -9,6 +9,14 @@
     <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
+<nav id="topnav">
+    <ul class="menu">
+        <li><a href="/">Strona główna</a></li>
+        <li><a href="/code/latest">Ostatnie</a></li>
+        <li><a href="/code/new">Nowy kod</a></li>
+        <li><a href="/code/">Znajdź</a></li>
+    </ul>
+</nav>
     <#list snippets as snippet>
         <br>
         <span id="load_date">${snippet.date}</span>

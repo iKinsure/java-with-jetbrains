@@ -2,7 +2,6 @@ package org.ikinsure.contacts;
 
 import org.ikinsure.contacts.model.Contact;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * list of contacts
  */
-public class PhoneBook implements Serializable {
+public class PhoneBook {
 
     private final List<Contact> book;
 

@@ -13,7 +13,8 @@ function send() {
     xhr.send(json);
 
     if (xhr.status === 200) {
-        alert("Success!");
+        let body = xhr.response;
+        alert("Success!: " + body);
     } else {
         alert("Error!");
     }
