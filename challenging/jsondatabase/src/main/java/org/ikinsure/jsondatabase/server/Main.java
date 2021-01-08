@@ -1,20 +1,34 @@
 package org.ikinsure.jsondatabase.server;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Main {
 
-
     private static final String[] db = new String[100];
+    private static final int PORT = 34522;
 
-    public static void main(String[] args) {
-        Arrays.fill(db, "");
-        Scanner sc = new Scanner(System.in);
-        String command;
-        while (!(command = sc.nextLine()).equals("exit")) {
-            System.out.println(execute(command));
-        }
+    public static void main(String[] args) throws IOException {
+        ServerSocket server = new ServerSocket(PORT);
+        System.out.println("Server started!");
+        Socket socket = server.accept();
+        DataInputStream in = new DataInputStream(socket.getInputStream());
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+        String msg = in.readUTF();
+        System.out.println("Received: " + msg);
+        msg = "A record # 12 was sent!";
+        out.writeUTF(msg);
+        System.out.println("Sent: " + msg);
+
+//        Arrays.fill(db, "");
+//        Scanner sc = new Scanner(System.in);
+//        String command;
+//        while (!(command = sc.nextLine()).equals("exit")) {
+//            System.out.println(execute(command));
+//        }
     }
 
     private static String execute(String command) {
