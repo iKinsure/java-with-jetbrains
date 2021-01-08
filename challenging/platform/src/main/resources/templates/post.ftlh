@@ -2,7 +2,8 @@
 <html lang="pl">
 <head>
     <meta charset="utf-8">
-    <title>Create</title>
+    <title>Create new code</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon.png">
     <link rel="stylesheet" href="/css/main.css">
     <script src="/js/send.js"></script>
 </head>

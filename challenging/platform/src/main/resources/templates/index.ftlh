@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <title>Main page</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon.png">
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>

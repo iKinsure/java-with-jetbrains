@@ -90,4 +90,9 @@ public class Code {
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
+
+    @Override
+    public String toString() {
+        return "code = " + code + ", id = " + id;
+    }
 }
