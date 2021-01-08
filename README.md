@@ -4,6 +4,35 @@ This repository contains all java developer track projects, created while learni
 
 ### List of projects
 
+Challenging:
+- [Code Sharing Platform] - spring framework
+- [Contacts] - design patterns
+- [JSON Database] - json database
+
+Hard:
+- [Phone Book] - searching and sorting benchmark
+- [Budget Manager] - app uses comparators
+- [Smart Calculator] - postfix notation with stacks
+- [Sorting Tool] - with HashMultiSet
+- [Simple Search Engine] - uses inverted indexes to improve efficiency
+- [Maze Runner] - uses graph kruskal's algorithm for minimum spanning tree
+- [Flashcards] - memorize with possibility to save progress
+- [Linear Equation Solver] - uses Gauss elimination, works with complex numbers
+- [Minesweeper] - classic game
+- [Digit Recognition] - machine learning
+- [Simple Banking System] - with SQLite
+- [Music Advisor] - spotify API
+
+Medium:
+- [Battleship] - classic game
+- [Encryption-Decryption] - encrypt and decrypt message
+- [Numeric Matrix Processor] - basic matrix operations
+- [Game of Life] - java swing app
+- [Tic-Tac-Toe with AI] - AI uses minimax algorithm
+- [Readability Score] - text difficulty
+- [Error Correcting Encoder-Decoder] - binary cipher simulation
+- [Numeral System Converter] - change number radix
+
 Easy:
   - [Cinema Room Manager] - reserve your sit
   - [Bulls and Cows] - guess secret code
@@ -11,33 +40,7 @@ Easy:
   - [Tic-Tac-Toe] - player vs player game
   - [Simple Chatty Bot] - basic chatty bot
 
-Medium:
-  - [Battleship] - classic game
-  - [Encryption-Decryption] - encrypt and decrypt message
-  - [Numeric Matrix Processor] - basic matrix operations
-  - [Game of Life] - java swing app
-  - [Tic-Tac-Toe with AI] - AI uses minimax algorithm
-  - [Readability Score] - text difficulty
-  - [Error Correcting Encoder-Decoder] - binary cipher simulation
-  - [Numeral System Converter] - change number radix 
 
-Hard:
-  - [Phone Book] - searching and sorting benchmark
-  - [Budget Manager] - app uses comparators
-  - [Smart Calculator] - postfix notation with stacks
-  - [Sorting Tool] - with HashMultiSet
-  - [Simple Search Engine] - uses inverted indexes to improve efficiency
-  - [Maze Runner] - uses graph kruskal's algorithm for minimum spanning tree
-  - [Flashcards] - memorize with possibility to save progress
-  - [Linear Equation Solver] - uses Gauss elimination, works with complex numbers
-  - [Minesweeper] - classic game
-  - [Digit Recognition] - machine learning
-  - [Simple Banking System] - with SQLite
-  - [Music Advisor] - spotify API
-  
-Challenging:
-  - [Code Sharing Platform] - spring framework
-  - [Contacts] - design patterns
 
    [Cinema Room Manager]: <easy/cinema>
    [Bulls and Cows]: <easy/bullscows>
@@ -69,4 +72,4 @@ Challenging:
 
    [Code Sharing Platform]: <challenging/platform>
    [Contacts]: <challenging/contacts>
-
+   [JSON Database]: <challenging/jsondatabase>
