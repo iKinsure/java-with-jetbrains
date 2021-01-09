@@ -5,30 +5,32 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class Main {
 
-    private static final String[] db = new String[100];
+    private static final String[] db = new String[1000];
     private static final int PORT = 34522;
 
     public static void main(String[] args) throws IOException {
+        Arrays.fill(db, "");
         ServerSocket server = new ServerSocket(PORT);
         System.out.println("Server started!");
-        Socket socket = server.accept();
-        DataInputStream in = new DataInputStream(socket.getInputStream());
-        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        String msg = in.readUTF();
-        System.out.println("Received: " + msg);
-        msg = "A record # 12 was sent!";
-        out.writeUTF(msg);
-        System.out.println("Sent: " + msg);
-
-//        Arrays.fill(db, "");
-//        Scanner sc = new Scanner(System.in);
-//        String command;
-//        while (!(command = sc.nextLine()).equals("exit")) {
-//            System.out.println(execute(command));
-//        }
+        while (true) {
+            Socket socket = server.accept();
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            String command = in.readUTF();
+            System.out.println("Received: " + command);
+            if ("exit".equals(command)) {
+                out.writeUTF("OK");
+                server.close();
+                break;
+            }
+            String response = execute(command);
+            System.out.println("Sent: " + response);
+            out.writeUTF(response);
+        }
     }
 
     private static String execute(String command) {
