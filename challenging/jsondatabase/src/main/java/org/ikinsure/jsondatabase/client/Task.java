@@ -2,22 +2,13 @@ package org.ikinsure.jsondatabase.client;
 
 import com.beust.jcommander.Parameter;
 
-import java.util.List;
-
-public class Task implements Sendable {
-
+public class Task {
     @Parameter(names = "-t", required = true)
-    private String command;
+    private String type;
 
-    @Parameter(names = "-i")
-    private int index = Integer.MIN_VALUE;
+    @Parameter(names = "-k")
+    private String key;
 
-    @Parameter(names = "-m", variableArity = true)
-    private List<String> messages;
-
-    @Override
-    public String request() {
-        return command + (index == Integer.MIN_VALUE ? "" : " " + index) +
-                (messages == null ? "" : " " + String.join(" ", messages));
-    }
+    @Parameter(names = "-v")
+    private String value;
 }

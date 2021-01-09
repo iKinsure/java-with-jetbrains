@@ -1,6 +1,8 @@
 package org.ikinsure.jsondatabase.client;
 
 import com.beust.jcommander.JCommander;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,22 +15,21 @@ public class Main {
     private static final int PORT = 34522;
 
     public static void main(String[] args) throws IOException {
-
         Task task = new Task();
-        JCommander jc = JCommander.newBuilder()
+        JCommander.newBuilder()
                 .addObject(task)
-                .build();
-        jc.parse(args);
+                .build()
+                .parse(args);
+        Gson gson = new GsonBuilder().create();
 
         Socket socket = new Socket(ADDRESS, PORT);
         System.out.println("Client started!");
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out  = new DataOutputStream(socket.getOutputStream());
 
-        String request = task.request();
+        String request = gson.toJson(task);
         System.out.println("Sent: " + request);
         out.writeUTF(request);
-
         String response = in.readUTF();
         System.out.println("Received: " + response);
     }
