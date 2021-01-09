@@ -15,33 +15,20 @@ public class Database {
     }
 
     public Response get(String key) {
-        Response response = new Response();
         String value = data.get(key);
-        if (value == null) {
-            response.setReason("No such key");
-            response.setResponse("ERROR");
-        } else {
-            response.setValue(value);
-            response.setResponse("OK");
-        }
-        return response;
+        return value == null ? Response.NO_KEY
+                : Response.builder()
+                .setResponse("OK")
+                .setValue(value)
+                .build();
     }
 
     public Response set(String key, String value) {
-        Response response = new Response();
         data.put(key, value);
-        response.setResponse("OK");
-        return response;
+        return Response.OK;
     }
 
     public Response remove(String key) {
-        Response response = new Response();
-        if (data.remove(key) == null) {
-            response.setReason("No such key");
-            response.setResponse("ERROR");
-        } else {
-            response.setResponse("OK");
-        }
-        return response;
+        return data.remove(key) == null ? Response.NO_KEY : Response.OK;
     }
 }

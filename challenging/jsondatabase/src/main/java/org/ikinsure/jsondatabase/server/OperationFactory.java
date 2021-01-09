@@ -1,9 +1,17 @@
 package org.ikinsure.jsondatabase.server;
 
+import com.google.gson.annotations.Expose;
+
+/**
+ * Operation factory class
+ */
 public class OperationFactory {
 
+    @Expose
     private String type;
+    @Expose
     private String key;
+    @Expose
     private String value;
 
     public Operation getOperation(Database database, Server server) {
@@ -17,7 +25,7 @@ public class OperationFactory {
         } else if ("exit".equals(type)) {
             operation = server::close;
         } else {
-            operation = Response::empty;
+            operation = () -> Response.EMPTY;
         }
         return operation;
     }
