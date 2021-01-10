@@ -19,18 +19,18 @@ public class Server {
     private final int port;
     private final ExecutorService executor;
     private final DatabaseConnection connection;
-    private volatile boolean running;
+    private ServerSocket server;
 
     public Server(int port, Gson gson, String filePath) {
         this.port = port;
         this.executor = Executors.newCachedThreadPool();
         this.connection = new DatabaseConnection(filePath, gson);
-        this.running = true;
     }
 
     public void run() {
-        try (ServerSocket server = new ServerSocket(port)) {
-            while (running) {
+        try {
+            server = new ServerSocket(port);
+            while (!server.isClosed()) {
                 Socket socket = server.accept();
                 executor.submit(() -> {
                     try (DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -59,7 +59,11 @@ public class Server {
 
     public Response close() {
         this.executor.shutdown();
-        this.running = false;
+        try {
+            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return Response.OK;
     }
 }
