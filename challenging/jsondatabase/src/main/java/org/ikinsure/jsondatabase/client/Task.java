@@ -1,14 +1,22 @@
 package org.ikinsure.jsondatabase.client;
 
 import com.beust.jcommander.Parameter;
+import com.google.gson.annotations.Expose;
 
 public class Task {
-    @Parameter(names = "-t", required = true)
-    private String type;
 
+    @Expose
+    @Parameter(names = "-t")
+    protected String type;
+
+    @Expose
     @Parameter(names = "-k")
-    private String key;
+    protected String key;
 
+    @Expose
     @Parameter(names = "-v")
-    private String value;
+    protected String value;
+
+    @Parameter(names = "-in")
+    protected String file;
 }

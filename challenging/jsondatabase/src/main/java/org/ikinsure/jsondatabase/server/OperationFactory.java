@@ -1,32 +1,29 @@
 package org.ikinsure.jsondatabase.server;
 
-import com.google.gson.annotations.Expose;
-
-/**
- * Operation factory class
- */
 public class OperationFactory {
 
-    @Expose
-    private String type;
-    @Expose
-    private String key;
-    @Expose
-    private String value;
+    private final Task task;
+    private final Server server;
+    private final DatabaseConnection connection;
 
-    public Operation getOperation(Database database, Server server) {
-        Operation operation;
-        if ("set".equals(type)) {
-            operation = () -> database.set(key, value);
-        } else if ("get".equals(type)) {
-            operation = () -> database.get(key);
-        } else if ("delete".equals(type)) {
-            operation = () -> database.remove(key);
-        } else if ("exit".equals(type)) {
-            operation = server::close;
-        } else {
-            operation = () -> Response.EMPTY;
+    public OperationFactory(Task task, Server server, DatabaseConnection connection) {
+        this.task = task;
+        this.server = server;
+        this.connection = connection;
+    }
+
+    public Operation createOperation() {
+        switch (task.getType()) {
+            case "get":
+                return () -> connection.get(task.getKey());
+            case "set":
+                return () -> connection.set(task.getKey(), task.getValue());
+            case "delete":
+                return () -> connection.remove(task.getKey());
+            case "exit":
+                return server::close;
+            default:
+                return () -> Response.EMPTY;
         }
-        return operation;
     }
 }
