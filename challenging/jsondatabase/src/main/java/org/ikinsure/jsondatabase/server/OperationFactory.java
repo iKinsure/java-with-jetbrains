@@ -1,5 +1,9 @@
 package org.ikinsure.jsondatabase.server;
 
+import org.ikinsure.jsondatabase.server.database.DatabaseConnection;
+import org.ikinsure.jsondatabase.server.model.Response;
+import org.ikinsure.jsondatabase.server.model.Task;
+
 public class OperationFactory {
 
     private final Task task;
@@ -13,13 +17,13 @@ public class OperationFactory {
     }
 
     public Operation createOperation() {
-        switch (task.type) {
+        switch (task.getType()) {
             case "get":
                 return () -> connection.get(task);
             case "set":
                 return () -> connection.set(task);
             case "delete":
-                return () -> connection.remove(task);
+                return () -> connection.delete(task);
             case "exit":
                 return server::close;
             default:

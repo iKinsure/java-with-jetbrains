@@ -1,7 +1,8 @@
-package org.ikinsure.jsondatabase.server;
+package org.ikinsure.jsondatabase.server.io;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.ikinsure.jsondatabase.server.model.Record;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class FileOperator {
+public class FileOperator implements FileOperations<Record> {
 
     private final String filename;
     private final Gson gson;
@@ -34,6 +35,7 @@ public class FileOperator {
         }
     }
 
+    @Override
     public List<Record> read() {
         List<Record> list = null;
         Type type = new TypeToken<ArrayList<Record>>(){}.getType();
@@ -47,6 +49,7 @@ public class FileOperator {
         return list == null ? new ArrayList<>() : list;
     }
 
+    @Override
     public void save(List<Record> list) {
         lock.writeLock().lock();
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename));) {

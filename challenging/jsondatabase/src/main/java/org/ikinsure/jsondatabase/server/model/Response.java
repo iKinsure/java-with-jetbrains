@@ -1,4 +1,4 @@
-package org.ikinsure.jsondatabase.server;
+package org.ikinsure.jsondatabase.server.model;
 
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.Expose;
@@ -21,11 +21,29 @@ public class Response {
             .build();
 
     @Expose
-    private String response;
+    private final String response;
     @Expose
-    private String reason;
+    private final String reason;
     @Expose
-    private JsonElement value;
+    private final JsonElement value;
+
+    public Response(String response, String reason, JsonElement value) {
+        this.response = response;
+        this.reason = reason;
+        this.value = value;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public JsonElement getValue() {
+        return value;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -53,11 +71,7 @@ public class Response {
         }
 
         public Response build() {
-            Response result = new Response();
-            result.response = this.response;
-            result.reason = this.reason;
-            result.value = this.value;
-            return result;
+            return new Response(this.response, this.reason, this.value);
         }
     }
 }

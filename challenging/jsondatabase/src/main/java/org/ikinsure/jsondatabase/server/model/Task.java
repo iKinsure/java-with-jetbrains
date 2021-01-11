@@ -1,4 +1,4 @@
-package org.ikinsure.jsondatabase.server;
+package org.ikinsure.jsondatabase.server.model;
 
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.Expose;
@@ -12,11 +12,29 @@ import java.util.List;
 public class Task {
 
     @Expose
-    String type;
+    private final String type;
     @Expose
-    JsonElement key;
+    private final JsonElement key;
     @Expose
-    JsonElement value;
+    private final JsonElement value;
+
+    public Task(String type, JsonElement key, JsonElement value) {
+        this.type = type;
+        this.key = key;
+        this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public JsonElement getKey() {
+        return key;
+    }
+
+    public JsonElement getValue() {
+        return value;
+    }
 
     public List<String> getKeys() {
         List<String> list = new ArrayList<>();
