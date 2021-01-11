@@ -8,6 +8,7 @@ Challenging:
 - [Code Sharing Platform] - spring framework web app for code storing
 - [Contacts] - program for creating contacts and interacting with them
 - [JSON Database] - multithreaded socket server with jsons database
+- [Blockchain] - implementation of blockchain
 
 Hard:
 - [Phone Book] - searching and sorting benchmark
@@ -73,3 +74,4 @@ Easy:
    [Code Sharing Platform]: <challenging/platform>
    [Contacts]: <challenging/contacts>
    [JSON Database]: <challenging/jsondatabase>
+   [Blockchain]: <challenging/blockchain>
