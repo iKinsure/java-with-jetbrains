@@ -5,9 +5,9 @@ This repository contains all java developer track projects, created while learni
 ### List of projects
 
 Challenging:
-- [Code Sharing Platform] - spring framework
-- [Contacts] - design patterns
-- [JSON Database] - json database
+- [Code Sharing Platform] - spring framework web app for code storing
+- [Contacts] - program for creating contacts and interacting with them
+- [JSON Database] - multithreaded socket server with jsons database
 
 Hard:
 - [Phone Book] - searching and sorting benchmark
