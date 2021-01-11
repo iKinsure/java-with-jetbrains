@@ -1,5 +1,6 @@
 package org.ikinsure.jsondatabase.server;
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -24,7 +25,7 @@ public class Response {
     @Expose
     private String reason;
     @Expose
-    private String value;
+    private JsonElement value;
 
     public static Builder builder() {
         return new Builder();
@@ -34,7 +35,7 @@ public class Response {
 
         private String response;
         private String reason;
-        private String value;
+        private JsonElement value;
 
         public Builder setResponse(String response) {
             this.response = response;
@@ -46,7 +47,7 @@ public class Response {
             return this;
         }
 
-        public Builder setValue(String value) {
+        public Builder setValue(JsonElement value) {
             this.value = value;
             return this;
         }

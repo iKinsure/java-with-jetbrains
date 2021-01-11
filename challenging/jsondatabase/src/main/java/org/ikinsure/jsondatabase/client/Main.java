@@ -23,25 +23,21 @@ public class Main {
                 .addObject(task)
                 .build()
                 .parse(args);
-        Gson gson = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .create();
+        Gson gson = new GsonBuilder().create();
 
+        Object object = task;
         if (task.file != null) {
-            try (BufferedReader reader = Files.newBufferedReader(Paths.get(task.file))) {
-                task = gson.fromJson(reader, Task.class);
+            try (BufferedReader reader = Files.newBufferedReader(Paths.get("database/" + task.file))) {
+                object = gson.fromJson(reader, Object.class);
             }
         }
 
-        communicate(gson, task);
-    }
-
-    private static void communicate(Gson gson, Task task) throws IOException {
         Socket socket = new Socket(ADDRESS, PORT);
         System.out.println("Client started!");
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out  = new DataOutputStream(socket.getOutputStream());
-        String request = gson.toJson(task);
+
+        String request = gson.toJson(object);
         System.out.println("Sent: " + request);
         out.writeUTF(request);
         String response = in.readUTF();

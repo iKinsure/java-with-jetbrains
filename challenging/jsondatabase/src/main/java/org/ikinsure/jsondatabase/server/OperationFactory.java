@@ -13,13 +13,13 @@ public class OperationFactory {
     }
 
     public Operation createOperation() {
-        switch (task.getType()) {
+        switch (task.type) {
             case "get":
-                return () -> connection.get(task.getKey());
+                return () -> connection.get(task);
             case "set":
-                return () -> connection.set(task.getKey(), task.getValue());
+                return () -> connection.set(task);
             case "delete":
-                return () -> connection.remove(task.getKey());
+                return () -> connection.remove(task);
             case "exit":
                 return server::close;
             default:

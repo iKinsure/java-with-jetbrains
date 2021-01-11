@@ -39,10 +39,9 @@ public class Server {
                         String command = in.readUTF();
                         System.out.println(Thread.currentThread().getName() + " : received: " + command);
                         Task task = new Gson().fromJson(command, Task.class);
-
                         OperationFactory factory = new OperationFactory(task, this, connection);
-                        Response response = factory.createOperation().execute();
 
+                        Response response = factory.createOperation().execute();
                         String textResponse = new GsonBuilder().create().toJson(response);
                         System.out.println(Thread.currentThread().getName() + " : sent: " + textResponse);
                         out.writeUTF(textResponse);

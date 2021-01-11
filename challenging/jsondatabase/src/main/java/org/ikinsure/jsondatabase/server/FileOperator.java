@@ -34,9 +34,9 @@ public class FileOperator {
         }
     }
 
-    public List<Task> read() {
-        List<Task> list = null;
-        Type type = new TypeToken<ArrayList<Task>>(){}.getType();
+    public List<Record> read() {
+        List<Record> list = null;
+        Type type = new TypeToken<ArrayList<Record>>(){}.getType();
         lock.readLock().lock();
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(filename))) {
             list = gson.fromJson(reader, type);
@@ -47,7 +47,7 @@ public class FileOperator {
         return list == null ? new ArrayList<>() : list;
     }
 
-    public void save(List<Task> list) {
+    public void save(List<Record> list) {
         lock.writeLock().lock();
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename));) {
             gson.toJson(list, writer);
