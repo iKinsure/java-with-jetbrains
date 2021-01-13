@@ -1,39 +1,55 @@
 package org.ikinsure.blockchain;
 
-import org.ikinsure.blockchain.logic.Block;
-import org.ikinsure.blockchain.logic.BlockManager;
-
-import java.io.*;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
 
-    private static final String FILE = "blockchain.obj";
+    private static volatile BlockInfo info;
 
     public static void main(String[] args) {
 
-        Block block = null;
-//        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE))) {
-//            block = (Block) in.readObject();
-//        } catch (ClassNotFoundException | IOException e) {
-//            block = null;
-//        }
+        List<Block> blockchain = Collections.synchronizedList(new ArrayList<>());
+        ExecutorService miners = Executors.newCachedThreadPool();
+        BlockManager manager = new BlockManager(5, 1);
+        info = manager.createBlockInfo(null);
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter how many zeros the hash must start with: ");
+        for (int i = 0; i < 4; i++) {
+            miners.submit(() -> {
+                while (blockchain.size() < 5) {
 
-        BlockManager manager = new BlockManager(scanner.nextInt(), block);
+                    final int size = blockchain.size();
+                    long start = System.nanoTime();
 
-        Block b1 = manager.createBlock();
-        Block b2 = manager.createBlock();
-        Block b3 = manager.createBlock();
-        Block b4 = manager.createBlock();
-        Block b5 = manager.createBlock();
+                    String magic;
+                    String hash;
+                    Random random = new Random();
 
-//        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE))) {
-//            out.writeObject(b5);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+                    do {
+                        magic = String.valueOf(random.nextInt());
+                        hash = manager.sha256(info, magic);
+                    } while (!manager.validate(hash));
+                    int end = (int) ((System.nanoTime() - start) / 1_000_000_000);
+
+                    System.out.println(".");
+
+                    Block block = manager.createBlock(info, magic);
+                    if (block != null && blockchain.size() == size) {
+                        info = manager.createBlockInfo(block);
+                        blockchain.add(block);
+                        System.out.println("\nBlock:");
+                        System.out.println("Created by miner # " + Thread.currentThread().getId());
+                        System.out.println(block);
+                        System.out.println("Block was generating for " + end + " seconds");
+                        manager.updateZeros(end, blockchain.size());
+                    }
+
+                }
+            });
+        }
+
+        miners.shutdown();
+
     }
 }
