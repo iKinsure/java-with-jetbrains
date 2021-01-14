@@ -49,6 +49,8 @@ public class Main {
             });
         }
 
+
+
         miners.shutdown();
 
     }
