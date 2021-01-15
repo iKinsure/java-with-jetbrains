@@ -1,11 +1,12 @@
 package org.ikinsure.blockchain;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
  * Template for block
  */
-public class BlockInfo {
+public class BlockInfo implements Serializable {
 
     private final BigInteger id;
     private final BigInteger timestamp;
