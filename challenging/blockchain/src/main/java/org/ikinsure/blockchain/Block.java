@@ -14,16 +14,15 @@ public final class Block implements Serializable {
     private final String hash;
     private final String magic;
 
-    Block(BigInteger id, BigInteger timestamp, String prevHash, String hash, String magic) {
-        this.info = new BlockInfo(id, timestamp, prevHash);
-        this.hash = hash;
-        this.magic = magic;
+    Block(BigInteger id, BigInteger timestamp, String prevHash, String message, String hash, String magic) {
+        this(new BlockInfo(id, timestamp, prevHash, message), hash, magic);
     }
 
     Block(BlockInfo info, String hash, String magic) {
         this.info = info;
         this.hash = hash;
         this.magic = magic;
+
     }
 
     public BigInteger getId() {
@@ -51,9 +50,8 @@ public final class Block implements Serializable {
         return "Id: " + info.getId() + "\n" +
                 "Timestamp: " + info.getTimestamp() + "\n" +
                 "Magic number: " + magic + "\n" +
-                "Hash of the previous block: \n" +
-                info.getPrevHash() + "\n" +
-                "Hash of the block: \n" +
-                hash;
+                "Hash of the previous block: \n" + info.getPrevHash() + "\n" +
+                "Hash of the block: \n" + hash + "\n" +
+                "Block data: " + info.getMessage();
     }
 }

@@ -11,11 +11,13 @@ public class BlockInfo implements Serializable {
     private final BigInteger id;
     private final BigInteger timestamp;
     private final String prevHash;
+    private final String message;
 
-    public BlockInfo(BigInteger id, BigInteger timestamp, String prevHash) {
+    public BlockInfo(BigInteger id, BigInteger timestamp, String prevHash, String message) {
         this.id = id;
         this.timestamp = timestamp;
         this.prevHash = prevHash;
+        this.message = message;
     }
 
     public BigInteger getId() {
@@ -28,5 +30,9 @@ public class BlockInfo implements Serializable {
 
     public String getPrevHash() {
         return prevHash;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

@@ -20,15 +20,15 @@ public class BlockManager {
         return validate(hash) ? new Block(info, hash, magic) : null;
     }
 
-    public BlockInfo createBlockInfo(Block block) {
+    public BlockInfo createBlockInfo(Block block, String message) {
         BigInteger id = block == null ? BigInteger.ONE : block.getId().add(BigInteger.ONE);
         BigInteger timestamp = BigInteger.valueOf(new Date().getTime());
         String prevHash = block == null ? "0" : block.getHash();
-        return new BlockInfo(id, timestamp, prevHash);
+        return new BlockInfo(id, timestamp, prevHash, message.isBlank() ? "no messages" : "\n" + message);
     }
 
     public synchronized void updateZeros(int time, int size) {
-        this.averageTime = (averageTime + time) / size;
+        this.averageTime = averageTime + ((time - averageTime) / size);
         if (averageTime > time) {
             zeros++;
             System.out.println("N was increased to " + zeros);
@@ -45,12 +45,7 @@ public class BlockManager {
     }
 
     public String sha256(BlockInfo info, String magic) {
-        return sha256(info.getPrevHash() + magic + info.getId() + info.getTimestamp());
-
-    }
-
-    public String sha256(String prevHash, String magic, BigInteger id, BigInteger timestamp) {
-        return sha256(prevHash + magic + id + timestamp);
+        return sha256(info.getPrevHash() + magic + info.getId() + info.getTimestamp() + info.getMessage());
 
     }
 
