@@ -7,6 +7,14 @@
     <artifactId>blockchain</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
+    </dependencies>
+
     <!-- parent pom -->
     <parent>
         <artifactId>challenging</artifactId>

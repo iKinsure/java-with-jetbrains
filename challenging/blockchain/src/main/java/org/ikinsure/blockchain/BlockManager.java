@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Date;
+import java.util.List;
 
 public class BlockManager {
 
@@ -20,11 +21,11 @@ public class BlockManager {
         return validate(hash) ? new Block(info, hash, magic) : null;
     }
 
-    public BlockInfo createBlockInfo(Block block, String message) {
+    public BlockInfo createBlockInfo(Block block, List<Message> messages) {
         BigInteger id = block == null ? BigInteger.ONE : block.getId().add(BigInteger.ONE);
         BigInteger timestamp = BigInteger.valueOf(new Date().getTime());
         String prevHash = block == null ? "0" : block.getHash();
-        return new BlockInfo(id, timestamp, prevHash, message.isBlank() ? "no messages" : "\n" + message);
+        return new BlockInfo(id, timestamp, prevHash, messages);
     }
 
     public synchronized void updateZeros(int time, int size) {
@@ -45,7 +46,7 @@ public class BlockManager {
     }
 
     public String sha256(BlockInfo info, String magic) {
-        return sha256(info.getPrevHash() + magic + info.getId() + info.getTimestamp() + info.getMessage());
+        return sha256(info.getPrevHash() + magic + info.getId() + info.getTimestamp() + info.getMessages()));
 
     }
 

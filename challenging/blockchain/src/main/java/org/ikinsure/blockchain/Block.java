@@ -2,6 +2,8 @@ package org.ikinsure.blockchain;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Blockchain single block
@@ -14,8 +16,8 @@ public final class Block implements Serializable {
     private final String hash;
     private final String magic;
 
-    Block(BigInteger id, BigInteger timestamp, String prevHash, String message, String hash, String magic) {
-        this(new BlockInfo(id, timestamp, prevHash, message), hash, magic);
+    Block(BigInteger id, BigInteger timestamp, String prevHash, List<Message> messages, String hash, String magic) {
+        this(new BlockInfo(id, timestamp, prevHash, messages), hash, magic);
     }
 
     Block(BlockInfo info, String hash, String magic) {
@@ -52,6 +54,6 @@ public final class Block implements Serializable {
                 "Magic number: " + magic + "\n" +
                 "Hash of the previous block: \n" + info.getPrevHash() + "\n" +
                 "Hash of the block: \n" + hash + "\n" +
-                "Block data: " + info.getMessage();
+                "Block data: " + info.format();
     }
 }
