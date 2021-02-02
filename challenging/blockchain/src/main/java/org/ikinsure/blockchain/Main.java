@@ -1,9 +1,13 @@
 package org.ikinsure.blockchain;
 
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -22,9 +26,9 @@ public class Main {
             "It's not your blockchain..."
     ));
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
 
-        final int keySize = 30;
+        final int keySize = 1024;
         User u1 = new User("Tom", keySize);
         User u2 = new User("Nick", keySize);
         User u3 = new User("Sarah", keySize);
@@ -36,7 +40,7 @@ public class Main {
         ExecutorService miners = Executors.newFixedThreadPool(minersCount);
 
         BlockManager manager = new BlockManager(0, 5);
-        info = manager.createBlockInfo(null, "");
+        info = manager.createBlockInfo(null, new ArrayList<>());
 
         for (int i = 0; i < minersCount; i++) {
             miners.submit(() -> {
@@ -65,7 +69,8 @@ public class Main {
                         if (block != null && blockchain.size() == size) {
 
                             while (messages.isEmpty()) { }
-                            info = manager.createBlockInfo(block, messages);
+                            List<Message> copy = new ArrayList<>(messages);
+                            info = manager.createBlockInfo(block, copy);
                             messages.clear();
                             blockchain.add(block);
                             System.out.println("\nBlock:");
@@ -89,7 +94,8 @@ public class Main {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            messages.add(TEMPLATE_MSG.get(random.nextInt(TEMPLATE_MSG.size())));
+            Message msg = new Message(u1, TEMPLATE_MSG.get(random.nextInt(TEMPLATE_MSG.size())));
+            messages.add(msg);
         }
     }
 }

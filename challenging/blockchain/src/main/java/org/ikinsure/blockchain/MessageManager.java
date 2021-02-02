@@ -32,28 +32,28 @@ public class MessageManager {
 
     public static PrivateKey getPrivateKey(String key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(
-                Base64.encodeBase64(key.getBytes()));
+                Base64.encodeBase64(key.getBytes(StandardCharsets.UTF_8)));
         KeyFactory factory = KeyFactory.getInstance("RSA");
         return factory.generatePrivate(spec);
     }
 
     public static PublicKey getPublicKey(String key) throws InvalidKeySpecException, NoSuchAlgorithmException {
         X509EncodedKeySpec spec = new X509EncodedKeySpec(
-                Base64.encodeBase64(key.getBytes()));
+                Base64.encodeBase64(key.getBytes(StandardCharsets.UTF_8)));
         KeyFactory factory = KeyFactory.getInstance("RSA");
         return factory.generatePublic(spec);
     }
 
-    public static byte[] sign(String msg, String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
+    public static byte[] sign(String msg, PrivateKey key) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
         Signature rsa = Signature.getInstance("SHA1withRSA");
-        rsa.initSign(getPrivateKey(privateKey));
+        rsa.initSign(key);
         rsa.update(msg.getBytes());
         return rsa.sign();
     }
 
     public static boolean verify(Message message) throws SignatureException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
         Signature rsa = Signature.getInstance("SHA1withRSA");
-        rsa.initVerify(getPublicKey(message.getUser().getPublicKey()));
+        rsa.initVerify(message.getPublicKey());
         rsa.update(message.getData().getBytes());
         return rsa.verify(message.getSignature());
     }

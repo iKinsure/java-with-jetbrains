@@ -1,33 +1,32 @@
 package org.ikinsure.blockchain;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 
 public class User {
 
     private final String name;
-    private final String privateKey;
-    private final String publicKey;
+    private final PrivateKey privateKey;
+    private final PublicKey publicKey;
 
     public User(String name, int size) throws NoSuchAlgorithmException {
         this.name = name;
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(size);
         KeyPair pair = generator.generateKeyPair();
-        this.privateKey = new String(pair.getPrivate().getEncoded());
-        this.publicKey = new String(pair.getPublic().getEncoded());
+        this.privateKey = pair.getPrivate();
+        this.publicKey = pair.getPublic();
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public PublicKey getPublicKey() {
+        return publicKey;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getPrivateKey() {
-        return privateKey;
-    }
-
-    public String getPublicKey() {
-        return publicKey;
-    }
 }

@@ -3,7 +3,6 @@ package org.ikinsure.blockchain;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Blockchain single block
@@ -24,7 +23,6 @@ public final class Block implements Serializable {
         this.info = info;
         this.hash = hash;
         this.magic = magic;
-
     }
 
     public BigInteger getId() {

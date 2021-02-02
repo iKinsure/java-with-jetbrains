@@ -2,23 +2,30 @@ package org.ikinsure.blockchain;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 
 public class Message {
 
-    private final User user;
+    private final PublicKey publicKey;
+    private final String name;
     private final String data;
     private final byte[] signature;
 
     public Message(User user, String data) throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        this.user = user;
+        this.publicKey = user.getPublicKey();
+        this.name = user.getName();
         this.data = data;
         this.signature = MessageManager.sign(data, user.getPrivateKey());
     }
 
-    public User getUser() {
-        return user;
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getData() {
@@ -31,6 +38,6 @@ public class Message {
 
     @Override
     public String toString() {
-        return user.getName() + ": " + data;
+        return name + ": " + data;
     }
 }

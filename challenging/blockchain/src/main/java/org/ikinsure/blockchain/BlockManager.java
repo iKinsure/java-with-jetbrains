@@ -46,7 +46,7 @@ public class BlockManager {
     }
 
     public String sha256(BlockInfo info, String magic) {
-        return sha256(info.getPrevHash() + magic + info.getId() + info.getTimestamp() + info.getMessages()));
+        return sha256(info.getPrevHash() + magic + info.getId() + info.getTimestamp() + info.getMessages());
 
     }
 

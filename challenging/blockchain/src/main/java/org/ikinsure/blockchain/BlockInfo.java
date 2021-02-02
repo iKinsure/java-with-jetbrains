@@ -34,7 +34,7 @@ public class BlockInfo implements Serializable {
         return prevHash;
     }
 
-    public List<Message>  getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
