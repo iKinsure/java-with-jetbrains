@@ -39,6 +39,9 @@ public class BlockInfo implements Serializable {
     }
 
     public String format() {
-        return messages.stream().map(Message::toString).collect(Collectors.joining("\n"));
+        if (messages.isEmpty()) {
+            return "no messages";
+        }
+        return "\n" + messages.stream().map(Message::toString).collect(Collectors.joining("\n"));
     }
 }

@@ -2,7 +2,11 @@ package org.ikinsure.blockchain;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +22,7 @@ public class BlockManager {
 
     public Block createBlock(BlockInfo info, String magic) {
         String hash = sha256(info, magic);
-        return validate(hash) ? new Block(info, hash, magic) : null;
+        return validate(hash) && verify(info.getMessages()) ? new Block(info, hash, magic) : null;
     }
 
     public BlockInfo createBlockInfo(Block block, List<Message> messages) {
@@ -39,6 +43,20 @@ public class BlockManager {
             this.zeros = zeros == 0 ? 0 : zeros - 1;
             System.out.println("N was decreased to " + zeros);
         }
+    }
+
+    public boolean verify(List<Message> messages) {
+        for (var message : messages) {
+            try {
+                if (!MessageManager.verify(message)) {
+                    return false;
+                }
+            } catch (SignatureException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean validate(String hash) {

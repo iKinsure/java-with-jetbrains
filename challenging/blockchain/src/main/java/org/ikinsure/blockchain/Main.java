@@ -7,7 +7,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 public class Main {
 
@@ -29,9 +28,11 @@ public class Main {
     public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
 
         final int keySize = 1024;
-        User u1 = new User("Tom", keySize);
-        User u2 = new User("Nick", keySize);
-        User u3 = new User("Sarah", keySize);
+        User[] users = new User[]{
+                new User("Tom", keySize),
+                new User("Nick", keySize),
+                new User("Sarah", keySize)};
+
 
         List<Block> blockchain = Collections.synchronizedList(new ArrayList<>());
         List<Message> messages = Collections.synchronizedList(new ArrayList<>());
@@ -94,7 +95,9 @@ public class Main {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Message msg = new Message(u1, TEMPLATE_MSG.get(random.nextInt(TEMPLATE_MSG.size())));
+            Message msg = new Message(
+                    users[random.nextInt(users.length)],
+                    TEMPLATE_MSG.get(random.nextInt(TEMPLATE_MSG.size())));
             messages.add(msg);
         }
     }
