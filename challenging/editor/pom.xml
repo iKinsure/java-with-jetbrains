@@ -2,25 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
-    <artifactId>challenging</artifactId>
+    <artifactId>editor</artifactId>
+    <packaging>jar</packaging>
 
     <!-- parent pom -->
     <parent>
-        <artifactId>java-with-jetbrains</artifactId>
+        <artifactId>challenging</artifactId>
         <groupId>org.ikinsure</groupId>
         <version>1.3-SNAPSHOT</version>
     </parent>
-
-    <!-- submodules list -->
-    <modules>
-        <module>platform</module>
-        <module>contacts</module>
-        <module>jsondatabase</module>
-        <module>blockchain</module>
-        <module>editor</module>
-    </modules>
 
 </project>

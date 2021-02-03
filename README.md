@@ -9,6 +9,7 @@ Challenging:
 - [Contacts] - program for creating contacts and interacting with them
 - [JSON Database] - multithreaded socket server with jsons database
 - [Blockchain] - implementation of blockchain
+- [Editor] - swing text editor
 
 Hard:
 - [Phone Book] - searching and sorting benchmark
@@ -75,3 +76,4 @@ Easy:
    [Contacts]: <challenging/contacts>
    [JSON Database]: <challenging/jsondatabase>
    [Blockchain]: <challenging/blockchain>
+   [Editor]: <challenging/editor>
