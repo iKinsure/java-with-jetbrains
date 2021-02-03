@@ -1,4 +1,4 @@
-package org.ikinsure.blockchain;
+package org.ikinsure.blockchain.economy;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -11,12 +11,11 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import org.apache.commons.codec.binary.Base64;
 
-
-public class MessageManager {
+public class TransactionManager {
 
     private final Cipher cipher;
 
-    public MessageManager() throws NoSuchPaddingException, NoSuchAlgorithmException {
+    public TransactionManager() throws NoSuchPaddingException, NoSuchAlgorithmException {
         this.cipher = Cipher.getInstance("RSA");
     }
 
@@ -51,11 +50,11 @@ public class MessageManager {
         return rsa.sign();
     }
 
-    public static boolean verify(Message message) throws SignatureException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
+    public static boolean verify(Transaction transaction) throws SignatureException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
         Signature rsa = Signature.getInstance("SHA1withRSA");
-        rsa.initVerify(message.getPublicKey());
-        rsa.update(message.getData().getBytes());
-        return rsa.verify(message.getSignature());
+        rsa.initVerify(transaction.getPublicKey());
+        rsa.update(transaction.getData().getBytes());
+        return rsa.verify(transaction.getSignature());
     }
 
 }

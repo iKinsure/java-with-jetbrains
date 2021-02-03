@@ -1,39 +1,87 @@
-package org.ikinsure.blockchain;
+package org.ikinsure.blockchain.block;
+
+import org.ikinsure.blockchain.Miner;
+import org.ikinsure.blockchain.Util;
+import org.ikinsure.blockchain.economy.Transaction;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class BlockManager {
 
-    private volatile int zeros;
-    private volatile int averageTime;
+    private final List<Block> blockchain;
+    private final List<Transaction> transactions;
+    private final int averageTime;
+
+    private int zeros;
+    private BlockInfo info;
+    private long startTime;
+    private Block prevBlock;
 
     public BlockManager(int zeros, int averageTime) {
         this.zeros = zeros;
         this.averageTime = averageTime;
+        this.blockchain = Collections.synchronizedList(new ArrayList<>());
+        this.transactions = Collections.synchronizedList(new ArrayList<>());
+        this.startTime = System.nanoTime();
+        this.info = createBlockInfo(null);
     }
 
-    public Block createBlock(BlockInfo info, String magic) {
-        String hash = sha256(info, magic);
-        return validate(hash) && verify(info.getMessages()) ? new Block(info, hash, magic) : null;
+    /**
+     * verify magic and adds to blockchain new block
+     * @param magic for current BlockInfo
+     * @return true if success
+     */
+    public synchronized boolean createBlock(String magic, Miner miner) {
+        if (info != null) {
+            String hash = Util.sha256(info, magic);
+            if (Util.validate(hash, zeros) && Util.verify(info.getTransactions())) {
+
+                prevBlock = new Block(info, hash, magic);
+                blockchain.add(prevBlock);
+
+                int time = (int) ((System.nanoTime() - startTime) / 1_000_000_000L);
+                printInfo(prevBlock, time, miner);
+                updateZeros(time);
+                startTime = System.nanoTime();
+
+                info = null;
+                return true;
+            }
+        }
+        return false;
     }
 
-    public BlockInfo createBlockInfo(Block block, List<Message> messages) {
+
+    /**
+     * creates template for next block
+     * @param block previous block
+     * @return new template for block with transactions
+     */
+    private synchronized BlockInfo createBlockInfo(Block block) {
         BigInteger id = block == null ? BigInteger.ONE : block.getId().add(BigInteger.ONE);
         BigInteger timestamp = BigInteger.valueOf(new Date().getTime());
         String prevHash = block == null ? "0" : block.getHash();
-        return new BlockInfo(id, timestamp, prevHash, messages);
+        List<Transaction> copy = new ArrayList<>(transactions);
+        transactions.clear();
+        return new BlockInfo(id, timestamp, prevHash, copy);
     }
 
-    public synchronized void updateZeros(int time, int size) {
-        this.averageTime = averageTime + ((time - averageTime) / size);
+    private synchronized void printInfo(Block block, int time, Miner miner) {
+        System.out.println("\nBlock:");
+        System.out.println("Created by: " + miner.getUser().getName());
+        System.out.println(miner.getUser().getName() + " gets 100 VC");
+        System.out.println(block);
+        System.out.println("Block was generating for " + time + " seconds");
+    }
+
+    /**
+     * increase or decrease mining time
+     */
+    private synchronized void updateZeros(int time) {
         if (averageTime > time) {
             zeros++;
             System.out.println("N was increased to " + zeros);
@@ -45,42 +93,22 @@ public class BlockManager {
         }
     }
 
-    public boolean verify(List<Message> messages) {
-        for (var message : messages) {
-            try {
-                if (!MessageManager.verify(message)) {
-                    return false;
-                }
-            } catch (SignatureException | NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException e) {
-                e.printStackTrace();
-                return false;
-            }
+    public int getZeros() {
+        return zeros;
+    }
+
+    public synchronized BlockInfo getInfo() {
+        return info;
+    }
+
+    public synchronized void add(Transaction transaction) {
+        transactions.add(transaction);
+        if (info == null) {
+            info = createBlockInfo(prevBlock);
         }
-        return true;
     }
 
-    public boolean validate(String hash) {
-        return hash.startsWith("0".repeat(zeros));
-    }
-
-    public String sha256(BlockInfo info, String magic) {
-        return sha256(info.getPrevHash() + magic + info.getId() + info.getTimestamp() + info.getMessages());
-
-    }
-
-    public String sha256(String data) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexes = new StringBuilder();
-            for (byte elem : hash) {
-                String hex = Integer.toHexString(0xff & elem);
-                if (hex.length() == 1)  hexes.append('0');
-                hexes.append(hex);
-            }
-            return hexes.toString();
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
+    public int size() {
+        return blockchain.size();
     }
 }

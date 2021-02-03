@@ -1,8 +1,7 @@
-package org.ikinsure.blockchain;
+package org.ikinsure.blockchain.block;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
 
 /**
  * Blockchain single block
@@ -15,10 +14,6 @@ public final class Block implements Serializable {
     private final String hash;
     private final String magic;
 
-    Block(BigInteger id, BigInteger timestamp, String prevHash, List<Message> messages, String hash, String magic) {
-        this(new BlockInfo(id, timestamp, prevHash, messages), hash, magic);
-    }
-
     Block(BlockInfo info, String hash, String magic) {
         this.info = info;
         this.hash = hash;
@@ -29,20 +24,16 @@ public final class Block implements Serializable {
         return info.getId();
     }
 
-    public BigInteger getTimestamp() {
-        return info.getTimestamp();
-    }
-
-    public String getPrevHash() {
-        return info.getPrevHash();
-    }
-
     public String getHash() {
         return hash;
     }
 
     public String getMagic() {
         return magic;
+    }
+
+    public BlockInfo getInfo() {
+        return info;
     }
 
     @Override

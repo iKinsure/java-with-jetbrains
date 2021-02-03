@@ -1,4 +1,6 @@
-package org.ikinsure.blockchain;
+package org.ikinsure.blockchain.block;
+
+import org.ikinsure.blockchain.economy.Transaction;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -13,13 +15,13 @@ public class BlockInfo implements Serializable {
     private final BigInteger id;
     private final BigInteger timestamp;
     private final String prevHash;
-    private final List<Message> messages;
+    private final List<Transaction> transactions;
 
-    public BlockInfo(BigInteger id, BigInteger timestamp, String prevHash, List<Message> messages) {
+    BlockInfo(BigInteger id, BigInteger timestamp, String prevHash, List<Transaction> transactions) {
         this.id = id;
         this.timestamp = timestamp;
         this.prevHash = prevHash;
-        this.messages = messages;
+        this.transactions = transactions;
     }
 
     public BigInteger getId() {
@@ -34,14 +36,14 @@ public class BlockInfo implements Serializable {
         return prevHash;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public List<Transaction> getTransactions() {
+        return transactions;
     }
 
     public String format() {
-        if (messages.isEmpty()) {
-            return "no messages";
+        if (transactions.isEmpty()) {
+            return "no transactions";
         }
-        return "\n" + messages.stream().map(Message::toString).collect(Collectors.joining("\n"));
+        return "\n" + transactions.stream().map(Transaction::getData).collect(Collectors.joining("\n"));
     }
 }
