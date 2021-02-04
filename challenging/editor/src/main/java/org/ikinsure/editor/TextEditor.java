@@ -2,32 +2,29 @@ package org.ikinsure.editor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TextEditor extends JFrame {
 
     private final OptionPanel optionPanel;
     private final TextPanel textPanel;
-
+    private final MenuBar menuBar;
 
     public TextEditor() {
         optionPanel = new OptionPanel();
         textPanel = new TextPanel();
+        menuBar = new MenuBar();
         config();
     }
 
     private void config() {
+        setJMenuBar(menuBar);
         setLayout(new BorderLayout());
         add(optionPanel, BorderLayout.NORTH);
         add(textPanel, BorderLayout.CENTER);
 
-        optionPanel.getLoad().addActionListener(e -> {
+        ActionListener loadAction = e -> {
             String filename = optionPanel.getFile().getText();
             try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
                 StringBuilder builder = new StringBuilder();
@@ -40,9 +37,9 @@ public class TextEditor extends JFrame {
                 ex.printStackTrace();
                 textPanel.getArea().setText("");
             }
-        });
+        };
 
-        optionPanel.getSave().addActionListener(e -> {
+        ActionListener saveAction = e -> {
             String filename = optionPanel.getFile().getText();
             String data = textPanel.getArea().getText();
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
@@ -50,7 +47,13 @@ public class TextEditor extends JFrame {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        });
+        };
+
+        optionPanel.getLoad().addActionListener(loadAction);
+        optionPanel.getSave().addActionListener(saveAction);
+        menuBar.getLoad().addActionListener(loadAction);
+        menuBar.getSave().addActionListener(saveAction);
+        menuBar.getExit().addActionListener(e -> System.exit(0));
 
         setFrame();
     }
