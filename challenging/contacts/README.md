@@ -1,6 +1,7 @@
 # Contacts
 
 Program for creating contacts (like on the mobile phone) and searching for people, organizations or custom categories.
+Project uses object-oriented programming and design patterns.
 
 ```
 [menu] Enter action (add, list, search, count, exit): add

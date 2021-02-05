@@ -10,6 +10,7 @@ Challenging:
 - [JSON Database] - multithreaded socket server with jsons database
 - [Blockchain] - implementation of blockchain
 - [Text Editor] - java swing text editor
+- [Guess the Animal] - interactive game where computer will try to guess the animal
 
 Hard:
 - [Phone Book] - searching and sorting benchmark
@@ -77,3 +78,4 @@ Easy:
    [JSON Database]: <challenging/jsondatabase>
    [Blockchain]: <challenging/blockchain>
    [Text Editor]: <challenging/editor>
+   [Guess the Animal]: <challenging/animals>

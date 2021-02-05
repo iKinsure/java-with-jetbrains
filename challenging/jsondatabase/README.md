@@ -1,7 +1,7 @@
 # JSON Database
 
 Program uses java sockets to get a jsons from clients.
-Jsons are stored in file on server side.
+Jsons are stored in files on server side.
 Program is multithreaded and uses libraries such as google.gson API to serialize jsons and jCommander framework on client side to parse commands.
 
 Accepted client arguments:
