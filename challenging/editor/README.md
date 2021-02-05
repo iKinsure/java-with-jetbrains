@@ -4,4 +4,4 @@ Simple text editor with searching by string, searching by regular expressions an
 
 Created with java swing.
 
-![Example](program.png?raw=true "Text editor")
+![Example](example.png?raw=true "Text editor")
