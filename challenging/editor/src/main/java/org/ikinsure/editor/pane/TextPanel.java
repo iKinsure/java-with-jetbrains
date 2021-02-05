@@ -1,4 +1,6 @@
-package org.ikinsure.editor;
+package org.ikinsure.editor.pane;
+
+import org.ikinsure.editor.Colors;
 
 import javax.swing.*;
 
@@ -9,15 +11,20 @@ public class TextPanel extends JPanel {
 
     public TextPanel() {
         area = new JTextArea();
-        scrollPane = new JScrollPane(area);
+        scrollPane = new JScrollPane();
         config();
     }
 
     private void config() {
+        setBackground(Colors.MAIN);
+        setBorder(BorderFactory.createEmptyBorder());
+        area.setForeground(Colors.TEXT);
+        area.setBackground(Colors.AREA);
+        area.setBorder(BorderFactory.createLineBorder(Colors.LINES, 1, false));
         area.setName("TextArea");
         scrollPane.setName("ScrollPane");
+        scrollPane.setViewportView(area);
         var layout = new GroupLayout(this);
-        setLayout(layout);
         layout.setAutoCreateContainerGaps(true);
         layout.setAutoCreateGaps(true);
         layout.setHorizontalGroup(layout
@@ -26,6 +33,7 @@ public class TextPanel extends JPanel {
         layout.setVerticalGroup(layout
                 .createSequentialGroup()
                 .addComponent(scrollPane));
+        setLayout(layout);
         add(scrollPane);
     }
 
