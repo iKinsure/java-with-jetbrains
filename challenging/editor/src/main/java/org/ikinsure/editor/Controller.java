@@ -47,7 +47,7 @@ public class Controller {
 
     private void ignoreCase() {
         boolean ignoreCase = view.getOptionPanel().getSearchCase().isSelected();
-        view.getOptionPanel().getRegex().setSelected(!ignoreCase);
+        view.getOptionPanel().getSearchCase().setSelected(!ignoreCase);
     }
 
     private void search() {
