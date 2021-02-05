@@ -22,9 +22,114 @@ public class Main {
             "Have a nice day!", "See you soon!", "Bye!", "Talk to you later!",
             "See you later!", "Catch you later!", "Have a good one!");
 
+    private static final Scanner SCANNER = new Scanner(System.in);
+
     public static void main(String[] args) {
 
-        // say hello based on time
+        hello();
+
+        // enter animals
+        AnimalFactory factory = new AnimalFactory();
+        print("\nEnter the first animal:");
+        Animal a1 = factory.parse(input());
+        print("Enter the second animal:");
+        Animal a2 = factory.parse(input());
+
+
+
+        Random rand = new Random();
+        while (true) {
+            print("Specify a fact that distinguishes " + a1.getUndefined() + " from " + a2.getUndefined() + ".");
+            print("The sentence should be of the format: 'It can/has/is ...'.\n");
+
+            String in = input();
+            FactCategory category;
+            String fact;
+            if (in.startsWith("it can ")) {
+                category = FactCategory.ABILITY;
+                fact = in.substring(7);
+
+
+
+            } else if (in.startsWith("it has ")) {
+                category = FactCategory.POSSESS;
+                fact = in.substring(7);
+
+
+
+            } else if (in.startsWith("it is ")) {
+                category = FactCategory.LINKING;
+                fact = in.substring(6);
+
+
+
+            } else {
+                print("The examples of a statement:\n" +
+                        " - It can fly\n" +
+                        " - It has horn\n" +
+                        " - It is a mammal");
+                continue;
+            }
+
+            while (true) {
+                print("Is it correct for " + a2.getUndefined() + "?");
+                in = input();
+                if (POSITIVE.contains(in)) {
+                    a1.add(new Fact(fact, category, true));
+                    a2.add(new Fact(fact, category, false));
+                    break;
+                } else if (NEGATIVE.contains(in)) {
+                    a1.add(new Fact(fact, category, false));
+                    a2.add(new Fact(fact, category, true));
+                    break;
+                } else {
+                    print(ASK_AGAIN.get(rand.nextInt(ASK_AGAIN.size())));
+                }
+            }
+
+
+
+            print("I learned the following facts about animals:");
+            print(a1.getProperties());
+            print(a2.getProperties());
+
+            print("I can distinguish these animals by asking the question:");
+            if (category == FactCategory.ABILITY) {
+                print(" - Can it " + fact + "?");
+            } else if (category == FactCategory.LINKING) {
+                print(" - Is it " + fact + "?");
+            } else if (category == FactCategory.POSSESS) {
+                print(" - Does it have " + fact + "?");
+            }
+
+            break;
+        }
+
+        // bye
+        print("");
+        print(GOODBYE.get(rand.nextInt(GOODBYE.size())));
+    }
+
+    private static String upperCase(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    private static void process(String s) {
+
+    }
+
+    private static void print(String text) {
+        System.out.println(text);
+    }
+
+    private static String input() {
+        return SCANNER.nextLine().strip().toLowerCase()
+                .replace("?", "")
+                .replace("!", "")
+                .replace(".", "");
+    }
+
+    private static void hello() {
         LocalTime time = LocalTime.now();
         if (time.isBefore(LocalTime.of(5, 0))) {
             print("Hi, Night Owl!");
@@ -35,49 +140,5 @@ public class Main {
         } else {
             print("Good afternoon!");
         }
-
-        // ask for animal
-        Scanner sc = new Scanner(System.in);
-        print("\nEnter an animal:");
-        String animal = sc.nextLine().strip().toLowerCase();
-
-        // determine article
-        if (!(animal.startsWith("an ") || animal.startsWith("a "))) {
-            animal = isVowel(animal.charAt(0)) ? "an " + animal : "a " + animal;
-        }
-
-        // question
-        Random rand = new Random();
-        print("Is it " + animal + "?");
-        while (true) {
-            String response = sc.nextLine()
-                    .strip()
-                    .toLowerCase();
-            if (response.endsWith(".") || response.endsWith("?") || response.endsWith("!")) {
-                response = response.substring(0, response.length() - 1);
-            }
-
-            if (POSITIVE.contains(response)) {
-                print("You answered: Yes");
-                break;
-            } else if (NEGATIVE.contains(response)) {
-                print("You answered: No");
-                break;
-            } else {
-                print(ASK_AGAIN.get(rand.nextInt(ASK_AGAIN.size())));
-            }
-        }
-
-        // bye
-        print("");
-        print(GOODBYE.get(rand.nextInt(GOODBYE.size())));
-    }
-
-    private static boolean isVowel(char c) {
-        return "AEIOUaeiou".indexOf(c) != -1;
-    }
-
-    private static void print(String text) {
-        System.out.println(text);
     }
 }
