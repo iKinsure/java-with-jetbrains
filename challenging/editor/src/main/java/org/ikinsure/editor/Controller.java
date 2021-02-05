@@ -1,5 +1,7 @@
 package org.ikinsure.editor;
 
+import org.ikinsure.editor.view.Frame;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -9,11 +11,11 @@ import java.util.regex.Pattern;
 
 public class Controller {
 
-    private final TextEditor view;
+    private final Frame view;
     private final List<Result> indices;
     private final CycleIterator<Result> iterator;
 
-    public Controller(TextEditor view) {
+    public Controller(Frame view) {
         this.view = view;
         this.indices = new ArrayList<>();
         this.iterator = new CycleIterator<>(indices);
@@ -34,6 +36,7 @@ public class Controller {
         pane.getPrevious().addActionListener(e -> prev());
         search.getPrevious().addActionListener(e -> prev());
         search.getRegex().addActionListener(e -> regex());
+        search.getIgnoreCase().addActionListener(e -> ignoreCase());
         file.getExit().addActionListener(e -> System.exit(0));
     }
 
@@ -42,10 +45,20 @@ public class Controller {
         view.getOptionPanel().getRegex().setSelected(!regex);
     }
 
+    private void ignoreCase() {
+        boolean ignoreCase = view.getOptionPanel().getSearchCase().isSelected();
+        view.getOptionPanel().getRegex().setSelected(!ignoreCase);
+    }
+
     private void search() {
+        boolean ignoreCase = view.getOptionPanel().getSearchCase().isSelected();
         String regex = view.getOptionPanel().getConsole().getText();
         if (!regex.isEmpty()) {
             String data = view.getTextPanel().getArea().getText();
+            if (ignoreCase) {
+                regex = regex.toLowerCase();
+                data = data.toLowerCase();
+            }
             indices.clear();
             iterator.reset();
             if (view.getOptionPanel().getRegex().isSelected()) {

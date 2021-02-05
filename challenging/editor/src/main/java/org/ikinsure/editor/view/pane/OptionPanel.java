@@ -1,7 +1,7 @@
-package org.ikinsure.editor.pane;
+package org.ikinsure.editor.view.pane;
 
-import org.ikinsure.editor.Colors;
-import org.ikinsure.editor.Icons;
+import org.ikinsure.editor.view.Colors;
+import org.ikinsure.editor.view.Icons;
 
 import javax.swing.*;
 
@@ -14,7 +14,9 @@ public class OptionPanel extends JPanel {
     private final JButton previous;
     private final JButton next;
     private final JCheckBox regex;
-    private final JLabel label;
+    private final JLabel labelRegex;
+    private final JCheckBox searchCase;
+    private final JLabel labelCase;
 
     public OptionPanel() {
         open = new JButton();
@@ -24,7 +26,9 @@ public class OptionPanel extends JPanel {
         previous = new JButton();
         next = new JButton();
         regex = new JCheckBox();
-        label = new JLabel();
+        labelRegex = new JLabel();
+        searchCase = new JCheckBox();
+        labelCase = new JLabel();
         config();
     }
 
@@ -43,7 +47,9 @@ public class OptionPanel extends JPanel {
                 .addComponent(previous)
                 .addComponent(next)
                 .addComponent(regex)
-                .addComponent(label)
+                .addComponent(labelRegex)
+                .addComponent(searchCase)
+                .addComponent(labelCase)
         );
         layout.setVerticalGroup(layout
                 .createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -54,7 +60,9 @@ public class OptionPanel extends JPanel {
                 .addComponent(previous)
                 .addComponent(next)
                 .addComponent(regex)
-                .addComponent(label)
+                .addComponent(labelRegex)
+                .addComponent(searchCase)
+                .addComponent(labelCase)
         );
         setLayout(layout);
         addButton(open, "OpenButton", Icons.OPEN.getIcon());
@@ -63,13 +71,17 @@ public class OptionPanel extends JPanel {
         addButton(previous, "PreviousMatchButton", Icons.PREV.getIcon());
         addButton(next, "NextMatchButton", Icons.NEXT.getIcon());
         regex.setName("UseRegExCheckbox");
-        label.setText("Use regex");
+        labelRegex.setText("Use regex");
+        labelCase.setText("Ignore case");
         regex.setBackground(Colors.TOOL);
+        searchCase.setBackground(Colors.TOOL);
         console.setBorder(BorderFactory.createLineBorder(Colors.LINES, 1, false));
         console.setName("SearchField");
         add(console);
         add(regex);
-        add(label);
+        add(labelRegex);
+        add(searchCase);
+        add(labelCase);
     }
 
     private void addButton(JButton button, String name, ImageIcon icon) {
@@ -108,7 +120,15 @@ public class OptionPanel extends JPanel {
         return regex;
     }
 
-    public JLabel getLabel() {
-        return label;
+    public JLabel getLabelRegex() {
+        return labelRegex;
+    }
+
+    public JCheckBox getSearchCase() {
+        return searchCase;
+    }
+
+    public JLabel getLabelCase() {
+        return labelCase;
     }
 }

@@ -1,21 +1,21 @@
-package org.ikinsure.editor;
+package org.ikinsure.editor.view;
 
-import org.ikinsure.editor.menu.MenuBar;
-import org.ikinsure.editor.pane.OptionPanel;
-import org.ikinsure.editor.pane.TextPanel;
+import org.ikinsure.editor.view.menu.MenuBar;
+import org.ikinsure.editor.view.pane.OptionPanel;
+import org.ikinsure.editor.view.pane.TextPanel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 
-public class TextEditor extends JFrame {
+public class Frame extends JFrame {
 
     private final OptionPanel optionPanel;
     private final TextPanel textPanel;
     private final MenuBar menu;
     private final JFileChooser chooser;
 
-    public TextEditor() {
+    public Frame() {
         optionPanel = new OptionPanel();
         textPanel = new TextPanel();
         menu = new MenuBar();
@@ -35,9 +35,10 @@ public class TextEditor extends JFrame {
 
     private void setFrame() {
         setBackground(Colors.MAIN);
+        setIconImage(Icons.MAIN.getIcon().getImage());
         setTitle("Text Editor");
         setSize(500, 350);
-        setMinimumSize(new Dimension(350, 160));
+        setMinimumSize(new Dimension(420, 160));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }

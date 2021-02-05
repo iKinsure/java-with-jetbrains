@@ -1,6 +1,6 @@
-package org.ikinsure.editor.pane;
+package org.ikinsure.editor.view.pane;
 
-import org.ikinsure.editor.Colors;
+import org.ikinsure.editor.view.Colors;
 
 import javax.swing.*;
 

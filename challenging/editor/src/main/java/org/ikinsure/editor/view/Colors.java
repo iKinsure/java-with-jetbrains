@@ -1,4 +1,4 @@
-package org.ikinsure.editor;
+package org.ikinsure.editor.view;
 
 import java.awt.*;
 

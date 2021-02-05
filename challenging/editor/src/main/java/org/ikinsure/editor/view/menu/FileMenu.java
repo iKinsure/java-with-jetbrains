@@ -1,4 +1,4 @@
-package org.ikinsure.editor.menu;
+package org.ikinsure.editor.view.menu;
 
 import javax.swing.*;
 
