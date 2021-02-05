@@ -9,7 +9,7 @@ Challenging:
 - [Contacts] - program for creating contacts and interacting with them
 - [JSON Database] - multithreaded socket server with jsons database
 - [Blockchain] - implementation of blockchain
-- [Editor] - swing text editor
+- [Editor] - java swing text editor
 
 Hard:
 - [Phone Book] - searching and sorting benchmark

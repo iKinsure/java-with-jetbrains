@@ -1,7 +1,7 @@
-# Editor
+# Text Editor
 
-App
+Simple text editor with searching by string, searching by regular expressions and file chooser.
 
-```
-*in progress*
-```
+Created with java swing.
+
+![Example](program.png?raw=true "Text editor")
