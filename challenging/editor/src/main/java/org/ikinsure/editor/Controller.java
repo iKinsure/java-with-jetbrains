@@ -10,12 +10,13 @@ import java.util.regex.Pattern;
 public class Controller {
 
     private final TextEditor view;
-    private File currentFile;
-    private final List<Result> indices = new ArrayList<>();
-    private final CycleIterator<Result> iterator = new CycleIterator<>(indices);
+    private final List<Result> indices;
+    private final CycleIterator<Result> iterator;
 
     public Controller(TextEditor view) {
         this.view = view;
+        this.indices = new ArrayList<>();
+        this.iterator = new CycleIterator<>(indices);
     }
 
     public void setListeners() {
@@ -67,27 +68,31 @@ public class Controller {
     private void open() {
         int result = view.getChooser().showOpenDialog(view);
         if (result == JFileChooser.APPROVE_OPTION) {
-            currentFile = view.getChooser().getSelectedFile();
-            try (BufferedReader reader = new BufferedReader(new FileReader(currentFile))) {
+            File file = view.getChooser().getSelectedFile();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 StringBuilder builder = new StringBuilder();
                 int sign;
                 while ((sign = reader.read()) != -1) {
                     builder.append((char) sign);
                 }
                 view.getTextPanel().getArea().setText(builder.toString());
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
                 view.getTextPanel().getArea().setText("");
             }
         }
     }
 
     private void save() {
-        String data = view.getTextPanel().getArea().getText();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(currentFile))) {
-            writer.write(data);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        int result = view.getChooser().showSaveDialog(view);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = view.getChooser().getSelectedFile();
+            String data = view.getTextPanel().getArea().getText();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
