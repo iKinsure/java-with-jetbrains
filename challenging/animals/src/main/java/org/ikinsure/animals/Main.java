@@ -37,14 +37,11 @@ public class Main {
         Animal a1 = factory.createAnimal(input());
         tree.root = new Node(a1);
 
-        print("Wonderful! I've learned so much about animals!\n" +
-                "Let's play a game!\n" +
-                "You think of an animal, and I guess it.\n" +
-                "Press enter when you're ready.");
-        input();
+        showStart();
 
         Node node = tree.root;
         while (true) {
+
             print(node.fact.question());
             if (yesOrNo()) {
                 if (node.right == null || node.left == null) {
@@ -52,6 +49,7 @@ public class Main {
                     print("Would you like to play again?");
                     if (yesOrNo()) {
                         node = tree.root;
+                        showStart();
                     } else {
                         break;
                     }
@@ -66,6 +64,7 @@ public class Main {
                     print("Would you like to play again?");
                     if (yesOrNo()) {
                         node = tree.root;
+                        showStart();
                     } else {
                         break;
                     }
@@ -99,6 +98,14 @@ public class Main {
         return result;
     }
 
+    private static void showStart() {
+        print("Wonderful! I've learned so much about animals!\n" +
+                "Let's play a game!\n" +
+                "You think of an animal, and I guess it.\n" +
+                "Press enter when you're ready.");
+        input();
+    }
+
     private static void showSpecify(Animal a1, Animal a2) {
         print("Specify a fact that distinguishes " + a1.getUndefined() + " from " + a2.getUndefined() + ".\n" +
                 "The sentence should satisfy one of the following templates:\n" +
@@ -107,15 +114,15 @@ public class Main {
                 "- It is a/an ...\n");
     }
 
-   private static void showLearned(Node node) {
-       print("I have learned the following facts about animals:");
-       print(" - " + node.fact.sentence((Animal) node.right.fact, false));
-       print(" - " + node.fact.sentence((Animal) node.left.fact, true));
-       print("I can distinguish these animals by asking the question:");
-       print(" - " + node.fact.question());
-       print("Nice! I've learned so much about animals!");
-       print("");
-   }
+    private static void showLearned(Node node) {
+        print("I have learned the following facts about animals:");
+        print(" - " + node.fact.sentence((Animal) node.right.fact, false));
+        print(" - " + node.fact.sentence((Animal) node.left.fact, true));
+        print("I can distinguish these animals by asking the question:");
+        print(" - " + node.fact.question());
+        print("Nice! I've learned so much about animals!");
+        print("");
+    }
 
 
     private static void print(String text) {
@@ -123,10 +130,11 @@ public class Main {
     }
 
     private static String input() {
-        return SCANNER.nextLine().strip().toLowerCase()
-                .replace("?", "")
-                .replace("!", "")
-                .replace(".", "");
+        String word = SCANNER.nextLine().strip().toLowerCase();
+        if (word.endsWith(".") || word.endsWith("!") || word.endsWith("?")) {
+            word = word.substring(0, word.length() - 1);
+        }
+        return word;
     }
 
     private static boolean yesOrNo() {
