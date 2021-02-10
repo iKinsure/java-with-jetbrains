@@ -28,7 +28,11 @@ public class Main {
 
         hello();
 
+
         // enter animals
+        print("I want to learn about animals.");
+        print("Which animal do you like most?");
+
         AnimalFactory factory = new AnimalFactory();
         print("\nEnter the first animal:");
         Animal a1 = factory.parse(input());
