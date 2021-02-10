@@ -23,104 +23,100 @@ public class Main {
             "See you later!", "Catch you later!", "Have a good one!");
 
     private static final Scanner SCANNER = new Scanner(System.in);
+    private static final Random RANDOM = new Random();
+
 
     public static void main(String[] args) {
 
         hello();
+        print("I want to learn about animals.\n" +
+                "Which animal do you like most?");
 
+        FactFactory factory = new FactFactory();
+        BinaryTree tree = new BinaryTree();
+        Animal a1 = factory.createAnimal(input());
+        tree.root = new Node(a1);
 
-        // enter animals
-        print("I want to learn about animals.");
-        print("Which animal do you like most?");
+        print("Wonderful! I've learned so much about animals!\n" +
+                "Let's play a game!\n" +
+                "You think of an animal, and I guess it.\n" +
+                "Press enter when you're ready.");
+        input();
 
-        AnimalFactory factory = new AnimalFactory();
-        print("\nEnter the first animal:");
-        Animal a1 = factory.parse(input());
-        print("Enter the second animal:");
-        Animal a2 = factory.parse(input());
-
-
-
-        Random rand = new Random();
+        Node node = tree.root;
         while (true) {
-            print("Specify a fact that distinguishes " + a1.getUndefined() + " from " + a2.getUndefined() + ".");
-            print("The sentence should be of the format: 'It can/has/is ...'.\n");
+            print(node.fact.question());
+            if (yesOrNo()) {
+                if (node.right == null || node.left == null) {
+                    print("Yeah!\n");
+                    print("Would you like to play again?");
+                    if (yesOrNo()) {
+                        node = tree.root;
+                    } else {
+                        break;
+                    }
 
-            String in = input();
-            FactCategory category;
-            String fact;
-            if (in.startsWith("it can ")) {
-                category = FactCategory.ABILITY;
-                fact = in.substring(7);
-
-
-
-            } else if (in.startsWith("it has ")) {
-                category = FactCategory.POSSESS;
-                fact = in.substring(7);
-
-
-
-            } else if (in.startsWith("it is ")) {
-                category = FactCategory.LINKING;
-                fact = in.substring(6);
-
-
-
-            } else {
-                print("The examples of a statement:\n" +
-                        " - It can fly\n" +
-                        " - It has horn\n" +
-                        " - It is a mammal");
-                continue;
-            }
-
-            while (true) {
-                print("Is it correct for " + a2.getUndefined() + "?");
-                in = input();
-                if (POSITIVE.contains(in)) {
-                    a1.add(new Fact(fact, category, true));
-                    a2.add(new Fact(fact, category, false));
-                    break;
-                } else if (NEGATIVE.contains(in)) {
-                    a1.add(new Fact(fact, category, false));
-                    a2.add(new Fact(fact, category, true));
-                    break;
                 } else {
-                    print(ASK_AGAIN.get(rand.nextInt(ASK_AGAIN.size())));
+                    node = node.right;
+                }
+            } else {
+                if (node.left == null || node.right == null) {
+                    Node result = createStatement(factory, node);
+                    tree.replace(node, result);
+                    print("Would you like to play again?");
+                    if (yesOrNo()) {
+                        node = tree.root;
+                    } else {
+                        break;
+                    }
+                } else {
+                    node = node.left;
                 }
             }
-
-
-
-            print("I learned the following facts about animals:");
-            print(a1.getProperties());
-            print(a2.getProperties());
-
-            print("I can distinguish these animals by asking the question:");
-            if (category == FactCategory.ABILITY) {
-                print(" - Can it " + fact + "?");
-            } else if (category == FactCategory.LINKING) {
-                print(" - Is it " + fact + "?");
-            } else if (category == FactCategory.POSSESS) {
-                print(" - Does it have " + fact + "?");
-            }
-
-            break;
         }
 
-        // bye
-        print("");
-        print(GOODBYE.get(rand.nextInt(GOODBYE.size())));
+        print("\n" + GOODBYE.get(RANDOM.nextInt(GOODBYE.size())));
     }
 
-    private static String upperCase(String s) {
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    private static Node createStatement(FactFactory factory, Node previous) {
+        Node result;
+        print("I give up. What animal do you have in mind?");
+        Animal a1 = (Animal) previous.fact;
+        Animal a2 = factory.createAnimal(input());
+        showSpecify(a1, a2);
+        String data = input();
+        print("Is the statement correct for " + a2.getUndefined() + "?");
+        if (yesOrNo()) {
+            result = new Node(factory.createFact(data));
+            result.right = new Node(a2);
+            result.left = new Node(previous.fact);
+        } else {
+            result = new Node(factory.createFact(data));
+            result.right = new Node(previous.fact);
+            result.left = new Node(a2);
+        }
+        showLearned(result);
+        return result;
     }
 
-    private static void process(String s) {
-
+    private static void showSpecify(Animal a1, Animal a2) {
+        print("Specify a fact that distinguishes " + a1.getUndefined() + " from " + a2.getUndefined() + ".\n" +
+                "The sentence should satisfy one of the following templates:\n" +
+                "- It can ...\n" +
+                "- It has ...\n" +
+                "- It is a/an ...\n");
     }
+
+   private static void showLearned(Node node) {
+       print("I have learned the following facts about animals:");
+       print(" - " + node.fact.sentence((Animal) node.right.fact, false));
+       print(" - " + node.fact.sentence((Animal) node.left.fact, true));
+       print("I can distinguish these animals by asking the question:");
+       print(" - " + node.fact.question());
+       print("Nice! I've learned so much about animals!");
+       print("");
+   }
+
 
     private static void print(String text) {
         System.out.println(text);
@@ -131,6 +127,18 @@ public class Main {
                 .replace("?", "")
                 .replace("!", "")
                 .replace(".", "");
+    }
+
+    private static boolean yesOrNo() {
+        String input = input();
+        if (POSITIVE.contains(input)) {
+            return true;
+        } else if (NEGATIVE.contains(input)) {
+            return false;
+        } else {
+            print(ASK_AGAIN.get(RANDOM.nextInt(ASK_AGAIN.size())));
+            return yesOrNo();
+        }
     }
 
     private static void hello() {
@@ -144,5 +152,6 @@ public class Main {
         } else {
             print("Good afternoon!");
         }
+        print("");
     }
 }

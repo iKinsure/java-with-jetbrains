@@ -3,14 +3,15 @@ package org.ikinsure.animals;
 public class Node {
 
     int key;
-    String fact;
+    Fact fact;
     Node left;
     Node right;
-    Node parent;
 
-    public Node(int key, String fact, Node parent) {
-        this.key = key;
+    static int counter = 0;
+
+    public Node(Fact fact) {
+        this.key = counter++;
         this.fact = fact;
-        this.parent = parent;
     }
+
 }
