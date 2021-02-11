@@ -1,6 +1,8 @@
 package org.ikinsure.animals;
 
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Random;
 
 public class DataFormatter {
 
@@ -37,7 +39,7 @@ public class DataFormatter {
     }
 
 
-    private String negateFact(String fact) {
+    public String negateFact(String fact) {
         fact = fact.substring(3);
         if (fact.startsWith("can")) {
             return "It can't" + fact.substring(3);
@@ -60,6 +62,10 @@ public class DataFormatter {
         } else {
             return "Good afternoon!";
         }
+    }
+
+    public String randomQuote(Random random, List<String> data) {
+        return data.get(random.nextInt(data.size()));
     }
 
     private boolean isVowel(char c) {
