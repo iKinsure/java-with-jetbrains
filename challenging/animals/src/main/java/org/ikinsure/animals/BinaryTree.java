@@ -1,28 +1,44 @@
 package org.ikinsure.animals;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BinaryTree {
 
     Node root;
 
-    public void replace(Node a, Node b) {
-        replaceRecursive(a.key, root, b);
+    public BinaryTree() {
+
+    }
+    public BinaryTree(Node root) {
+        this.root = root;
     }
 
-    private void replaceRecursive(int key, Node root, Node node) {
+    public void replace(Node a, Node b) {
+        replaceRecursive(a.data, root, b);
+    }
+
+    private void replaceRecursive(String data, Node root, Node node) {
         if (root == null) {
             return;
         }
 
-        if (root.key == key) {
-            root.fact = node.fact;
+        if (root.data.equals(data)) {
+            root.data = node.data;
             root.right = node.right;
             root.left = node.left;
             return;
         }
 
-        replaceRecursive(key, root.right, node);
-        replaceRecursive(key, root.left, node);
+        replaceRecursive(data, root.right, node);
+        replaceRecursive(data, root.left, node);
     }
 
+    public Node getRoot() {
+        return root;
+    }
 
+    public void setRoot(Node root) {
+        this.root = root;
+    }
 }
