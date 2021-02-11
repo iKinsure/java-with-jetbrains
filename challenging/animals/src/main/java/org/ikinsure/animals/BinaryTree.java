@@ -185,7 +185,7 @@ public class BinaryTree {
     public String list() {
         List<String> list = new ArrayList<>();
         leavesRecursive(root, list);
-        return list.stream().map(s -> " - " + s).collect(Collectors.joining("\n"));
+        return list.stream().map(s -> " - " + s).sorted().collect(Collectors.joining("\n"));
     }
 
 

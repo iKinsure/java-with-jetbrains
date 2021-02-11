@@ -48,7 +48,7 @@ public class App {
         System.out.println(tree.list());
     }
 
-    private void search() { // TODO: finish
+    private void search() {
         System.out.println("Enter the animal:");
         String animal = formatter.createAnimal(Main.input(scanner));
         System.out.println("Facts about " + animal + ":");
@@ -59,14 +59,17 @@ public class App {
         int total = tree.numberOfNodes(formatter);
         int animals = tree.numberOfAnimals();
         int statements = total - animals;
-        double avg = tree.averageDepth(tree.root, 0) * 1.0 / animals;
+        int height = tree.depth(tree.root);
+        int minDepth = (tree.minDepth(tree.root));
+        double avg = (tree.averageDepth(tree.root, 0)) * 1.0 / animals;
+        avg--;
         System.out.println("The Knowledge Tree stats\n");
         System.out.println("- root node                    " + tree.root.data);
         System.out.println("- total number of nodes        " + total);
         System.out.println("- total number of animals      " + animals);
         System.out.println("- total number of statements   " + statements);
-        System.out.println("- height of the tree           " + tree.depth(tree.root));
-        System.out.println("- minimum depth                " + tree.minDepth(tree.root));
+        System.out.println("- height of the tree           " + height);
+        System.out.println("- minimum depth                " + minDepth);
         System.out.println("- average depth                " + avg);
     }
 
@@ -96,6 +99,7 @@ public class App {
             String a1 = formatter.createAnimal(Main.input(scanner));
             tree.root = new Node(a1);
         }
+        System.out.println("Welcome to the animal expert system!");
         return tree;
     }
 
