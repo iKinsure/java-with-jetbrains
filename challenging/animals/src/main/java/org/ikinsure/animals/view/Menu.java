@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class Menu {
 
     private final List<Item> items; // list of options
+    private Item error;
     private Scanner scanner; // linked input
     private String title;
 
@@ -20,6 +21,10 @@ public class Menu {
 
     public void addItem(Item item) {
         items.add(item);
+    }
+
+    public void addError(Item item) {
+        this.error = item;
     }
 
     public void addTitle(String title) {
@@ -38,7 +43,7 @@ public class Menu {
         return items.stream()
                 .filter(i -> i.id == id)
                 .findFirst()
-                .orElse(items.get(items.size() - 1));
+                .orElse(error);
     }
 
     /**
@@ -47,7 +52,6 @@ public class Menu {
     public static class Builder {
 
         private final Menu menu;
-        private String title;
 
         public Builder() {
             menu = new Menu();
@@ -60,6 +64,11 @@ public class Menu {
 
         public Builder addItem(Item item) {
             menu.addItem(item);
+            return this;
+        }
+
+        public Builder addError(MenuAction action) {
+            menu.addError(new Item(-1, "", action));
             return this;
         }
 

@@ -2,79 +2,85 @@ package org.ikinsure.animals;
 
 import org.ikinsure.animals.view.Menu;
 import org.ikinsure.animals.view.MenuController;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class App {
 
-    private static final List<String> GOODBYE = List.of(
-            "Have a nice day!", "See you soon!", "Bye!", "Talk to you later!",
-            "See you later!", "Catch you later!", "Have a good one!");
-
-    private final Scanner scanner;
+    private final Scanner sc;
+    private final Resource res;
     private final MenuController controller;
-    private final Menu main;
     private final BinaryTree tree;
-    private final DataFormatter formatter;
-    private final Random random;
+    private final Menu main;
 
-    public App(Scanner scanner) {
-        this.scanner = scanner;
+    public App(Scanner sc, Resource res) {
+        this.sc = sc;
+        this.res = res;
         this.controller = new MenuController();
-        this.formatter = new DataFormatter();
-        this.random = new Random();
         this.tree = load();
         this.main = new Menu.Builder()
-                .setScanner(scanner)
-                .addTitle("\nWhat do you want to do:\n")
-                .addItem(1, "Play the guessing game", this::play)
-                .addItem(2, "List of all animals", this::list)
-                .addItem(3, "Search for an animal",this::search)
-                .addItem(4, "Calculate statistics", this::statistics)
-                .addItem(5, "Print the Knowledge Tree", this::tree)
-                .addItem(0, "Exit", this::exit)
+                .setScanner(sc)
+                .addTitle("\n" + res.message("menu.property.title") + "\n")
+                .addItem(1, res.message("menu.entry.play"), this::play)
+                .addItem(2, res.message("menu.entry.list"), this::list)
+                .addItem(3, res.message("menu.entry.search"),this::search)
+                .addItem(4, res.message("menu.entry.delete"),this::delete)
+                .addItem(5, res.message("menu.entry.statistics"), this::statistics)
+                .addItem(6, res.message("menu.entry.print"), this::tree)
+                .addItem(0, res.message("menu.property.exit"), this::exit)
+                .addError(this::error)
                 .build();
     }
 
     private void play() {
-        new Game(tree, scanner, formatter, random).start();
+        new Game(tree, sc, res).start();
     }
 
     private void list() {
-        System.out.println("Here are the animals I know:");
-        System.out.println(tree.list());
+        res.println("tree.list.animals");
+        tree.leaves().forEach(a ->
+                res.printf("tree.list.printf",
+                res.format("animalName", a),
+                tree.search(res, a).size()));
     }
 
     private void search() {
-        System.out.println("Enter the animal:");
-        String animal = formatter.createAnimal(Main.input(scanner));
-        System.out.println("Facts about " + animal + ":");
-        System.out.println(tree.search(formatter, animal));
+        String animal = res.createAnimal();
+        res.println("tree.search.facts", animal);
+        List<String> list = tree.search(res, animal);
+        if (list.isEmpty()) {
+            res.println("tree.search.noFacts", animal);
+        } else {
+            list.forEach(a -> res.printf("tree.search.printf", a));
+        }
+    }
+
+    private void delete() {
+        res.println("tree.delete.root");
+        res.println("tree.delete.successful");
+        res.println("tree.delete.fail");
     }
 
     private void statistics() {
-        int total = tree.numberOfNodes(formatter);
-        int animals = tree.numberOfAnimals();
+
+        int total = tree.counter();
+        int animals = tree.leaves().size();
         int statements = total - animals;
-        int height = tree.depth(tree.root);
-        int minDepth = (tree.minDepth(tree.root));
-        double avg = (tree.averageDepth(tree.root, 0)) * 1.0 / animals;
-        avg--;
-        System.out.println("The Knowledge Tree stats\n");
-        System.out.println("- root node                    " + tree.root.data);
-        System.out.println("- total number of nodes        " + total);
-        System.out.println("- total number of animals      " + animals);
-        System.out.println("- total number of statements   " + statements);
-        System.out.println("- height of the tree           " + height);
-        System.out.println("- minimum depth                " + minDepth);
-        System.out.println("- average depth                " + avg);
+        double average = ((tree.depthSumRecursive(tree.root, 0)) * 1.0 / animals) - 1.0;
+
+        res.println("tree.stats.title");
+        res.println("tree.stats.root", tree.root.data);
+        res.println("tree.stats.nodes", total);
+        res.println("tree.stats.animals", animals);
+        res.println("tree.stats.statements", statements);
+        res.println("tree.stats.height", tree.depth());
+        res.println("tree.stats.minimum", tree.minDepth());
+        res.println("tree.stats.average", average);
     }
 
     private void tree() {
-        System.out.println(tree.tree(formatter));
+       tree.tree(res);
     }
 
     private void exit() {
@@ -83,8 +89,12 @@ public class App {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("\n" + formatter.randomQuote(random, GOODBYE));
+        res.printlnRandom("farewell");
         controller.exitAll();
+    }
+
+    private void error() {
+        res.println("menu.property.error", 6);
     }
 
     private BinaryTree load() {
@@ -93,18 +103,18 @@ public class App {
             tree =  Main.loader();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("I want to learn about animals.\n" +
-                    "Which animal do you like most?");
+            res.println("animal.wantLearn");
+            res.println("animal.askFavorite");
+            String animal = res.createAnimal();
             tree = new BinaryTree();
-            String a1 = formatter.createAnimal(Main.input(scanner));
-            tree.root = new Node(a1);
+            tree.root = new Node(animal);
         }
-        System.out.println("Welcome to the animal expert system!");
+        res.println("welcome");
         return tree;
     }
 
     public void run() {
-        System.out.println(formatter.generateHello() + "\n");
+        res.printHello();
         controller.run(main);
     }
 

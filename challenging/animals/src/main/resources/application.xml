@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>The base name and type of the storage file</comment>
+    <entry key="baseName">animals</entry>
+    <entry key="type">yaml</entry>
+</properties>
