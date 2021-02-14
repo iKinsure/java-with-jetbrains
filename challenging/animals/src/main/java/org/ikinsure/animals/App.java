@@ -8,16 +8,14 @@ import java.util.Scanner;
 
 public class App {
 
-    private final Scanner sc;
     private final Resource res;
-    private final MenuController controller;
+    private final MenuController contr;
     private final BinaryTree tree;
     private final Menu main;
 
-    public App(Scanner sc, Resource res) {
-        this.sc = sc;
+    public App(Scanner sc, Resource res, MenuController contr) {
         this.res = res;
-        this.controller = new MenuController();
+        this.contr = contr;
         this.tree = load();
         this.main = new Menu.Builder()
                 .setScanner(sc)
@@ -25,21 +23,21 @@ public class App {
                 .addItem(1, res.message("menu.entry.play"), this::play)
                 .addItem(2, res.message("menu.entry.list"), this::list)
                 .addItem(3, res.message("menu.entry.search"),this::search)
-                .addItem(4, res.message("menu.entry.delete"),this::delete)
-                .addItem(5, res.message("menu.entry.statistics"), this::statistics)
-                .addItem(6, res.message("menu.entry.print"), this::tree)
+                .addItem(4, res.message("menu.entry.statistics"), this::statistics)
+                .addItem(5, res.message("menu.entry.print"), this::tree)
+                .addItem(6, res.message("menu.entry.delete"),this::delete)
                 .addItem(0, res.message("menu.property.exit"), this::exit)
                 .addError(this::error)
                 .build();
     }
 
     private void play() {
-        new Game(tree, sc, res).start();
+        new Game(tree, res).start();
     }
 
     private void list() {
         res.println("tree.list.animals");
-        tree.leaves().forEach(a ->
+        tree.leaves().stream().sorted().forEach(a ->
                 res.printf("tree.list.printf",
                 res.format("animalName", a),
                 tree.search(res, a).size()));
@@ -47,7 +45,7 @@ public class App {
 
     private void search() {
         String animal = res.createAnimal();
-        res.println("tree.search.facts", animal);
+        res.println("tree.search.facts", res.format("animalName", animal));
         List<String> list = tree.search(res, animal);
         if (list.isEmpty()) {
             res.println("tree.search.noFacts", animal);
@@ -67,7 +65,7 @@ public class App {
         int total = tree.counter();
         int animals = tree.leaves().size();
         int statements = total - animals;
-        double average = ((tree.depthSumRecursive(tree.root, 0)) * 1.0 / animals) - 1.0;
+        double average = (tree.depthSumRecursive(tree.root, 0) - 1) * 1.0 / animals;
 
         res.println("tree.stats.title");
         res.println("tree.stats.root", tree.root.data);
@@ -90,7 +88,7 @@ public class App {
             e.printStackTrace();
         }
         res.printlnRandom("farewell");
-        controller.exitAll();
+        contr.exitAll();
     }
 
     private void error() {
@@ -115,7 +113,7 @@ public class App {
 
     public void run() {
         res.printHello();
-        controller.run(main);
+        contr.run(main);
     }
 
 }

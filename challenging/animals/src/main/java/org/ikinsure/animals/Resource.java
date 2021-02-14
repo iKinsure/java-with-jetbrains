@@ -14,8 +14,8 @@ public class Resource {
     public Resource(Scanner sc, Random rand) {
         this.sc = sc;
         this.rand = rand;
-        this.messages = ResourceBundle.getBundle("messages");
-        this.patterns = ResourceBundle.getBundle("patterns");
+        this.messages = ResourceBundle.getBundle("messages", Locale.getDefault());
+        this.patterns = ResourceBundle.getBundle("patterns", Locale.getDefault());
     }
 
     /**
@@ -97,46 +97,43 @@ public class Resource {
 
     public void printHello() {
         LocalTime time = LocalTime.now();
-        if (time.isBefore(LocalTime.of(5, 0))) {
+        if (time.isBefore(LocalTime.parse(message("night.time.before")))) {
             println("greeting.night");
-        } else if (time.isBefore(LocalTime.of(7, 0))) {
+        } else if (time.isBefore(LocalTime.parse(message("early.time.before")))) {
             println("greeting.early");
-        } else if (time.isBefore(LocalTime.of(12, 0))) {
+        } else if (time.isBefore(LocalTime.parse(message("morning.time.before")))) {
             println("greeting.morning");
-        } else if (time.isBefore(LocalTime.of(18, 0))) {
-            println("greeting.evening");
-        } else {
+        } else if (time.isBefore(LocalTime.parse(message("afternoon.time.before")))) {
             println("greeting.afternoon");
+        } else {
+            println("greeting.evening");
         }
     }
 
     public String createAnimal() {
         println("animal.prompt");
-        String animal = sc.nextLine();
-
+        String animal = in();
         while (!animal.matches(regex("animal.isCorrect"))) {
             println("animal.error");
             println("animal.prompt");
-            animal = sc.nextLine();
+            animal = in();
         }
         return format("animal", animal);
     }
 
-
     public String createStatement(String a1, String a2) {
         println("statement.prompt", a1, a2);
-        String statement = sc.nextLine();
-
+        String statement = in();
         while (!statement.matches(regex("statement.isCorrect"))) {
             println("statement.error");
             println("statement.prompt", a1, a2);
-            statement = sc.nextLine();
+            statement = in();
         }
         return format("statement", statement);
     }
 
     public boolean inputYesOrNo() {
-        String input = sc.nextLine();
+        String input = in();
         if (input.matches(regex("positiveAnswer.isCorrect"))) {
             return true;
         } else if (input.matches(regex("negativeAnswer.isCorrect"))) {
@@ -147,4 +144,7 @@ public class Resource {
         }
     }
 
+    public String in() {
+        return sc.nextLine().toLowerCase();
+    }
 }

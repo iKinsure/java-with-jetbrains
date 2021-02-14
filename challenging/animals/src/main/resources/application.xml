@@ -4,4 +4,5 @@
     <comment>The base name and type of the storage file</comment>
     <entry key="baseName">animals</entry>
     <entry key="type">yaml</entry>
+    <entry key="lang">en</entry>
 </properties>

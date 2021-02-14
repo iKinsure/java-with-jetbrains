@@ -1,16 +1,12 @@
 package org.ikinsure.animals;
 
-import java.util.Scanner;
-
 public class Game {
 
     private final BinaryTree tree;
-    private final Scanner sc;
     private final Resource res;
 
-    public Game(BinaryTree tree, Scanner sc, Resource res) {
+    public Game(BinaryTree tree, Resource res) {
         this.tree = tree;
-        this.sc = sc;
         this.res = res;
     }
 
@@ -22,6 +18,7 @@ public class Game {
             System.out.println(res.format(animal ? "guessAnimal" : "question", node.data));
             boolean yes = res.inputYesOrNo();
             if (yes && animal) {
+                res.printlnRandom("game.win");
                 res.printlnRandom("game.thanks");
                 res.printlnRandom("game.again");
                 if (res.inputYesOrNo()) {
@@ -54,7 +51,7 @@ public class Game {
         res.println("game.letsPlay");
         res.println("game.think");
         res.println("game.enter");
-        sc.nextLine();
+        res.in();
     }
 
     private Node createStatement(Node previous) {
@@ -80,20 +77,13 @@ public class Game {
     }
 
     private void showLearned(Node node) {
-
         String prop = res.format("definite", node.right.data) + res.format("animalFact", node.data);
-
         String con = res.format("definite", node.left.data) + res.format("animalFact", res.format("negative", node.data));
-
         res.println("game.learned");
-
         System.out.println(" - " + prop);
         System.out.println(" - " + con);
-
         res.println("game.distinguish");
-
         System.out.println(" - " + res.format("question", node.data));
-
         res.printRandom("animal.nice");
         res.println("animal.learnedMuch");
     }

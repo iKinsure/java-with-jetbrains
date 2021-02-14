@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import org.ikinsure.animals.view.MenuController;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class Main {
         properties.loadFromXML(Thread.currentThread()
                 .getContextClassLoader()
                 .getResourceAsStream("application.xml"));
+        properties.setProperty("lang", Locale.getDefault().getLanguage());
 
         // read properties from args
         List<String> arguments = Arrays.asList(args);
@@ -30,19 +32,25 @@ public class Main {
         // start all
         Scanner sc = new Scanner(System.in);
         Random rand = new Random();
+        MenuController contr = new MenuController();
         Resource res= new Resource(sc, rand);
-        App app = new App(sc, res);
+        App app = new App(sc, res, contr);
         app.run();
     }
 
     static void saver(BinaryTree tree) throws IOException {
-        File file = new File(properties.getProperty("baseName") + "." + properties.getProperty("type"));
-        createMapper().writerWithDefaultPrettyPrinter().writeValue(file, tree);
+        createMapper().writerWithDefaultPrettyPrinter().writeValue(getFile(), tree);
     }
 
     static BinaryTree loader() throws IOException {
-        File file = new File(properties.getProperty("baseName") + "." + properties.getProperty("type"));
-        return createMapper().readValue(file, BinaryTree.class);
+        return createMapper().readValue(getFile(), BinaryTree.class);
+    }
+
+    static File getFile() {
+        String name = properties.getProperty("baseName");
+        String lang = properties.getProperty("lang").equals("en") ? "" : "_" + properties.getProperty("lang");
+        String type = "." + properties.getProperty("type");
+        return new File(name + lang + type);
     }
 
     static ObjectMapper createMapper() {
