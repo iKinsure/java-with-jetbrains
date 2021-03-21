@@ -10,8 +10,23 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    private static final String BASE_FILE = "directory.txt";
-    private static final String FIND_FILE = "find.txt";
+    /** BASE_FILE format:
+        12303516 Deva Millie
+        1651981 Katey Jarrod
+        90758719 Kathye Renate
+        88730228 Math
+        ...
+     */
+    private static final String BASE_FILE = "base_file.txt";
+
+    /** FIND_FILE format:
+         Lyndel Raymond
+         Meta Joappa
+         Kynthia Nadbus
+         Domino
+         ...
+     */
+    private static final String FIND_FILE = "find_file.txt";
 
     public static void main(String[] args) throws IOException {
 
