@@ -6,6 +6,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Input file example format:
+ * Fernando Marbury fernando_marbury@gmail.com
+ * Kristyn Nix nix-kris@gmail.com
+ * Regenia Enderle
+ * Malena Gray
+ * ...
+ */
 public class Main {
 
     private static final Scanner SCANNER = new Scanner(System.in);
@@ -22,12 +30,16 @@ public class Main {
                     String[] queries = SCANNER.nextLine().toLowerCase().split("\\s+");
 
                     Set<Integer> positions = new HashSet<>();
-                    if (strategy.equals("ALL")) {
-                        positions = intersection(map, queries);
-                    } else if (strategy.equals("ANY")) {
-                        positions = union(map, queries);
-                    } else if (strategy.equals("NONE")) {
-                        positions = difference(map, queries);
+                    switch (strategy) {
+                        case "ALL":
+                            positions = intersection(map, queries);
+                            break;
+                        case "ANY":
+                            positions = union(map, queries);
+                            break;
+                        case "NONE":
+                            positions = difference(map, queries);
+                            break;
                     }
 
                     if (positions.isEmpty()) {
