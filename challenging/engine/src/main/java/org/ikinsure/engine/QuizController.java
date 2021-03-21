@@ -1,9 +1,10 @@
 package org.ikinsure.engine;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +21,9 @@ public class QuizController {
     }
 
     @PostMapping("api/quizzes/{id}/solve")
-    public Response solveQuestion(@PathVariable int id, @RequestParam int answer) {
-        return findQuestionById(id).getAnswer() == answer
+    public Response solveQuestion(@PathVariable int id, @RequestBody JsonNode answer) {
+        ArrayNode array = (ArrayNode) answer.get("answer");
+        return findQuestionById(id).getAnswer().equals(array.elements())
                 ? new Response(true, "Congratulations, you're right!")
                 : new Response(false, "Wrong answer! Please, try again.");
     }

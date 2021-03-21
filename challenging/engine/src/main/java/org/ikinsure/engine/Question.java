@@ -1,6 +1,6 @@
 package org.ikinsure.engine;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class Question {
     private String text;
     private List<String> options;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private int answer;
+    private List<Integer> answer;
 
     public Question() {
 
@@ -49,11 +49,11 @@ public class Question {
         this.options = options;
     }
 
-    public int getAnswer() {
+    public List<Integer> getAnswer() {
         return answer;
     }
 
-    public void setAnswer(int answer) {
+    public void setAnswer(List<Integer> answer) {
         this.answer = answer;
     }
 }

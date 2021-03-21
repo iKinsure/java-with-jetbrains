@@ -1,19 +1,19 @@
 # java-with-jetbrains
 
-This repository contains all java developer track projects, created while learning.
+This repository contains all java developer track projects created while learning.
 
 ### List of projects
 
-Challenging:
-- [Code Sharing Platform] - spring framework web app for code storing
+Challenging difficulty level:
+- [Code Sharing Platform] - spring mvc web platform for code storing
 - [Contacts] - program for creating contacts and interacting with them
 - [JSON Database] - multithreaded socket server with jsons database
-- [Blockchain] - implementation of blockchain
+- [Blockchain] - implementation of basic blockchain
 - [Text Editor] - java swing text editor
 - [Guess the Animal] - interactive game where computer will try to guess the animal
 - [Web Quiz Engine] - multi-users web service for creating solving quizzes
 
-Hard:
+Hard difficulty level:
 - [Phone Book] - searching and sorting benchmark
 - [Budget Manager] - app uses comparators
 - [Smart Calculator] - postfix notation with stacks
@@ -27,7 +27,7 @@ Hard:
 - [Simple Banking System] - with SQLite
 - [Music Advisor] - spotify API
 
-Medium:
+Medium difficulty level:
 - [Battleship] - classic game
 - [Encryption-Decryption] - encrypt and decrypt message
 - [Numeric Matrix Processor] - basic matrix operations
@@ -37,7 +37,7 @@ Medium:
 - [Error Correcting Encoder-Decoder] - binary cipher simulation
 - [Numeral System Converter] - change number radix
 
-Easy:
+Easy difficulty level:
   - [Cinema Room Manager] - reserve your sit
   - [Bulls and Cows] - guess secret code
   - [Coffee Machine] - simulation
