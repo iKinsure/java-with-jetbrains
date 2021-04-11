@@ -16,13 +16,13 @@ Example file with cards:
 
 Programme action:
 ```
-Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):
+Input the action (add, remove, import, export, quizFormat, exit, log, hardest card, reset stats):
 > import
 File name:
 > capitals.txt
 5 cards have been loaded.
 
-Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):
+Input the action (add, remove, import, export, quizFormat, exit, log, hardest card, reset stats):
 > add
 The card:
 > france
@@ -30,13 +30,13 @@ The definition of the card:
 > paris
 The pair ("france":"paris") has been added.
 
-Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):
+Input the action (add, remove, import, export, quizFormat, exit, log, hardest card, reset stats):
 > add
 The card:
 > france
 The card "france" already exists.
 
-Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):
+Input the action (add, remove, import, export, quizFormat, exit, log, hardest card, reset stats):
 > add
 The card:
 > usa
@@ -44,9 +44,9 @@ The definition of the card:
 > paris
 The definition "paris" already exists.
 
-Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):
-> ask
-How many times to ask?
+Input the action (add, remove, import, export, quizFormat, exit, log, hardest card, reset stats):
+> quizFormat
+How many times to quizFormat?
 > 3
 
 Print the definition of "great britain":
@@ -61,11 +61,11 @@ Print the definition of "russia":
 > berlin
 Wrong. The right answer is "moscow", but your definition is correct for "germany".
 
-Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):
+Input the action (add, remove, import, export, quizFormat, exit, log, hardest card, reset stats):
 > hardest card
 The hardest card is "austria". You have 8 errors answering it.
 
-Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):
+Input the action (add, remove, import, export, quizFormat, exit, log, hardest card, reset stats):
 > log
 File name:
 > log.txt
