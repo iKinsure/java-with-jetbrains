@@ -42,7 +42,7 @@ Easy difficulty level:
   - [Bulls and Cows] - guess secret code
   - [Coffee Machine] - simulation
   - [Tic-Tac-Toe] - player vs player game
-  - [Simple Chatty Bot] - basic chatty bot
+  - [Simple Chatty Bot] - basic chatty bot ✔
 
 
 

@@ -43,8 +43,7 @@ public class AidBot implements Bot {
     @Override
     public void counting() {
         output.accept("Now I will prove to you that I can count to any number you want.");
-        IntStream.rangeClosed(0, scanner.nextInt())
-                .forEach(i -> output.accept(i + "!"));
+        IntStream.rangeClosed(0, scanner.nextInt()).forEach(i -> output.accept(i + "!"));
     }
 
     @Override
