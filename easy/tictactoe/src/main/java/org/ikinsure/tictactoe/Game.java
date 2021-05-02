@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Game {
 
     private final Board board;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public Game(Scanner scanner, int size) {
         this.board = new Board(size);
@@ -27,10 +27,6 @@ public class Game {
 
         System.out.println(board.getBoard());
         System.out.println(state.getMsg());
-    }
-
-    public void setScanner(Scanner scanner) {
-        this.scanner = scanner;
     }
 
     private boolean input(Field field) {
