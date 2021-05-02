@@ -41,7 +41,7 @@ Easy difficulty level:
   - [Cinema Room Manager] - reserve your sit
   - [Bulls and Cows] - guess secret code
   - [Coffee Machine] - simulation
-  - [Tic-Tac-Toe] - player vs player game
+  - [Tic-Tac-Toe] - player vs player game ✔
   - [Simple Chatty Bot] - basic chatty bot ✔
 
 
