@@ -14,16 +14,15 @@ public class App {
 
     public static void main(String[] args) {
 
-        Map<Ingredient, Integer> supplies = new LinkedHashMap<>(Map.of(
-                WATER, 400,
-                MILK, 540,
-                BEANS, 120,
-                CUPS, 9
-        ));
+        Map<Ingredient, Integer> supplies = new LinkedHashMap<>();
+        supplies.put(WATER, 400);
+        supplies.put(MILK, 540);
+        supplies.put(BEANS, 120);
+        supplies.put(CUPS, 9);
 
         Machine machine = new GenericMachine(
                 "coffee",
-                new Scanner(System.in)::next,
+                new Scanner(System.in)::nextLine,
                 System.out::println,
                 supplies,
                 new Product[]{CAPPUCCINO, LATTE, ESPRESSO},

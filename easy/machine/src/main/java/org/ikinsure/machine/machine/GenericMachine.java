@@ -78,13 +78,13 @@ public class GenericMachine implements Machine {
         return supplier.get();
     }
 
-    private int intSupplier() {
-        return Integer.parseInt(supplier());
-    }
-
     @Override
     public void consumer(String msg) {
         consumer.accept(msg);
+    }
+
+    private int intSupplier() {
+        return Integer.parseInt(supplier());
     }
 
     private void updateSupplies(Product product) {
