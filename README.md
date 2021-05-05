@@ -38,7 +38,7 @@ Medium difficulty level:
 - [Numeral System Converter] - change number radix
 
 Easy difficulty level:
-  - [Cinema Room Manager] - reserve your sit
+  - [Cinema Room Manager] - reserve your sit ✔
   - [Bulls and Cows] - guess secret code ✔
   - [Coffee Machine] - simulation ✔
   - [Tic-Tac-Toe] - player vs player game ✔
