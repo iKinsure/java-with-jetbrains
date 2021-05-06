@@ -1,34 +1,28 @@
 package org.ikinsure.processor;
 
-public enum Decision {
-    ADD(1, "Add matrices"),
-    SCALAR_MULTIPLY(2, "Multiply matrix by a constant"),
-    MULTIPLY(3, "Multiply matrices"),
-    TRANSPOSE(4, "Transpose matrix"),
-    DETERMINANT(5, "Calculate a determinant"),
-    INVERSE(6, "Inverse matrix"),
-    EXIT(0, "Exit");
+public class Decision {
 
     private final int id;
     private final String description;
+    private final Executable executable;
 
-    Decision(int id, String description) {
+    public Decision(int id, String description, Executable executable) {
         this.id = id;
         this.description = description;
+        this.executable = executable;
     }
 
-    public static Decision findById(int id) {
-        for (Decision decision : Decision.values()) {
-            if (decision.id == id) {
-                return decision;
-            }
-        }
-        return null;
+    public int getId() {
+        return id;
     }
 
-    @Override
-    public String toString() {
-        return id + ". " + description;
+    public String getDescription() {
+        return description;
     }
+
+    public Executable getExecutable() {
+        return executable;
+    }
+
 }
 
