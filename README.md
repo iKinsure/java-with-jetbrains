@@ -1,8 +1,8 @@
 # java-with-jetbrains
 
 This repository contains all java developer track projects created while learning.
-✔ - refactored and tested.
-💎 - worth to see
+* refactored and tested ✔
+* worth to see 💎
 
 ### List of projects
 
