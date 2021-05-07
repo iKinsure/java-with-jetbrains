@@ -1,6 +1,7 @@
 package org.ikinsure.processor.matrix;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.ToDoubleBiFunction;
 import java.util.stream.Collectors;
@@ -58,5 +59,24 @@ public class Matrix {
                         .mapToObj(i -> i + "")
                         .collect(Collectors.joining(" ")))
                 .collect(Collectors.joining("\n"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Matrix matrix = (Matrix) o;
+        return rows == matrix.rows &&
+                columns == matrix.columns &&
+                Arrays.deepEquals(array, matrix.array);
+    }
+
+    @Override
+    public String toString() {
+        return "Matrix{" +
+                "rows=" + rows +
+                ", columns=" + columns +
+                ", array=\n" + show() +
+                '}';
     }
 }

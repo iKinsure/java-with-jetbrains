@@ -36,7 +36,6 @@ public class CinemaTest {
                 "Current income: $28",
                 "Total income: $1089",
         };
-        System.out.println(actual);
         assertEquals(String.join("\n", expect), actual);
     }
 

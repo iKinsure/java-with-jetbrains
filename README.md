@@ -1,6 +1,8 @@
 # java-with-jetbrains
 
 This repository contains all java developer track projects created while learning.
+✔ - refactored and tested.
+💎 - worth to see
 
 ### List of projects
 
@@ -30,7 +32,7 @@ Hard difficulty level:
 Medium difficulty level:
 - [Battleship] - classic game
 - [Encryption-Decryption] - encrypt and decrypt message
-- [Numeric Matrix Processor] - basic matrix operations
+- [Numeric Matrix Processor] - basic matrix operations ✔ 💎
 - [Game of Life] - java swing app
 - [Tic-Tac-Toe with AI] - AI uses minimax algorithm
 - [Readability Score] - text difficulty
@@ -38,7 +40,7 @@ Medium difficulty level:
 - [Numeral System Converter] - change number radix
 
 Easy difficulty level:
-  - [Cinema Room Manager] - reserve your sit ✔
+  - [Cinema Room Manager] - reserve your sit ✔ 💎
   - [Bulls and Cows] - guess secret code ✔
   - [Coffee Machine] - simulation ✔
   - [Tic-Tac-Toe] - player vs player game ✔
